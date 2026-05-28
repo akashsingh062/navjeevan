@@ -6,6 +6,7 @@ import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import { LanguageProvider } from "@/context/LanguageContext";
+import ScrollRevealObserver from "@/components/ScrollRevealObserver";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -55,6 +56,7 @@ export default function RootLayout({
     <html lang="en" className={`${outfit.variable} h-full overflow-x-hidden`}>
       <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text overflow-x-hidden">
         <LanguageProvider>
+          <ScrollRevealObserver />
           <Toaster
             position="top-center"
             reverseOrder={false}

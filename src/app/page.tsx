@@ -111,7 +111,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             
-            <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden text-left">
+            <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden text-left reveal-on-scroll reveal-fade-right">
               <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 bg-primary text-white">
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="hidden md:flex flex-col gap-4 text-left">
+            <div className="hidden md:flex flex-col gap-4 text-left reveal-on-scroll reveal-fade-left">
               <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
                 <div className="px-5 py-3.5 bg-neutral-dark text-white flex items-center gap-2">
                   <Lock className="w-4 h-4" />
@@ -288,7 +288,7 @@ export default function Home() {
         id="about"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-8 text-left">
+          <div className="flex items-center gap-3 mb-8 text-left reveal-on-scroll reveal-fade-up">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
               {language === "en" ? "About Nav Jeevan Public School" : "नव जीवन पब्लिक स्कूल के बारे में"}
@@ -296,8 +296,8 @@ export default function Home() {
             <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start text-left">
-            <div className="relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start text-left overflow-hidden">
+            <div className="relative reveal-on-scroll reveal-fade-right">
               <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-4/3">
                 <Image
                   src="/about-students.png"
@@ -326,7 +326,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 reveal-on-scroll reveal-fade-left">
               <p className="text-sm sm:text-base text-neutral-body leading-relaxed">
                 {language === "en"
                   ? "Established in 2008 with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with CBSE curriculum standards. We combine rigorous academics with digital computer exposure, cultural celebrations, and physical drills to construct all-round capabilities in our students."
@@ -334,7 +334,7 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col gap-3">
-                <div className="flex gap-3.5 items-start p-4 bg-primary-light border border-primary/20 rounded-2xl">
+                <div className="flex gap-3.5 items-start p-4 bg-primary-light border border-primary/20 rounded-2xl reveal-on-scroll reveal-fade-up delay-100">
                   <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
                     <Target className="w-5 h-5 text-white" />
                   </div>
@@ -350,7 +350,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex gap-3.5 items-start p-4 bg-accent-light border border-accent/20 rounded-2xl">
+                <div className="flex gap-3.5 items-start p-4 bg-accent-light border border-accent/20 rounded-2xl reveal-on-scroll reveal-fade-up delay-200">
                   <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shrink-0">
                     <Compass className="w-5 h-5 text-white" />
                   </div>
@@ -366,7 +366,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex gap-3.5 items-start p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+                <div className="flex gap-3.5 items-start p-4 bg-amber-50 border border-amber-200 rounded-2xl reveal-on-scroll reveal-fade-up delay-300">
                   <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
                     <Lightbulb className="w-5 h-5 text-white" />
                   </div>
@@ -397,7 +397,7 @@ export default function Home() {
 
       <section className="py-10 sm:py-12 bg-neutral-light border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-7 text-left">
+          <div className="flex items-center gap-3 mb-7 text-left reveal-on-scroll reveal-fade-up">
             <div className="h-1 w-10 bg-accent rounded-full" />
             <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
               {language === "en" ? "Our Management" : "हमारा प्रबंधन"}
@@ -406,12 +406,14 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-            {managementMembers.map((member, i) => (
-              <div
-                key={i}
-                className="bg-white rounded-2xl border border-border p-4 flex flex-col items-center text-center gap-3 shadow-sm hover:shadow-md hover:border-primary/20 transition-all"
-              >
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary/20 shrink-0 bg-neutral-light">
+            {managementMembers.map((member, i) => {
+              const delays = ["", "delay-100", "delay-200", "delay-300"];
+              return (
+                <div
+                  key={i}
+                  className={`bg-white rounded-2xl border border-border p-4 flex flex-col items-center text-center gap-3 shadow-sm hover:shadow-md hover:border-primary/20 transition-all reveal-on-scroll reveal-fade-up ${delays[i]}`}
+                >
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary/20 shrink-0 bg-neutral-light">
                   <Image
                     src={member.photo}
                     alt={`Photo of ${member.name[language]}`}
@@ -429,7 +431,8 @@ export default function Home() {
                   </p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mt-6 flex justify-center">
@@ -446,7 +449,7 @@ export default function Home() {
 
       <section className="py-10 bg-white border-b border-border text-left">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-6 reveal-on-scroll reveal-fade-up">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl font-black text-neutral-dark">
               {language === "en" ? "Why Choose Nav Jeevan?" : "नव जीवन को क्यों चुनें?"}
@@ -480,10 +483,11 @@ export default function Home() {
               },
             ].map((p, i) => {
               const Icon = p.icon;
+              const delays = ["", "delay-100", "delay-200"];
               return (
                 <div
                   key={i}
-                  className="flex gap-4 items-start p-4 bg-neutral-light border border-border rounded-2xl"
+                  className={`flex gap-4 items-start p-4 bg-neutral-light border border-border rounded-2xl reveal-on-scroll reveal-fade-up ${delays[i]}`}
                 >
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${p.color}`}
@@ -512,7 +516,7 @@ export default function Home() {
       ) : previewGallery.length > 0 ? (
         <section className="py-10 bg-white border-b border-border text-left">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between mb-5 reveal-on-scroll reveal-fade-up">
               <div className="flex items-center gap-3">
                 <div className="h-1 w-10 bg-accent rounded-full" />
                 <h2 className="text-xl font-black text-neutral-dark">
@@ -536,7 +540,7 @@ export default function Home() {
 
       <section className="py-10 bg-white text-left">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-5">
+          <div className="flex items-center gap-3 mb-5 reveal-on-scroll reveal-fade-up">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl font-black text-neutral-dark">
               {language === "en" ? "Get in Touch" : "संपर्क में रहें"}
@@ -545,7 +549,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
             <a
               href="tel:+917880952150"
-              className="flex items-center gap-3 flex-1 p-4 border border-border rounded-2xl hover:border-primary/30 hover:bg-neutral-light transition-all"
+              className="flex items-center gap-3 flex-1 p-4 border border-border rounded-2xl hover:border-primary/30 hover:bg-neutral-light transition-all reveal-on-scroll reveal-fade-right delay-100"
             >
               <div className="p-2.5 bg-primary-light rounded-xl text-primary shrink-0">
                 <Phone className="w-5 h-5" />
@@ -561,7 +565,7 @@ export default function Home() {
             </a>
             <Link
               href="/contact"
-              className="flex items-center gap-3 flex-1 p-4 border border-primary/20 bg-primary-light rounded-2xl hover:bg-primary/15 transition-all"
+              className="flex items-center gap-3 flex-1 p-4 border border-primary/20 bg-primary-light rounded-2xl hover:bg-primary/15 transition-all reveal-on-scroll reveal-fade-left delay-200"
             >
               <div className="p-2.5 bg-primary/15 rounded-xl text-primary shrink-0">
                 <ArrowRight className="w-5 h-5" />

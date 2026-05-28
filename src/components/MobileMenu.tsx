@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { X, Phone, MessageSquare, Lock, ChevronRight, ChevronDown, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
-import { translations } from "@/lib/translations";
 
 interface DropdownItem {
   label: string;
@@ -24,28 +24,23 @@ interface MobileMenuProps {
 export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }: MobileMenuProps) {
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const { language, toggleLanguage } = useLanguage();
-  const t = translations[language];
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) return;
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
-    const originalOverflow = document.body.style.overflow;
-    const originalPosition = document.body.style.position;
-    const originalTop = document.body.style.top;
-    const originalWidth = document.body.style.width;
-    const scrollY = window.scrollY;
-
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = "100%";
-
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
     return () => {
-      document.body.style.overflow = originalOverflow;
-      document.body.style.position = originalPosition;
-      document.body.style.top = originalTop;
-      document.body.style.width = originalWidth;
-      window.scrollTo(0, scrollY);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen]);
 
@@ -55,44 +50,40 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  
-  useEffect(() => {
-    if (!isOpen) setAboutExpanded(false);
-  }, [isOpen]);
+  // Reset aboutExpanded state during rendering when menu is closed to prevent cascading render effects
+  if (!isOpen && aboutExpanded) {
+    setAboutExpanded(false);
+  }
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
-          {}
+          {/* Backdrop Overlay */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.4 }}
+            animate={{ opacity: 0.45 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-neutral-dark z-50"
+            className="fixed inset-0 bg-neutral-dark z-9999 backdrop-blur-xs"
             aria-hidden="true"
           />
 
-          {}
+          {/* Drawer Panel */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", bounce: 0, duration: 0.28 }}
-             className="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-white z-50 flex flex-col shadow-2xl"
-             style={{ 
-               paddingBottom: "env(safe-area-inset-bottom)",
-               overflowY: "auto",
-               overscrollBehavior: "contain",
-               WebkitOverflowScrolling: "touch"
-             }}
+            className="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-white z-10000 flex flex-col shadow-2xl overflow-hidden"
             role="dialog"
             aria-modal="true"
             aria-label="Navigation Menu"
           >
-            {}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+            {/* Header (fixed, non-scrolling) */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
               <div>
                 <span className="text-base font-black text-neutral-dark block leading-tight">Nav Jeevan</span>
                 <span className="text-[9px] uppercase font-bold text-accent tracking-widest">Public School</span>
@@ -106,101 +97,114 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
               </button>
             </div>
 
-            {}
-             <nav className="py-3 px-3" aria-label="Mobile Navigation">
-              {}
-              <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
-                <div className="flex items-center gap-2">
-                  <Languages className="w-4 h-4 text-primary" />
-                  <span className="text-xs font-bold text-neutral-dark">{language === "en" ? "भाषा बदलें (हिन्दी)" : "Switch to English"}</span>
-                </div>
-                <button
-                  onClick={toggleLanguage}
-                  className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white text-[10px] font-black rounded-lg cursor-pointer transition-colors focus:outline-none"
-                >
-                  {language === "en" ? "हिन्दी" : "English"}
-                </button>
-              </div>
-
-              {navLinks.map((link) => {
-                const isAbout = link.href === "/about";
-
-                if (isAbout && aboutDropdown) {
-                  return (
-                    <div key={link.href}>
-                      {}
-                      <button
-                        onClick={() => setAboutExpanded((v) => !v)}
-                        className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
-                        aria-expanded={aboutExpanded}
-                      >
-                        <span>{link.label}</span>
-                        <ChevronDown className={`w-4 h-4 text-neutral-body/50 transition-transform duration-200 ${aboutExpanded ? "rotate-180" : ""}`} />
-                      </button>
-
-                      {/* Sub-items */}
-                      <AnimatePresence>
-                        {aboutExpanded && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="ml-3 mb-1 border-l-2 border-primary/20 pl-3 flex flex-col gap-0.5">
-                              {aboutDropdown.map((item) => {
-                                const ItemIcon = item.icon;
-                                return (
-                                  <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={onClose}
-                                    className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all group"
-                                  >
-                                    <ItemIcon className="w-3.5 h-3.5 text-primary shrink-0" />
-                                    <span>{item.label}</span>
-                                    <ChevronRight className="w-3.5 h-3.5 text-neutral-body/30 ml-auto group-hover:text-primary transition-colors" />
-                                  </Link>
-                                );
-                              })}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={onClose}
-                    className="flex items-center justify-between px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+            {/* Scrollable Navigation List (scrolling area) */}
+            <div 
+              className="flex-1 overflow-y-auto min-h-0"
+              style={{ 
+                overscrollBehavior: "contain",
+                WebkitOverflowScrolling: "touch"
+              }}
+            >
+              <nav className="py-3 px-3" aria-label="Mobile Navigation">
+                {/* Language Switcher */}
+                <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
+                  <div className="flex items-center gap-2">
+                    <Languages className="w-4 h-4 text-primary" />
+                    <span className="text-xs font-bold text-neutral-dark">{language === "en" ? "भाषा बदलें (हिन्दी)" : "Switch to English"}</span>
+                  </div>
+                  <button
+                    onClick={toggleLanguage}
+                    className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white text-[10px] font-black rounded-lg cursor-pointer transition-colors focus:outline-none"
                   >
-                    <span>{link.label}</span>
-                    <ChevronRight className="w-4 h-4 text-neutral-body/50" />
-                  </Link>
-                );
-              })}
-
-              {/* Staff Login menu item */}
-              <Link
-                href="/admin"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
-              >
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-neutral-body/50" />
-                  <span>{language === "en" ? "Staff Login" : "स्टाफ लॉगिन"}</span>
+                    {language === "en" ? "हिन्दी" : "English"}
+                  </button>
                 </div>
-                <ChevronRight className="w-4 h-4 text-neutral-body/50" />
-              </Link>
-            </nav>
 
-            {/* Quick Actions */}
-            <div className="px-4 py-4 border-t border-border flex flex-col gap-2.5">
+                {navLinks.map((link) => {
+                  const isAbout = link.href === "/about";
+
+                  if (isAbout && aboutDropdown) {
+                    return (
+                      <div key={link.href}>
+                        {/* Toggle Button */}
+                        <button
+                          onClick={() => setAboutExpanded((v) => !v)}
+                          className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+                          aria-expanded={aboutExpanded}
+                        >
+                          <span>{link.label}</span>
+                          <ChevronDown className={`w-4 h-4 text-neutral-body/50 transition-transform duration-200 ${aboutExpanded ? "rotate-180" : ""}`} />
+                        </button>
+
+                        {/* Sub-items */}
+                        <AnimatePresence>
+                          {aboutExpanded && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="ml-3 mb-1 border-l-2 border-primary/20 pl-3 flex flex-col gap-0.5">
+                                {aboutDropdown.map((item) => {
+                                  const ItemIcon = item.icon;
+                                  return (
+                                    <Link
+                                      key={item.href}
+                                      href={item.href}
+                                      onClick={onClose}
+                                      className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all group"
+                                    >
+                                      <ItemIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+                                      <span>{item.label}</span>
+                                      <ChevronRight className="w-3.5 h-3.5 text-neutral-body/30 ml-auto group-hover:text-primary transition-colors" />
+                                    </Link>
+                                  );
+                                })}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={onClose}
+                      className="flex items-center justify-between px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+                    >
+                      <span>{link.label}</span>
+                      <ChevronRight className="w-4 h-4 text-neutral-body/50" />
+                    </Link>
+                  );
+                })}
+
+                {/* Staff Login menu item */}
+                <Link
+                  href="/admin"
+                  onClick={onClose}
+                  className="flex items-center justify-between px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <Lock className="w-4 h-4 text-neutral-body/50" />
+                    <span>{language === "en" ? "Staff Login" : "स्टाफ लॉगिन"}</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-neutral-body/50" />
+                </Link>
+              </nav>
+            </div>
+
+            {/* Quick Actions (fixed, sticky at bottom) */}
+            <div 
+              className="px-4 py-4 border-t border-border flex flex-col gap-2.5 shrink-0 bg-white"
+              style={{
+                paddingBottom: "calc(16px + env(safe-area-inset-bottom))"
+              }}
+            >
               <a
                 href="tel:+917880952150"
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary text-white rounded-2xl font-bold text-sm transition-all"
@@ -217,18 +221,11 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 <MessageSquare className="w-4 h-4" />
                 <span>{language === "en" ? "WhatsApp Inquiry" : "व्हाट्सएप प्रवेश डेस्क"}</span>
               </a>
-              <Link
-                href="/admin"
-                onClick={onClose}
-                className="flex items-center justify-center gap-2 w-full py-3 border border-border text-neutral-body hover:bg-neutral-light rounded-2xl font-semibold text-xs transition-all"
-              >
-                <Lock className="w-3.5 h-3.5" />
-                <span>{t.nav.staffPortal}</span>
-              </Link>
             </div>
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

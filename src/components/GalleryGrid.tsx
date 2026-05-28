@@ -114,13 +114,15 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
       {}
       {limit ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {displayedItems.slice(0, limit).map((item) => {
+          {displayedItems.slice(0, limit).map((item, idx) => {
             const hasError = imageErrors[item.id || ""] || false;
+            const delays = ["", "delay-100", "delay-200", "delay-300"];
+            const delayClass = delays[idx % 4];
             return (
               <button
                 key={item.id}
                 onClick={() => setSelectedItem(item)}
-                className="bg-surface rounded-2xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col items-start focus:outline-none text-left w-full h-full cursor-pointer relative"
+                className={`bg-surface rounded-2xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col items-start focus:outline-none text-left w-full h-full cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
                 aria-haspopup="dialog"
                 aria-label={`View photo of ${item.title}`}
               >
@@ -262,13 +264,15 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {populatedCategories.map((cat) => {
+                  {populatedCategories.map((cat, idx) => {
                     const count = categoryCounts[cat] || 0;
+                    const delays = ["", "delay-100", "delay-200", "delay-300"];
+                    const delayClass = delays[idx % 4];
                     return (
                       <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}
-                        className="bg-surface border border-border rounded-3xl p-5 hover:border-primary/40 hover:shadow-md transition-all flex items-center gap-4 text-left group cursor-pointer focus:outline-none relative overflow-hidden"
+                        className={`bg-surface border border-border rounded-3xl p-5 hover:border-primary/40 hover:shadow-md transition-all flex items-center gap-4 text-left group cursor-pointer focus:outline-none relative overflow-hidden reveal-on-scroll reveal-fade-up ${delayClass}`}
                       >
                         <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-300">
                           <FolderClosed className="w-6 h-6 group-hover:hidden" />
@@ -342,13 +346,15 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {displayedItems.map((item) => {
+                  {displayedItems.map((item, idx) => {
                     const hasError = imageErrors[item.id || ""] || false;
+                    const delays = ["", "delay-100", "delay-200", "delay-300"];
+                    const delayClass = delays[idx % 4];
                     return (
                       <button
                         key={item.id}
                         onClick={() => setSelectedItem(item)}
-                        className="bg-surface rounded-3xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col items-start focus:outline-none text-left w-full h-full cursor-pointer relative"
+                        className={`bg-surface rounded-3xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col items-start focus:outline-none text-left w-full h-full cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
                         aria-haspopup="dialog"
                         aria-label={`View photo of ${item.title}`}
                       >
