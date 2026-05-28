@@ -1,15 +1,14 @@
 "use client";
 
-import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import FacilityCard from "@/components/FacilityCard";
-import { getFacilities } from "@/lib/dataManager";
+import { defaultFacilities } from "@/lib/data/facilities";
 import { Lightbulb, Info } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function FacilitiesPage() {
   const { language } = useLanguage();
-  const facilities = getFacilities();
+  const facilities = defaultFacilities;
 
   return (
     <div className="py-12 bg-white flex-1 animate-fade-in-up">
