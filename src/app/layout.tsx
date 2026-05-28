@@ -52,8 +52,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text">
+    <html lang="en" className={`${outfit.variable} h-full overflow-x-hidden`}>
+      <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text overflow-x-hidden">
         <LanguageProvider>
           <Toaster
             position="top-center"

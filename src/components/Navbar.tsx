@@ -212,7 +212,8 @@ export default function Navbar() {
                   Nav Jeevan Public School
                 </span>
                 <span className="text-[10px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5">
-                  Khabharabhar, Kaptanganj, Kushinagar (India) – 274301
+                  <span className="inline sm:hidden">Kaptanganj, Kushinagar</span>
+                  <span className="hidden sm:inline">Khabharabhar, Kaptanganj, Kushinagar (India) – 274301</span>
                 </span>
               </div>
             </Link>
