@@ -4,7 +4,7 @@ import { ArrowRight, Phone, Award } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-gradient-to-br from-neutral-dark via-gray-900 to-primary py-20 lg:py-28 text-white overflow-hidden border-b-4 border-accent">
+    <section className="relative bg-linear-to-br from-neutral-dark via-gray-900 to-primary py-20 lg:py-28 text-white overflow-hidden border-b-4 border-accent">
       {/* Dynamic background layout overlays (Zero weights, pure CSS vectors) */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,163,74,0.15),transparent)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.2),transparent)] pointer-events-none" />
@@ -17,7 +17,7 @@ export default function HeroSection() {
           <div className="lg:col-span-7 flex flex-col items-start text-left gap-6">
             
             {/* CBSE Affiliation Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-accent/25 border border-accent/40 rounded-full font-black text-xs uppercase tracking-widest text-accent-hover/80 text-white">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-accent/25 border border-accent/40 rounded-full font-black text-xs uppercase tracking-widest text-white">
               <Award className="w-4 h-4 text-accent" />
               <span>CBSE Pattern • Both Hindi & English Medium</span>
             </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Notice } from "@/types";
-import { Calendar, AlertCircle } from "lucide-react";
+import { Calendar, AlertCircle, Paperclip } from "lucide-react";
 
 interface NoticeCardProps {
   notice: Notice;
@@ -64,6 +64,20 @@ export default function NoticeCard({ notice }: NoticeCardProps) {
       <p className="text-sm text-neutral-body leading-relaxed font-normal whitespace-pre-line">
         {notice.description}
       </p>
+
+      {notice.attachmentUrl && (
+        <div className="mt-4 pt-3.5 border-t border-gray-100 flex">
+          <a
+            href={notice.attachmentUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl text-xs font-extrabold transition-all cursor-pointer"
+          >
+            <Paperclip className="w-3.5 h-3.5" />
+            <span>Download / View Official Circular</span>
+          </a>
+        </div>
+      )}
     </article>
   );
 }

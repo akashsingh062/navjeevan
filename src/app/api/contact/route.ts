@@ -1,0 +1,46 @@
+import { NextResponse } from "next/server";
+import { saveContactInquiry } from "@/lib/dataManager";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters long"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().min(10).max(12),
+  message: z.string().min(10, "Message must be at least 10 characters long")
+});
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const validatedData = contactSchema.parse(body);
+
+    const saved = await saveContactInquiry({
+      name: validatedData.name,
+      email: validatedData.email,
+      phone: validatedData.phone,
+      message: validatedData.message
+    });
+
+    if (saved) {
+      // Simulate sending email to administration info@navjeevanschool.org
+      console.log(`[EMAIL SEND SIMULATION] Sending notification email to info@navjeevanschool.org for new inquiry from ${validatedData.name}.`);
+      return NextResponse.json({ success: true, message: "Inquiry saved and notification queued." });
+    } else {
+      return NextResponse.json(
+        { success: false, message: "Could not save inquiry details. Please try again." },
+        { status: 500 }
+      );
+    }
+  } catch (error: any) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, message: error.issues[0]?.message || "Invalid input data." },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      { success: false, message: error.message || "Failed to process contact submission." },
+      { status: 500 }
+    );
+  }
+}

@@ -43,7 +43,7 @@ export default function FacilitiesPage() {
         </div>
 
         {/* Detailed Highlight Block for the Smart IT Lab and Playgrounds */}
-        <section className="bg-gradient-to-tr from-neutral-light to-blue-50/20 border border-gray-200 rounded-3xl p-6 md:p-10 text-left flex flex-col gap-6">
+        <section className="bg-linear-to-tr from-neutral-light to-blue-50/20 border border-gray-200 rounded-3xl p-6 md:p-10 text-left flex flex-col gap-6">
           <div className="flex items-center gap-2 text-primary font-black uppercase tracking-wider text-xs">
             <Lightbulb className="w-5 h-5" />
             <span>Facility Spotlight</span>

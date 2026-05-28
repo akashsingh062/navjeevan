@@ -21,19 +21,19 @@ async function isDbConnected(): Promise<boolean> {
 async function ensureDbSeeded() {
   try {
     const noticesCount = await NoticeModel.countDocuments();
-    if (noticesCount === 0) {
+    if (noticesCount === 0 && defaultNotices.length > 0) {
       await NoticeModel.insertMany(defaultNotices);
       console.log("Seeded database with default school notices.");
     }
 
     const facultyCount = await FacultyModel.countDocuments();
-    if (facultyCount === 0) {
+    if (facultyCount === 0 && defaultFaculty.length > 0) {
       await FacultyModel.insertMany(defaultFaculty);
       console.log("Seeded database with default school faculty.");
     }
 
     const galleryCount = await GalleryModel.countDocuments();
-    if (galleryCount === 0) {
+    if (galleryCount === 0 && defaultGallery.length > 0) {
       await GalleryModel.insertMany(defaultGallery);
       console.log("Seeded database with default school gallery items.");
     }
@@ -41,6 +41,7 @@ async function ensureDbSeeded() {
     console.error("Error seeding database:", err);
   }
 }
+
 
 export async function getNotices(): Promise<Notice[]> {
   if (await isDbConnected()) {
@@ -53,7 +54,8 @@ export async function getNotices(): Promise<Notice[]> {
         description: n.description,
         date: n.date,
         category: n.category,
-        isImportant: n.isImportant
+        isImportant: n.isImportant,
+        attachmentUrl: n.attachmentUrl || ""
       }));
     } catch (err) {
       console.error("Failed to fetch notices from database, using static fallback:", err);
@@ -173,4 +175,58 @@ export async function saveContactInquiry(inquiry: Omit<ContactInquiry, "_id">): 
   }
   console.log("Mock saved inquiry:", inquiry);
   return true;
+}
+
+export async function deleteNotice(id: string): Promise<boolean> {
+  if (await isDbConnected()) {
+    try {
+      const res = await NoticeModel.findByIdAndDelete(id);
+      return res !== null;
+    } catch (err) {
+      console.error("Failed to delete notice from database:", err);
+      return false;
+    }
+  }
+  const index = defaultNotices.findIndex(n => n.id === id);
+  if (index !== -1) {
+    defaultNotices.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+export async function deleteGalleryItem(id: string): Promise<boolean> {
+  if (await isDbConnected()) {
+    try {
+      const res = await GalleryModel.findByIdAndDelete(id);
+      return res !== null;
+    } catch (err) {
+      console.error("Failed to delete gallery item from database:", err);
+      return false;
+    }
+  }
+  const index = defaultGallery.findIndex(g => g.id === id);
+  if (index !== -1) {
+    defaultGallery.splice(index, 1);
+    return true;
+  }
+  return false;
+}
+
+export async function deleteFacultyMember(id: string): Promise<boolean> {
+  if (await isDbConnected()) {
+    try {
+      const res = await FacultyModel.findByIdAndDelete(id);
+      return res !== null;
+    } catch (err) {
+      console.error("Failed to delete faculty member from database:", err);
+      return false;
+    }
+  }
+  const index = defaultFaculty.findIndex(f => f.id === id);
+  if (index !== -1) {
+    defaultFaculty.splice(index, 1);
+    return true;
+  }
+  return false;
 }

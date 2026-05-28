@@ -4,8 +4,10 @@ export interface Notice {
   title: string;
   description: string;
   date: string; // ISO String format
-  category: 'General' | 'Exam' | 'Holiday' | 'Admission';
+  category: 'General' | 'Exam' | 'Holiday' | 'Admission' | 'Others';
   isImportant?: boolean;
+  importanceColor?: 'red' | 'amber' | 'green' | 'blue' | 'purple';
+  attachmentUrl?: string;
 }
 
 export interface Faculty {
@@ -23,10 +25,11 @@ export interface GalleryItem {
   _id?: string;
   id?: string;
   imageUrl: string;
-  category: 'Annual Function' | 'Sports Day' | 'Classroom Activities' | 'Cultural Events' | 'Independence Day' | 'Prize Distribution';
+  category: 'Annual Function' | 'Sports Day' | 'Classroom Activities' | 'Cultural Events' | 'Independence Day' | 'Prize Distribution' | 'Others';
   title: string;
   uploadedAt: string; // ISO String format
 }
+
 
 export interface Facility {
   id: string;

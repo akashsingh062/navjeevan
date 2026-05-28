@@ -4,7 +4,7 @@ import { Phone, FileText, ArrowRight } from "lucide-react";
 
 export default function CTASection() {
   return (
-    <section className="py-16 bg-gradient-to-br from-primary to-blue-700 text-white rounded-3xl overflow-hidden shadow-lg relative my-12 mx-4 sm:mx-6 lg:mx-8">
+    <section className="py-16 bg-linear-to-br from-primary to-blue-700 text-white rounded-3xl overflow-hidden shadow-lg relative my-12 mx-4 sm:mx-6 lg:mx-8">
       {/* Decorative backdrop patterns (pure CSS for maximum performance and zero weight) */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.08),transparent)] pointer-events-none" />
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
@@ -47,7 +47,7 @@ export default function CTASection() {
         {/* Quick helper desk note */}
         <div className="mt-6 flex items-center gap-2 text-xs text-blue-200">
           <Phone className="w-3.5 h-3.5" />
-          <span>Need help? Call our Helpline: <strong>+91 99356 61144</strong></span>
+          <span>Need help? Call our Helpline: <strong>+91 7880952150</strong></span>
         </div>
       </div>
     </section>

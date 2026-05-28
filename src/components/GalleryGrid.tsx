@@ -104,7 +104,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                     </>
                   ) : (
                     /* Elegant visual fallback when image asset is missing locally */
-                    <div className="absolute inset-0 bg-gradient-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-4 text-center">
+                    <div className="absolute inset-0 bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-4 text-center">
                       <Camera className="w-8 h-8 text-primary/40 mb-2" />
                       <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2 rounded-full tracking-wider">
                         {item.category}

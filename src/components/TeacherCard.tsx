@@ -40,7 +40,7 @@ export default function TeacherCard({ member }: TeacherCardProps) {
           />
         ) : (
           /* Fallback Initials Badge */
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary to-accent/40 flex flex-col items-center justify-center text-white">
+          <div className="absolute inset-0 bg-linear-to-tr from-primary to-accent/40 flex flex-col items-center justify-center text-white">
             <span className="text-4xl font-black tracking-wider drop-shadow-sm select-none">
               {getInitials(member.name)}
             </span>

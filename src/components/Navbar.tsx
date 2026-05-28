@@ -3,20 +3,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, BookOpen } from "lucide-react";
+import { Menu, Phone, BookOpen, Lock } from "lucide-react";
 import MobileMenu from "./MobileMenu";
-
-export const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Academics", href: "/academics" },
-  { label: "Admissions", href: "/admissions" },
-  { label: "Faculty", href: "/faculty" },
-  { label: "Facilities", href: "/facilities" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Notices", href: "/notices" },
-  { label: "Contact", href: "/contact" }
-];
+import { navLinks } from "@/lib/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -35,15 +24,15 @@ export default function Navbar() {
     <>
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-200 border-b ${
-          isScrolled 
-            ? "bg-white/95 backdrop-blur-md shadow-md border-neutral-light py-2" 
+          isScrolled
+            ? "bg-white/95 backdrop-blur-md shadow-md border-neutral-light py-2"
             : "bg-white border-transparent py-4"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           {/* Brand Logo and Name */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="flex items-center gap-3 focus:outline-none rounded-lg p-1 group"
             aria-label="Nav Jeevan Public School Home"
           >
@@ -61,7 +50,10 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-1" aria-label="Main Navigation">
+          <nav
+            className="hidden xl:flex items-center gap-1"
+            aria-label="Main Navigation"
+          >
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -83,17 +75,25 @@ export default function Navbar() {
 
           {/* Quick Info / Call Actions (Desktop) */}
           <div className="hidden xl:flex items-center gap-3">
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 px-4 py-2 text-xs font-extrabold text-neutral-body hover:text-primary hover:bg-neutral-light/50 border border-gray-200 rounded-xl transition-all"
+              title="Staff Portal Login"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Staff Login</span>
+            </Link>
             <a
-              href="tel:+919935661144"
-              className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-primary bg-primary/10 hover:bg-primary/20 rounded-xl transition-all"
+              href="tel:+917880952150"
+              className="flex items-center gap-2 px-4 py-2 text-xs font-extrabold text-primary bg-primary/10 hover:bg-primary/20 rounded-xl transition-all"
               title="Call School Office"
             >
-              <Phone className="w-4 h-4" />
-              <span>+91 99356 61144</span>
+              <Phone className="w-3.5 h-3.5" />
+              <span>+91 7880952150</span>
             </a>
             <Link
               href="/admissions"
-              className="px-5 py-2.5 text-sm font-bold text-white bg-accent hover:bg-accent-hover rounded-xl shadow-sm transition-all text-center"
+              className="px-5 py-2.5 text-xs font-black text-white bg-accent hover:bg-accent-hover rounded-xl shadow-sm transition-all text-center uppercase tracking-wider"
             >
               Admission open
             </Link>
@@ -102,7 +102,7 @@ export default function Navbar() {
           {/* Hamburger Menu & Mobile Call Button (Mobile & Tablet) */}
           <div className="flex xl:hidden items-center gap-2">
             <a
-              href="tel:+919935661144"
+              href="tel:+917880952150"
               className="p-2.5 text-primary bg-primary/10 rounded-full hover:bg-primary/20"
               aria-label="Call School Office"
             >

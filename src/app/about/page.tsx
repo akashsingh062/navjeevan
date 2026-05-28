@@ -1,6 +1,6 @@
 import React from "react";
 import SectionHeading from "@/components/SectionHeading";
-import { Award, Compass, Heart, ShieldAlert, Sparkles, BookOpen } from "lucide-react";
+import { Award, Compass, Heart, Sparkles, BookOpen } from "lucide-react";
 
 export const metadata = {
   title: "About Us | Nav Jeevan Public School Kushinagar",
@@ -99,7 +99,7 @@ export default function About() {
               {milestones.map((stone, idx) => (
                 <div key={idx} className="relative flex flex-col gap-1.5">
                   {/* Circle dot marker */}
-                  <div className="absolute -left-[25px] top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-white" />
+                  <div className="absolute left-[-25px] top-1.5 w-3 h-3 rounded-full bg-primary border-2 border-white" />
                   
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-black text-primary bg-primary/10 px-2 py-0.5 rounded">
@@ -157,7 +157,7 @@ export default function About() {
             <div className="flex flex-col items-start gap-1">
               <span className="text-xs font-black text-primary uppercase tracking-widest">Leadership Note</span>
               <h3 className="text-2xl font-extrabold text-neutral-dark tracking-tight leading-tight">
-                Message from the Principal's Desk
+                Message from the Principal&apos;s Desk
               </h3>
               <div className="h-0.5 w-12 bg-primary mt-1.5 rounded-full" />
             </div>

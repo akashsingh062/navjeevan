@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import Link from "next/link";
-import { X, Phone, MessageSquare } from "lucide-react";
+import { X, Phone, MessageSquare, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MobileMenuProps {
@@ -11,7 +11,11 @@ interface MobileMenuProps {
   navLinks: { label: string; href: string }[];
 }
 
-export default function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProps) {
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  navLinks,
+}: MobileMenuProps) {
   // Prevent background scrolling when mobile menu is open
   useEffect(() => {
     if (isOpen) {
@@ -61,8 +65,12 @@ export default function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProp
             {/* Header section inside drawer */}
             <div className="flex items-center justify-between pb-6 border-b border-neutral-light">
               <div className="flex flex-col">
-                <span className="text-lg font-bold text-primary leading-tight">Nav Jeevan</span>
-                <span className="text-[10px] uppercase font-semibold text-accent tracking-wider">Public School</span>
+                <span className="text-lg font-bold text-primary leading-tight">
+                  Nav Jeevan
+                </span>
+                <span className="text-[10px] uppercase font-semibold text-accent tracking-wider">
+                  Public School
+                </span>
               </div>
               <button
                 onClick={onClose}
@@ -89,15 +97,23 @@ export default function MobileMenu({ isOpen, onClose, navLinks }: MobileMenuProp
 
             {/* Quick Action buttons for quick access */}
             <div className="pt-6 border-t border-neutral-light flex flex-col gap-3">
+              <Link
+                href="/admin"
+                onClick={onClose}
+                className="flex items-center justify-center gap-2 w-full py-3.5 border border-gray-200 text-neutral-dark hover:bg-neutral-light rounded-xl font-bold text-sm transition-all focus:outline-none"
+              >
+                <Lock className="w-4 h-4 text-primary shrink-0" />
+                <span>Staff Portal Login</span>
+              </Link>
               <a
-                href="tel:+919935661144"
+                href="tel:+917880952150"
                 className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover text-sm"
               >
                 <Phone className="w-4 h-4" />
                 Call School Office
               </a>
               <a
-                href="https://wa.me/919935661144?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3 bg-accent text-white rounded-xl font-bold hover:bg-accent-hover text-sm"

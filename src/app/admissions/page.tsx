@@ -209,20 +209,16 @@ export default function Admissions() {
           </div>
           
           <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              alert("The printable PDF application form has been generated. When deployed, this link downloads the official form (PDF).");
-            }}
+            href="#inquiry-form"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-primary text-white hover:bg-primary-hover rounded-xl font-black text-sm transition-all shadow-md focus:outline-none shrink-0 cursor-pointer"
           >
             <Download className="w-5 h-5" />
-            <span>Download Admission PDF Form</span>
+            <span>Request Form via Inquiry</span>
           </a>
         </section>
 
         {/* Admissions Inquiry & Help Desk Contact Form */}
-        <section className="py-16 border-t border-gray-100">
+        <section id="inquiry-form" className="py-16 border-t border-gray-100">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             {/* Context details */}

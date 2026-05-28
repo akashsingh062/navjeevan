@@ -1,6 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Phone, Award, ShieldCheck, HeartHandshake, CheckCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Phone,
+  Award,
+  ShieldCheck,
+  HeartHandshake,
+  CheckCircle,
+} from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
 import SectionHeading from "@/components/SectionHeading";
@@ -14,14 +21,14 @@ export default async function Home() {
   // Fetch data on the server
   const [notices, galleryItems] = await Promise.all([
     getNotices(),
-    getGallery()
+    getGallery(),
   ]);
 
   const facilities = getFacilities();
 
   // Get only top 3 recent/important notices for the preview
   const previewNotices = notices.slice(0, 3);
-  
+
   // Get top 4 gallery items for the preview
   const previewGallery = galleryItems.slice(0, 4);
 
@@ -30,18 +37,18 @@ export default async function Home() {
     {
       title: "Affordable High-Quality Education",
       desc: "Providing CBSE pattern learning with minimal fee structures, ensuring every child in Khabharabhar & Captanganj gets quality education.",
-      icon: Award
+      icon: Award,
     },
     {
       title: "Bilingual Standard (Hindi & English)",
       desc: "Strengthening communication. Classes are explained clearly in both English and Hindi so rural students grasp concepts without language fear.",
-      icon: HeartHandshake
+      icon: HeartHandshake,
     },
     {
       title: "Smart Learning & IT Literacy",
       desc: "Equipped with interactive smart classroom displays and a dedicated computer laboratory teaching keyboarding, office tools, and internet safety.",
-      icon: ShieldCheck
-    }
+      icon: ShieldCheck,
+    },
   ];
 
   return (
@@ -56,14 +63,17 @@ export default async function Home() {
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
             {/* Principal Quote card */}
             <div className="lg:col-span-5 bg-neutral-light border border-gray-200 rounded-3xl p-6 md:p-8 relative">
               <div className="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white text-3xl font-serif">
                 “
               </div>
               <blockquote className="text-neutral-dark italic leading-relaxed text-sm font-medium">
-                Our objective at Nav Jeevan is to make learning accessible, exciting, and morally grounding for every student in our rural belt. We ensure that our children do not feel left behind by modern digital advancements, bridging technology with regional culture.
+                Our objective at Nav Jeevan is to make learning accessible,
+                exciting, and morally grounding for every student in our rural
+                belt. We ensure that our children do not feel left behind by
+                modern digital advancements, bridging technology with regional
+                culture.
               </blockquote>
               <div className="mt-6 pt-4 border-t border-gray-200 flex flex-col">
                 <cite className="not-italic text-sm font-black text-neutral-dark">
@@ -77,15 +87,23 @@ export default async function Home() {
 
             {/* General Intro Paragraphs */}
             <div className="lg:col-span-7 flex flex-col justify-center items-start">
-              <SectionHeading 
+              <SectionHeading
                 title="Welcome to Nav Jeevan Public School"
                 subtitle="Nurturing Excellence, character and capability in Khabharabhar, Captanganj, Kushinagar."
               />
               <p className="text-sm md:text-base text-neutral-body leading-relaxed font-normal mb-5">
-                Established with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with CBSE curriculum standards. We combine rigorous academic routines with digital computer exposure, cultural celebrations, and physical physical drills to construct all-round capabilities in our children.
+                Established with a vision to revolutionize primary and secondary
+                education in rural Uttar Pradesh, Nav Jeevan Public School is
+                affiliated with CBSE curriculum standards. We combine rigorous
+                academic routines with digital computer exposure, cultural
+                celebrations, and physical physical drills to construct
+                all-round capabilities in our children.
               </p>
               <p className="text-sm md:text-base text-neutral-body leading-relaxed font-normal mb-6">
-                Our dedicated faculty members utilize bilingual teaching methods to ensure every student—regardless of their background—grows confident in English speech, Mathematics, and Analytical Science.
+                Our dedicated faculty members utilize bilingual teaching methods
+                to ensure every student—regardless of their background—grows
+                confident in English speech, Mathematics, and Analytical
+                Science.
               </p>
               <Link
                 href="/about"
@@ -95,7 +113,6 @@ export default async function Home() {
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-
           </div>
         </div>
       </section>
@@ -113,7 +130,7 @@ export default async function Home() {
             {whyChoosePoints.map((point, index) => {
               const Icon = point.icon;
               return (
-                <div 
+                <div
                   key={index}
                   className="bg-white border border-gray-200 p-6 rounded-2xl shadow-sm hover:border-accent/30 transition-all flex flex-col gap-4"
                 >
@@ -139,15 +156,14 @@ export default async function Home() {
       <section className="py-16 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
             {/* Notices Panel (Left) */}
             <div className="lg:col-span-5 flex flex-col gap-6">
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <h3 className="text-xl font-extrabold text-neutral-dark tracking-tight">
                   Latest Notices
                 </h3>
-                <Link 
-                  href="/notices" 
+                <Link
+                  href="/notices"
                   className="text-xs font-extrabold text-primary hover:underline focus:outline-none"
                 >
                   View All Notices
@@ -156,7 +172,9 @@ export default async function Home() {
 
               <div className="flex flex-col gap-4">
                 {previewNotices.length === 0 ? (
-                  <p className="text-xs text-neutral-body">No notices currently posted.</p>
+                  <p className="text-xs text-neutral-body">
+                    No notices currently posted.
+                  </p>
                 ) : (
                   previewNotices.map((notice) => (
                     <NoticeCard key={notice.id} notice={notice} />
@@ -171,8 +189,8 @@ export default async function Home() {
                 <h3 className="text-xl font-extrabold text-neutral-dark tracking-tight">
                   Facilities Spotlight
                 </h3>
-                <Link 
-                  href="/facilities" 
+                <Link
+                  href="/facilities"
                   className="text-xs font-extrabold text-primary hover:underline focus:outline-none"
                 >
                   Explore All Facilities
@@ -185,7 +203,6 @@ export default async function Home() {
                 ))}
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -225,15 +242,19 @@ export default async function Home() {
 
           <div className="mt-4 flex flex-col sm:flex-row items-center gap-6 justify-center w-full max-w-lg">
             <a
-              href="tel:+919935661144"
+              href="tel:+917880952150"
               className="flex items-center justify-center gap-3 w-full p-4 border border-gray-200 rounded-2xl hover:border-primary/40 hover:bg-neutral-light/55 transition-colors focus:outline-none"
             >
               <div className="p-3 bg-primary/10 rounded-xl text-primary shrink-0">
                 <Phone className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <span className="block text-xs font-bold text-neutral-body uppercase tracking-wider">Call Office</span>
-                <span className="block text-sm font-black text-neutral-dark">+91 99356 61144</span>
+                <span className="block text-xs font-bold text-neutral-body uppercase tracking-wider">
+                  Call Office
+                </span>
+                <span className="block text-sm font-black text-neutral-dark">
+                  +91 7880952150
+                </span>
               </div>
             </a>
 
@@ -245,8 +266,12 @@ export default async function Home() {
                 <CheckCircle className="w-5 h-5 text-primary" />
               </div>
               <div className="text-left">
-                <span className="block text-xs font-bold text-neutral-body uppercase tracking-wider">Inquiry Desk</span>
-                <span className="block text-sm font-black text-primary">Fill Inquiry Form</span>
+                <span className="block text-xs font-bold text-neutral-body uppercase tracking-wider">
+                  Inquiry Desk
+                </span>
+                <span className="block text-sm font-black text-primary">
+                  Fill Inquiry Form
+                </span>
               </div>
             </Link>
           </div>

@@ -10,7 +10,8 @@ const NoticeSchema = new Schema({
     enum: ["General", "Exam", "Holiday", "Admission"], 
     required: true 
   },
-  isImportant: { type: Boolean, default: false }
+  isImportant: { type: Boolean, default: false },
+  attachmentUrl: { type: String, default: "" }
 }, { timestamps: true });
 
 // Gallery Schema
