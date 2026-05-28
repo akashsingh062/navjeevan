@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     });
 
     if (saved) {
-      // Simulate sending email to administration info@navjeevanschool.org
+      
       console.log(`[EMAIL SEND SIMULATION] Sending notification email to info@navjeevanschool.org for new inquiry from ${validatedData.name}.`);
       return NextResponse.json({ success: true, message: "Inquiry saved and notification queued." });
     } else {

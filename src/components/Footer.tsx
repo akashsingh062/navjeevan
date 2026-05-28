@@ -18,7 +18,7 @@ import { translations } from "@/lib/translations";
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Consume language context
+  
   const { language } = useLanguage();
   const t = translations[language];
 
@@ -28,7 +28,7 @@ export default function Footer() {
     }
   };
 
-  // Translate navigation links dynamically for footer list columns
+  
   const translatedNavLinks = navLinks.map((link) => {
     let label = link.label;
     if (link.label === "Home") label = t.nav.home;
@@ -43,7 +43,7 @@ export default function Footer() {
     return { ...link, label };
   });
 
-  // Group navigation links by categories
+  
   const exploreLinks = translatedNavLinks.filter(link => 
     ["/", "/about", "/academics", "/admissions", "/facilities"].includes(link.href)
   );
@@ -54,18 +54,18 @@ export default function Footer() {
 
   return (
     <footer className="relative bg-neutral-dark text-gray-300 border-t border-gray-800 overflow-hidden">
-      {/* Decorative colored top divider glow strip */}
+      {}
       <div className="h-1.5 w-full bg-linear-to-r from-primary via-amber-500 to-accent" />
 
-      {/* Subtle vector grid/light overlay effect */}
+      {}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,98,26,0.06),transparent_50%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(26,107,69,0.06),transparent_50%)] pointer-events-none" />
 
-      {/* Main footer content */}
+      {}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
           
-          {/* Brand & Identity Column (Spans 4 cols on md+) */}
+          {}
           <div className="md:col-span-4 flex flex-col gap-5 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-primary to-amber-600 flex items-center justify-center shrink-0 shadow-md">
@@ -87,19 +87,19 @@ export default function Footer() {
                 : "2008 में स्थापित, कप्तानगंज ब्लॉक में गुणवत्तापूर्ण, आधुनिक सह-शिक्षा के माध्यम से ग्रामीण छात्रों को सशक्त बनाना। LKG से कक्षा VIII तक के लिए विशेष रूप से तैयार पाठ्यक्रम।"}
             </p>
 
-            {/* Curriculum alignment tag */}
+            {}
             <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-dark/80 border border-gray-800 rounded-xl self-start text-[10px] text-gray-300 font-bold select-none shadow-3xs">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
               <span>{t.common.cbsePattern}</span>
             </div>
 
-            {/* Social Media & Instant Help Desk Links */}
+            {}
             <div className="flex flex-col gap-3.5 mt-2">
               <h4 className="text-[10px] uppercase font-black tracking-widest text-gray-500">
                 {t.common.liveChannels}
               </h4>
               <div className="flex gap-2.5 items-center">
-                {/* WhatsApp Help Desk */}
+                {}
                 <a
                   href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                   target="_blank"
@@ -111,7 +111,7 @@ export default function Footer() {
                   <span>{t.common.admissionDesk}</span>
                 </a>
 
-                {/* Social media round icon circles */}
+                {}
                 <a
                   href="https://facebook.com"
                   target="_blank"
@@ -147,9 +147,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Navigation Columns (Spans 4 cols on md+, split 2 & 2) */}
+          {}
           <div className="md:col-span-4 grid grid-cols-2 gap-6 text-left">
-            {/* Explore Campus Column */}
+            {}
             <div>
               <h3 className="text-white font-black text-xs uppercase tracking-widest border-b border-gray-800 pb-3 mb-4">
                 {t.common.exploreCampus}
@@ -168,7 +168,7 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Information Desk Column */}
+            {}
             <div>
               <h3 className="text-white font-black text-xs uppercase tracking-widest border-b border-gray-800 pb-3 mb-4">
                 {t.common.information}
@@ -188,16 +188,16 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Timings Desk & Mini-GPS Map Widget (Spans 4 cols on md+) */}
+          {}
           <div className="md:col-span-4 flex flex-col gap-6 text-left">
-            {/* Timings section */}
+            {}
             <div>
               <h3 className="text-white font-black text-xs uppercase tracking-widest border-b border-gray-800 pb-3 mb-4">
                 {t.common.campusTimings}
               </h3>
               
               <div className="flex flex-col gap-3 text-sm text-gray-400">
-                {/* Summer timing */}
+                {}
                 <div className="flex gap-2.5 items-start">
                   <div className="relative w-2 h-2 mt-1.5 shrink-0 flex items-center justify-center">
                     <div className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-45 scale-125" />
@@ -213,7 +213,7 @@ export default function Footer() {
                   </div>
                 </div>
 
-                {/* Winter timing */}
+                {}
                 <div className="flex gap-2.5 items-start">
                   <div className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 shrink-0" />
                   <div>
@@ -226,7 +226,7 @@ export default function Footer() {
                   </div>
                 </div>
 
-                {/* Sunday timing */}
+                {}
                 <div className="flex gap-2.5 items-start">
                   <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
                   <div>
@@ -241,7 +241,7 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Mini-GPS Direction Desk card */}
+            {}
             <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between hover:border-primary/20 transition-all duration-300 group relative overflow-hidden">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-xl bg-primary-light/10 text-primary flex items-center justify-center shrink-0">
@@ -267,7 +267,7 @@ export default function Footer() {
               </a>
             </div>
 
-            {/* Bilingual support status */}
+            {}
             <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-dark/80 border border-gray-800 rounded-xl self-start text-[10px] text-gray-400 font-medium select-none shadow-3xs">
               <Languages className="w-3.5 h-3.5 text-accent animate-pulse" />
               <span>{t.common.bilingualSupport}</span>
@@ -277,7 +277,7 @@ export default function Footer() {
 
         </div>
 
-        {/* Outer bottom copyright panel */}
+        {}
         <div className="border-t border-gray-800/80 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-medium">
           <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-center sm:text-left">
             <p>© {currentYear} Nav Jeevan Public School. {t.common.rightsReserved}</p>
@@ -292,7 +292,7 @@ export default function Footer() {
               {language === "en" ? "Affiliated Model" : "सम्बद्ध मॉडल"}
             </span>
             
-            {/* Smooth back-to-top button */}
+            {}
             <button
               onClick={scrollToTop}
               className="w-10 h-10 rounded-xl bg-gray-900 border border-gray-800 hover:bg-primary hover:border-primary text-gray-400 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm cursor-pointer group focus:outline-none"
@@ -305,7 +305,7 @@ export default function Footer() {
 
       </div>
 
-      {/* Embedded local Structured Schema for School SEO */}
+      {}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -43,11 +43,11 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabName>("notices");
   const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
 
-  // Persist authentication state
+  
   useEffect(() => {
     const token = localStorage.getItem("navjeevan_admin_auth");
     if (token === "navjeevan-auth-token-2026") {
-      // Defer state update to avoid synchronous cascading renders
+      
       setTimeout(() => {
         setIsLoggedIn(true);
       }, 0);
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
     setLoginPassword("");
   };
 
-  // Setup form states for different sections
+  
   const noticeForm = useForm<NoticeFormInput>({
     defaultValues: { title: "", description: "", category: "General", isImportant: false, importanceColor: "blue" }
   });
@@ -140,7 +140,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      // Defer loading fetch callbacks to prevent compiler rendering cascading warnings
+      
       setTimeout(() => {
         refreshData();
       }, 0);

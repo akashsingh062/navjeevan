@@ -4,7 +4,7 @@ interface SectionHeadingProps {
   title: string;
   subtitle?: string;
   centered?: boolean;
-  accent?: string; // optional small tag above title
+  accent?: string; 
 }
 
 export default function SectionHeading({ title, subtitle, centered = false, accent }: SectionHeadingProps) {

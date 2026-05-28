@@ -11,7 +11,7 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
-// Global caching for mongoose to prevent multiple connections during hot-reloads
+
 if (!global.mongoose) {
   global.mongoose = { conn: null, promise: null };
 }
@@ -19,7 +19,7 @@ const cached: MongooseCache = global.mongoose;
 
 export async function connectToDatabase() {
   if (!MONGODB_URI) {
-    // Return null to signify static fallback mode
+    
     return null;
   }
 

@@ -20,7 +20,7 @@ export default function BottomNav() {
   const { language } = useLanguage();
   const t = translations[language];
 
-  // Hide bottom nav on admin page
+  
   if (pathname.startsWith("/admin")) return null;
 
   return (
@@ -33,7 +33,7 @@ export default function BottomNav() {
         {bottomNavItems.map(({ href, labelKey, icon: Icon }) => {
           const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
           
-          // Get translated label
+          
           let label = "";
           if (labelKey === "home") label = t.nav.home;
           else if (labelKey === "notices") label = t.nav.notices;

@@ -44,7 +44,7 @@ export default function HeroSection() {
     }, 350);
   }, []);
 
-  // Auto-advance slider
+  
   useEffect(() => {
     const timer = setInterval(() => {
       goTo((c: number) => (c + 1) % slides.length);
@@ -60,7 +60,7 @@ export default function HeroSection() {
   return (
     <section className="relative w-full overflow-hidden" style={{ height: "clamp(230px, 46vw, 540px)" }}>
 
-      {/* === All slide images stacked, only active one visible === */}
+      {}
       {slides.map((s, i) => (
         <div
           key={s.id}
@@ -79,32 +79,32 @@ export default function HeroSection() {
         </div>
       ))}
 
-      {/* === Persistent overlay (above all images, z-index 2) === */}
+      {}
       <div className="absolute inset-0 bg-linear-to-r from-neutral-dark/85 via-neutral-dark/50 to-transparent" style={{ zIndex: 2 }} />
       <div className="absolute inset-0 bg-linear-to-t from-neutral-dark/55 via-transparent to-transparent" style={{ zIndex: 2 }} />
 
-      {/* === Slide Content (z-index 3) === */}
+      {}
       <div
         className="relative h-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col justify-center transition-opacity duration-300"
         style={{ zIndex: 3, opacity: transitioning ? 0 : 1 }}
       >
         <div className="max-w-xl">
-          {/* Tag badge */}
+          {}
           <span className="inline-block bg-primary text-white text-[10px] sm:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3 sm:mb-4">
             {slide.tag}
           </span>
 
-          {/* Title */}
+          {}
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md mb-2 sm:mb-3">
             {slide.title}
           </h1>
 
-          {/* Subtitle */}
+          {}
           <p className="text-xs sm:text-sm lg:text-base text-white/85 font-medium leading-relaxed mb-4 sm:mb-6 max-w-md drop-shadow">
             {slide.subtitle}
           </p>
 
-          {/* CTA */}
+          {}
           <Link
             href={slide.cta.href}
             className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-xs sm:text-sm shadow-lg transition-all active:scale-95"
@@ -115,7 +115,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* === Prev/Next Controls (z-index 4) === */}
+      {}
       <button
         onClick={prev}
         className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/30 hover:bg-black/55 text-white flex items-center justify-center backdrop-blur-sm transition-all active:scale-90"
@@ -133,7 +133,7 @@ export default function HeroSection() {
         <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
       </button>
 
-      {/* === Dot Indicators (z-index 4) === */}
+      {}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 4 }}>
         {slides.map((_, i) => (
           <button

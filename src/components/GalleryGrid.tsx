@@ -37,7 +37,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   const [isFading, setIsFading] = useState(false);
   const [isShuffling, setIsShuffling] = useState(false);
 
-  // Get a random photo different from the current one
+  
   const getRandomPhoto = useCallback((currentId?: string): GalleryItem | null => {
     if (!items || items.length === 0) return null;
     if (items.length === 1) return items[0];
@@ -46,7 +46,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
     return filtered[randomIndex];
   }, [items]);
 
-  // Client-side initialization to prevent Hydration Mismatch
+  
   useEffect(() => {
     if (items && items.length > 0) {
       const timer = setTimeout(() => {
@@ -56,7 +56,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
     }
   }, [items, getRandomPhoto]);
 
-  // Swap transition helper
+  
   const swapHighlight = useCallback(() => {
     if (!items || items.length === 0) return;
     setIsFading(true);
@@ -68,16 +68,16 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
       setTimeout(() => {
         setIsShuffling(false);
       }, 500);
-    }, 300); // 300ms matches out fade transition
+    }, 300); 
   }, [items, getRandomPhoto]);
 
-  // Auto-swap highlight photo every 5 seconds
+  
   useEffect(() => {
     if (!items || items.length === 0 || selectedCategory) return;
 
     const interval = setInterval(() => {
       swapHighlight();
-    }, 5000); // 5 seconds interval
+    }, 5000); 
 
     return () => clearInterval(interval);
   }, [items, selectedCategory, swapHighlight]);
@@ -86,7 +86,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
     setImageErrors(prev => ({ ...prev, [id]: true }));
   };
 
-  // Calculate count per category
+  
   const getCategoryCounts = () => {
     const counts: Record<string, number> = {};
     CATEGORIES.forEach(cat => {
@@ -97,23 +97,21 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
 
   const categoryCounts = getCategoryCounts();
 
-  // Filter categories to only those containing at least 1 photo
+  
   const populatedCategories = CATEGORIES.filter(cat => categoryCounts[cat] > 0);
 
-  // Filter items for current category view
+  
   const filteredItems = selectedCategory
     ? items.filter(item => item.category === selectedCategory)
     : items;
 
-  // Apply page-level limit if present (e.g. for Home Page preview)
+  
   const displayedItems = limit ? filteredItems.slice(0, limit) : filteredItems;
 
   return (
     <div className="flex flex-col gap-10">
       
-      {/* =========================================================
-          CASE A: PAGE LIMIT IS SET (E.G. HOME PAGE PREVIEW)
-          ========================================================= */}
+      {}
       {limit ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {displayedItems.slice(0, limit).map((item) => {

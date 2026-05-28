@@ -86,11 +86,15 @@ export default function Home() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/notices").then((res) => res.json()).catch(() => []),
-      fetch("/api/gallery").then((res) => res.json()).catch(() => [])
+      fetch("/api/notices").then((res) => res.json()).catch(() => null),
+      fetch("/api/gallery").then((res) => res.json()).catch(() => null)
     ]).then(([noticesData, galleryData]) => {
-      setNotices(Array.isArray(noticesData) ? noticesData : []);
-      setGalleryItems(Array.isArray(galleryData) ? galleryData : []);
+      if (noticesData) {
+        setNotices(Array.isArray(noticesData) ? noticesData : (noticesData.notices ?? []));
+      }
+      if (galleryData) {
+        setGalleryItems(Array.isArray(galleryData) ? galleryData : (galleryData.gallery ?? []));
+      }
       setLoading(false);
     });
   }, []);

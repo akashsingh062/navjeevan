@@ -1,21 +1,21 @@
 import mongoose, { Schema } from "mongoose";
 
-// Notice Schema
+
 const NoticeSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  date: { type: String, required: true }, // ISO String
+  date: { type: String, required: true }, 
   category: { 
     type: String, 
     enum: ["General", "Exam", "Holiday", "Admission", "Others"], 
     required: true 
   },
   isImportant: { type: Boolean, default: false },
-  importanceColor: { type: String, default: "blue" }, // red, amber, green, blue, purple
+  importanceColor: { type: String, default: "blue" }, 
   attachmentUrl: { type: String, default: "" }
 }, { timestamps: true });
 
-// Gallery Schema
+
 const GallerySchema = new Schema({
   imageUrl: { type: String, required: true },
   category: { 
@@ -32,10 +32,10 @@ const GallerySchema = new Schema({
     required: true 
   },
   title: { type: String, required: true },
-  uploadedAt: { type: String, required: true } // ISO String
+  uploadedAt: { type: String, required: true } 
 }, { timestamps: true });
 
-// Faculty Schema
+
 const FacultySchema = new Schema({
   name: { type: String, required: true },
   subject: { type: String, required: true },
@@ -45,7 +45,7 @@ const FacultySchema = new Schema({
   order: { type: Number, default: 0 }
 }, { timestamps: true });
 
-// Contact Inquiry Schema
+
 const ContactInquirySchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },

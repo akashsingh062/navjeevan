@@ -48,7 +48,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
-    // Fallback default state during pre-rendering/SSR
+    
     return {
       language: "en" as Language,
       setLanguage: () => {},

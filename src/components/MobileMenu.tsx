@@ -37,7 +37,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Reset about dropdown when menu closes
+  
   useEffect(() => {
     if (!isOpen) setAboutExpanded(false);
   }, [isOpen]);
@@ -46,7 +46,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.4 }}
@@ -56,7 +56,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             aria-hidden="true"
           />
 
-          {/* Drawer */}
+          {}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
@@ -68,7 +68,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             aria-modal="true"
             aria-label="Navigation Menu"
           >
-            {/* Header */}
+            {}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
               <div>
                 <span className="text-base font-black text-neutral-dark block leading-tight">Nav Jeevan</span>
@@ -83,9 +83,9 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
               </button>
             </div>
 
-            {/* Nav Links */}
+            {}
             <nav className="flex-1 py-3 px-3 overflow-y-auto" aria-label="Mobile Navigation">
-              {/* Mobile Menu Language Quick Selector pill */}
+              {}
               <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
                 <div className="flex items-center gap-2">
                   <Languages className="w-4 h-4 text-primary" />
@@ -105,7 +105,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 if (isAbout && aboutDropdown) {
                   return (
                     <div key={link.href}>
-                      {/* About expandable row */}
+                      {}
                       <button
                         onClick={() => setAboutExpanded((v) => !v)}
                         className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"

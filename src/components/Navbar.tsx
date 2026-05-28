@@ -99,7 +99,7 @@ export default function Navbar() {
   const aboutBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Consume language context
+  
   const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
@@ -109,7 +109,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close on outside click
+  
   useEffect(() => {
     if (!aboutOpen) return;
     const handleClick = (e: MouseEvent) => {
@@ -123,7 +123,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [aboutOpen]);
 
-  // Close on route change
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setAboutOpen(prev => prev ? false : prev);
@@ -131,7 +131,7 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  // Measure button position for fixed dropdown
+  
   useLayoutEffect(() => {
     if (aboutOpen && aboutBtnRef.current) {
       const rect = aboutBtnRef.current.getBoundingClientRect();
@@ -139,7 +139,7 @@ export default function Navbar() {
     }
   }, [aboutOpen]);
 
-  // Dynamic bilingual translations mapping
+  
   const translatedAboutDropdown = aboutDropdown.map((item) => {
     let label = item.label;
     let desc = item.desc;
@@ -192,7 +192,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* ===== TIER 1: Brand + Quick Links ===== */}
+      {}
       <div
         className={`bg-white border-b border-border transition-shadow ${isScrolled ? "shadow-sm" : ""}`}
       >

@@ -36,7 +36,7 @@ interface DBGalleryItem {
   uploadedAt: string;
 }
 
-// Helper to check if DB is connected
+
 async function isDbConnected(): Promise<boolean> {
   try {
     const conn = await connectToDatabase();
@@ -47,7 +47,7 @@ async function isDbConnected(): Promise<boolean> {
   }
 }
 
-// Populate database with default records if empty
+
 async function ensureDbSeeded() {
   try {
     const noticesCount = await NoticeModel.countDocuments();
@@ -140,11 +140,11 @@ export async function getGallery(): Promise<GalleryItem[]> {
 }
 
 export function getFacilities(): Facility[] {
-  // Facilities remain static to reduce server payload
+  
   return defaultFacilities;
 }
 
-// Data creation methods for Admin Dashboard
+
 export async function createNotice(notice: Omit<Notice, "id" | "_id">): Promise<Notice> {
   if (await isDbConnected()) {
     const doc = await NoticeModel.create(notice);
@@ -153,7 +153,7 @@ export async function createNotice(notice: Omit<Notice, "id" | "_id">): Promise<
       ...notice
     };
   }
-  // Local fallback mock append (simulated)
+  
   const newNotice = {
     id: `notice-local-${Date.now()}`,
     ...notice

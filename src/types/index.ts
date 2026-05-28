@@ -3,7 +3,7 @@ export interface Notice {
   id?: string;
   title: string;
   description: string;
-  date: string; // ISO String format
+  date: string; 
   category: 'General' | 'Exam' | 'Holiday' | 'Admission' | 'Others';
   isImportant?: boolean;
   importanceColor?: 'red' | 'amber' | 'green' | 'blue' | 'purple';
@@ -16,7 +16,7 @@ export interface Faculty {
   name: string;
   subject: string;
   qualification?: string;
-  experience?: string; // e.g. "8+ Years"
+  experience?: string; 
   imageUrl?: string;
   order?: number;
 }
@@ -27,7 +27,7 @@ export interface GalleryItem {
   imageUrl: string;
   category: 'Annual Function' | 'Sports Day' | 'Classroom Activities' | 'Cultural Events' | 'Independence Day' | 'Prize Distribution' | 'Others';
   title: string;
-  uploadedAt: string; // ISO String format
+  uploadedAt: string; 
 }
 
 
@@ -35,7 +35,7 @@ export interface Facility {
   id: string;
   title: string | { en: string; hi: string };
   description: string | { en: string; hi: string };
-  iconName: string; // Lucide icon identifier
+  iconName: string; 
 }
 
 export interface ContactInquiry {

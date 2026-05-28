@@ -3,7 +3,7 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import path from "path";
 
-// Configure Cloudinary SDK credentials
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -19,11 +19,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "No photograph file provided." }, { status: 400 });
     }
 
-    // Convert file object to a Node.js binary Buffer
+    
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Verify if Cloudinary is fully configured in the environment
+    
     const isCloudinaryConfigured = 
       process.env.CLOUDINARY_CLOUD_NAME && 
       process.env.CLOUDINARY_CLOUD_NAME !== "your_cloud_name" &&
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
 
-      // Extract and sanitize filename to prevent path traversal or invalid URL characters
+      
       const originalName = file.name || "upload";
       const ext = path.extname(originalName) || ".jpg";
       const baseName = path.basename(originalName, ext).replace(/[^a-zA-Z0-9_-]/g, "_");

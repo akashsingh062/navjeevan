@@ -21,7 +21,7 @@ export default function TeacherCard({ member }: TeacherCardProps) {
   return (
     <div className="bg-white rounded-2xl border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-row items-center gap-0 group">
       
-      {/* Avatar — square on left, full height */}
+      {}
       <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-neutral-light overflow-hidden self-stretch flex items-center justify-center">
         {member.imageUrl && !imageError ? (
           <Image

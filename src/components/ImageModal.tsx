@@ -22,7 +22,7 @@ export default function ImageModal({
   date,
   onClose
 }: ImageModalProps) {
-  // Prevent background scrolling when open
+  
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -34,7 +34,7 @@ export default function ImageModal({
     };
   }, [isOpen]);
 
-  // Handle escape key
+  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -64,7 +64,7 @@ export default function ImageModal({
       const link = document.createElement("a");
       link.href = blobUrl;
       
-      // Sanitize title for filename
+      
       const safeFilename = title.replace(/[^a-zA-Z0-9_-]/g, "_") || "school_photo";
       link.download = `${safeFilename}.jpg`;
       
