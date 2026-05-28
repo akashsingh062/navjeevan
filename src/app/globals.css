@@ -1,26 +1,42 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-accent: #16a34a;
+  --color-accent-hover: #15803d;
+  --color-brand-red: #dc2626;
+  --color-brand-yellow: #ca8a04;
+  --color-neutral-dark: #111827;
+  --color-neutral-light: #f3f4f6;
+  --color-neutral-body: #4b5563;
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #111827;
+  --primary: #2563eb;
+  --accent: #16a34a;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
+/* Touch target optimizations for mobile devices */
+button, a {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* High contrast visual focus outline for accessibility */
+*:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
