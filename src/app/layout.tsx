@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -53,23 +54,25 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} h-full`}>
       <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text">
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{
-            style: {
-              fontFamily: "Outfit, sans-serif",
-              fontSize: "14px",
-              fontWeight: "600",
-              borderRadius: "12px",
-            },
-          }}
-        />
-        <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
-        {/* Sticky bottom nav — mobile only */}
-        <BottomNav />
+        <LanguageProvider>
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              style: {
+                fontFamily: "Outfit, sans-serif",
+                fontSize: "14px",
+                fontWeight: "600",
+                borderRadius: "12px",
+              },
+            }}
+          />
+          <Navbar />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+          {/* Sticky bottom nav — mobile only */}
+          <BottomNav />
+        </LanguageProvider>
       </body>
     </html>
   );

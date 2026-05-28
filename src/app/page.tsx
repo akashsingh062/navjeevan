@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -20,83 +22,115 @@ import HeroSection from "@/components/HeroSection";
 import NoticeCard from "@/components/NoticeCard";
 import GalleryGrid from "@/components/GalleryGrid";
 import CTASection from "@/components/CTASection";
-import { getNotices, getGallery } from "@/lib/dataManager";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
+import { Notice, GalleryItem } from "@/types";
 
-export const dynamic = "force-dynamic";
-
-// Management members — Unsplash placeholder photos (replace with real photos later)
 const managementMembers = [
   {
-    name: "Shri Rajesh Kumar Mishra",
-    role: "Principal",
-    initial: "R",
+    name: {
+      en: "Shri Rajesh Kumar Mishra",
+      hi: "श्री राजेश कुमार मिश्रा"
+    },
+    role: {
+      en: "Principal",
+      hi: "प्रधानाचार्य"
+    },
     photo:
       "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face&auto=format",
   },
   {
-    name: "Smt. Sushila Devi",
-    role: "Vice Principal",
-    initial: "S",
+    name: {
+      en: "Smt. Sushila Devi",
+      hi: "श्रीमती सुशीला देवी"
+    },
+    role: {
+      en: "Vice Principal",
+      hi: "उप-प्रधानाचार्या"
+    },
     photo:
       "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=face&auto=format",
   },
   {
-    name: "Shri Anil Kumar Singh",
-    role: "Managing Director",
-    initial: "A",
+    name: {
+      en: "Shri Anil Kumar Singh",
+      hi: "श्री अनिल कुमार सिंह"
+    },
+    role: {
+      en: "Managing Director",
+      hi: "प्रबंध निदेशक"
+    },
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face&auto=format",
   },
   {
-    name: "Smt. Priya Mishra",
-    role: "Administrative Head",
-    initial: "P",
+    name: {
+      en: "Smt. Priya Mishra",
+      hi: "श्रीमती प्रिया मिश्रा"
+    },
+    role: {
+      en: "Administrative Head",
+      hi: "प्रशासनिक प्रमुख"
+    },
     photo:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face&auto=format",
   },
 ];
 
-export default async function Home() {
-  const [notices, galleryItems] = await Promise.all([
-    getNotices(),
-    getGallery(),
-  ]);
+export default function Home() {
+  const { language } = useLanguage();
+  const t = translations[language];
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/notices").then((res) => res.json()).catch(() => []),
+      fetch("/api/gallery").then((res) => res.json()).catch(() => [])
+    ]).then(([noticesData, galleryData]) => {
+      setNotices(Array.isArray(noticesData) ? noticesData : []);
+      setGalleryItems(Array.isArray(galleryData) ? galleryData : []);
+      setLoading(false);
+    });
+  }, []);
+
   const previewNotices = notices.slice(0, 4);
   const previewGallery = galleryItems.slice(0, 4);
 
   return (
     <div className="flex flex-col flex-1">
-      {/* ── 1. HERO SLIDER ── */}
       <HeroSection />
 
-      {/* ── 3. NOTICES + ADMIN LOGIN CARDS ── */}
       <section className="py-8 sm:py-10 bg-neutral-light border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            {/* === Notices Card === */}
-            <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-              {/* Card Header */}
+            
+            <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden text-left">
               <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 bg-primary text-white">
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
                   <h2 className="text-sm font-extrabold uppercase tracking-wide">
-                    Latest Notices
+                    {language === "en" ? "Latest Notices" : "नवीनतम सूचनाएँ"}
                   </h2>
                 </div>
                 <Link
                   href="/notices"
                   className="flex items-center gap-1 text-[11px] font-bold text-white/80 hover:text-white transition-colors"
                 >
-                  <span>View All</span>
+                  <span>{language === "en" ? "View All" : "सभी देखें"}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
 
-              {/* Notice list */}
               <div className="p-4 flex flex-col gap-3">
-                {previewNotices.length === 0 ? (
+                {loading ? (
                   <p className="text-xs text-neutral-body italic py-4 text-center">
-                    No notices posted yet.
+                    {language === "en" ? "Loading notices..." : "सूचनाएँ लोड हो रही हैं..."}
+                  </p>
+                ) : previewNotices.length === 0 ? (
+                  <p className="text-xs text-neutral-body italic py-4 text-center">
+                    {language === "en" ? "No notices posted yet." : "अभी तक कोई सूचना पोस्ट नहीं की गई है।"}
                   </p>
                 ) : (
                   previewNotices.map((notice) => (
@@ -106,14 +140,12 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* === Admin Login Card === */}
-            <div className="flex flex-col gap-4">
-              {/* Admin card */}
+            <div className="flex flex-col gap-4 text-left">
               <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
                 <div className="px-5 py-3.5 bg-neutral-dark text-white flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   <h2 className="text-sm font-extrabold uppercase tracking-wide">
-                    Staff Portal
+                    {t.nav.staffPortal}
                   </h2>
                 </div>
                 <div className="p-5 flex flex-col gap-4">
@@ -122,10 +154,12 @@ export default async function Home() {
                   </div>
                   <div className="text-center">
                     <p className="text-sm font-bold text-neutral-dark">
-                      School Administration
+                      {language === "en" ? "School Administration" : "विद्यालय प्रशासन"}
                     </p>
                     <p className="text-xs text-neutral-body mt-1">
-                      Manage notices, faculty, gallery and school records.
+                      {language === "en" 
+                        ? "Manage notices, faculty, gallery and school records." 
+                        : "सूचनाओं, शिक्षकों, गैलरी और विद्यालय के रिकॉर्ड का प्रबंधन करें।"}
                     </p>
                   </div>
                   <Link
@@ -133,60 +167,58 @@ export default async function Home() {
                     className="flex items-center justify-center gap-2 w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm transition-all"
                   >
                     <Lock className="w-4 h-4" />
-                    <span>Login to Admin Panel</span>
+                    <span>{language === "en" ? "Login to Admin Panel" : "एडमिन पैनल में लॉगिन करें"}</span>
                   </Link>
                   <a
                     href="tel:+917880952150"
                     className="flex items-center justify-center gap-2 w-full py-2.5 border border-border hover:bg-neutral-light text-neutral-dark rounded-xl font-semibold text-xs transition-all"
                   >
                     <Phone className="w-3.5 h-3.5 text-primary" />
-                    <span>Call: +91 7880952150</span>
+                    <span>{language === "en" ? "Call: +91 7880952150" : "कॉल करें: +91 7880952150"}</span>
                   </a>
                 </div>
               </div>
 
-              {/* Quick admissions card */}
               <div className="bg-accent rounded-2xl p-5 text-white flex flex-col gap-3">
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-5 h-5" />
                   <span className="text-sm font-extrabold uppercase tracking-wide">
-                    Admissions Open
+                    {language === "en" ? "Admissions Open" : "प्रवेश खुले हैं"}
                   </span>
                 </div>
                 <p className="text-xs text-white/85 leading-relaxed">
-                  Session 2026–27 enrollment open. Nursery to Class XII. Apply
-                  now!
+                  {language === "en"
+                    ? "Session 2026–27 enrollment open. Nursery to Class VIII. Apply now!"
+                    : "सत्र 2026-27 के लिए पंजीकरण खुला है। नर्सरी से कक्षा VIII। अभी आवेदन करें!"}
                 </p>
                 <Link
                   href="/admissions"
                   className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white text-accent rounded-xl font-bold text-xs transition-all hover:bg-neutral-light"
                 >
-                  <span>Apply for Admission</span>
+                  <span>{language === "en" ? "Apply for Admission" : "प्रवेश के लिए आवेदन करें"}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* ── 4. ABOUT SECTION ── */}
       <section
         className="py-10 sm:py-14 bg-white border-b border-border"
         id="about"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Section header */}
-          <div className="flex items-center gap-3 mb-8">
+          <div className="flex items-center gap-3 mb-8 text-left">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
-              About Nav Jeevan Public School
+              {language === "en" ? "About Nav Jeevan Public School" : "नव जीवन पब्लिक स्कूल के बारे में"}
             </h2>
             <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {/* === Image side === */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start text-left">
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-4/3">
                 <Image
@@ -196,90 +228,78 @@ export default async function Home() {
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
-                {/* Label overlay */}
                 <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-neutral-dark/80 to-transparent px-4 py-4">
                   <p className="text-white text-xs font-bold">
-                    Nav Jeevan Public School — Smart Classroom
+                    {language === "en" ? "Nav Jeevan Public School — Smart Classroom" : "नव जीवन पब्लिक स्कूल - स्मार्ट क्लासरूम"}
                   </p>
                   <p className="text-white/70 text-[10px]">
-                    Khabharabhar, Kaptanganj, Kushinagar
+                    {language === "en" ? "Khabharabhar, Kaptanganj, Kushinagar" : "खबरभार, कप्तानगंज, कुशीनगर"}
                   </p>
                 </div>
               </div>
 
-              {/* Floating stat badge */}
               <div className="absolute -top-3 -right-3 bg-primary text-white rounded-2xl px-4 py-3 shadow-lg text-center">
                 <span className="block text-2xl font-black leading-none">
                   15+
                 </span>
                 <span className="block text-[10px] font-bold uppercase tracking-wide mt-0.5">
-                  Years of
-                  <br />
-                  Excellence
+                  {language === "en" ? "Years of\nExcellence" : "उत्कृष्टता के\nवर्ष"}
                 </span>
               </div>
             </div>
 
-            {/* === Content side === */}
             <div className="flex flex-col gap-6">
-              {/* Intro paragraph */}
               <p className="text-sm sm:text-base text-neutral-body leading-relaxed">
-                Established in 2008 with a vision to revolutionize primary and
-                secondary education in rural Uttar Pradesh, Nav Jeevan Public
-                School is affiliated with CBSE curriculum standards. We combine
-                rigorous academics with digital computer exposure, cultural
-                celebrations, and physical drills to construct all-round
-                capabilities in our students.
+                {language === "en"
+                  ? "Established in 2008 with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with CBSE curriculum standards. We combine rigorous academics with digital computer exposure, cultural celebrations, and physical drills to construct all-round capabilities in our students."
+                  : "ग्रामीण उत्तर प्रदेश में प्राथमिक और माध्यमिक शिक्षा में क्रांति लाने के दृष्टिकोण से 2008 में स्थापित, नव जीवन पब्लिक स्कूल सीबीएसई पाठ्यक्रम मानकों से संबद्ध है। हम अपने छात्रों में सर्वांगीण क्षमताओं के निर्माण के लिए कठोर शिक्षा के साथ डिजिटल कंप्यूटर एक्सपोज़र, सांस्कृतिक उत्सवों और शारीरिक अभ्यासों का संयोजन करते हैं।"}
               </p>
 
-              {/* Vision / Mission / Strategy — three cards */}
               <div className="flex flex-col gap-3">
-                {/* Vision */}
                 <div className="flex gap-3.5 items-start p-4 bg-primary-light border border-primary/20 rounded-2xl">
                   <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
                     <Target className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark mb-1">
-                      Our Vision
+                      {language === "en" ? "Our Vision" : "हमारा दृष्टिकोण"}
                     </h3>
                     <p className="text-xs text-neutral-body leading-relaxed">
-                      Every child growing to be educated, committed and
-                      empowered global persons.
+                      {language === "en"
+                        ? "Every child growing to be educated, committed and empowered global persons."
+                        : "हर बच्चा शिक्षित, प्रतिबद्ध और सशक्त वैश्विक व्यक्ति बनने की ओर अग्रसर हो।"}
                     </p>
                   </div>
                 </div>
 
-                {/* Mission */}
                 <div className="flex gap-3.5 items-start p-4 bg-accent-light border border-accent/20 rounded-2xl">
                   <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shrink-0">
                     <Compass className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark mb-1">
-                      Our Mission
+                      {language === "en" ? "Our Mission" : "हमारा लक्ष्य"}
                     </h3>
                     <p className="text-xs text-neutral-body leading-relaxed">
-                      To accompany every child and facilitate integrated
-                      development, joyful learning and empowerment with
-                      character and competence.
+                      {language === "en"
+                        ? "To accompany every child and facilitate integrated development, joyful learning and empowerment with character and competence."
+                        : "प्रत्येक बच्चे का मार्गदर्शन करना और उनके चरित्र व क्षमता के साथ उनका एकीकृत विकास, आनंदमयी शिक्षा और सशक्तिकरण सुनिश्चित करना।"}
                     </p>
                   </div>
                 </div>
 
-                {/* Strategy */}
                 <div className="flex gap-3.5 items-start p-4 bg-amber-50 border border-amber-200 rounded-2xl">
                   <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
                     <Lightbulb className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark mb-1">
-                      Our Strategy
+                      {language === "en" ? "Our Strategy" : "हमारी कार्यनीति"}
                     </h3>
                     <p className="text-xs text-neutral-body leading-relaxed">
-                      A process of joyful learning coupled with constant
-                      accompaniment, whole person paradigm and child centered
-                      education.
+                      {language === "en"
+                        ? "A process of joyful learning coupled with constant accompaniment, whole person paradigm and child centered education."
+                        : "निरंतर मार्गदर्शन, समग्र व्यक्तित्व प्रतिमान और बाल केंद्रित शिक्षा के साथ आनंदमयी शिक्षा की प्रक्रिया।"}
                     </p>
                   </div>
                 </div>
@@ -289,7 +309,7 @@ export default async function Home() {
                 href="/about"
                 className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary-light hover:bg-primary/20 text-primary font-bold text-sm rounded-xl transition-all self-start"
               >
-                Read Our Full Story
+                <span>{language === "en" ? "Read Our Full Story" : "हमारी पूरी कहानी पढ़ें"}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -297,18 +317,17 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── 5. OUR MANAGEMENT ── */}
       <section className="py-10 sm:py-12 bg-neutral-light border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-7">
+          <div className="flex items-center gap-3 mb-7 text-left">
             <div className="h-1 w-10 bg-accent rounded-full" />
             <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
-              Our Management
+              {language === "en" ? "Our Management" : "हमारा प्रबंधन"}
             </h2>
             <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
             {managementMembers.map((member, i) => (
               <div
                 key={i}
@@ -317,7 +336,7 @@ export default async function Home() {
                 <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary/20 shrink-0 bg-neutral-light">
                   <Image
                     src={member.photo}
-                    alt={`Photo of ${member.name}`}
+                    alt={`Photo of ${member.name[language]}`}
                     fill
                     className="object-cover"
                     sizes="80px"
@@ -325,10 +344,10 @@ export default async function Home() {
                 </div>
                 <div>
                   <p className="text-xs sm:text-sm font-extrabold text-neutral-dark leading-tight">
-                    {member.name}
+                    {member.name[language]}
                   </p>
                   <p className="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-wide mt-1">
-                    {member.role}
+                    {member.role[language]}
                   </p>
                 </div>
               </div>
@@ -341,19 +360,18 @@ export default async function Home() {
               className="flex items-center gap-2 px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-sm transition-all"
             >
               <Users className="w-4 h-4" />
-              <span>Meet Our Faculty</span>
+              <span>{language === "en" ? "Meet Our Faculty" : "हमारे शिक्षकों से मिलें"}</span>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── 6. WHY CHOOSE US ── */}
-      <section className="py-10 bg-white border-b border-border">
+      <section className="py-10 bg-white border-b border-border text-left">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl font-black text-neutral-dark">
-              Why Choose Nav Jeevan?
+              {language === "en" ? "Why Choose Nav Jeevan?" : "नव जीवन को क्यों चुनें?"}
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -361,20 +379,26 @@ export default async function Home() {
               {
                 icon: Award,
                 color: "text-primary bg-primary-light",
-                title: "Affordable Quality",
-                desc: "CBSE-pattern learning with minimal fees for every child in Kushinagar.",
+                title: language === "en" ? "Affordable Quality" : "किफायती गुणवत्ता",
+                desc: language === "en" 
+                  ? "CBSE-pattern learning with minimal fees for every child in Kushinagar."
+                  : "कुशीनगर में प्रत्येक बच्चे के लिए न्यूनतम शुल्क के साथ सीबीएसई-पैटर्न शिक्षा.",
               },
               {
                 icon: HeartHandshake,
                 color: "text-accent bg-accent-light",
-                title: "Bilingual Learning",
-                desc: "Classes in both Hindi & English — no child is left behind due to language.",
+                title: language === "en" ? "Bilingual Learning" : "द्विभाषी शिक्षा",
+                desc: language === "en"
+                  ? "Classes in both Hindi & English — no child is left behind due to language."
+                  : "हिन्दी और अंग्रेजी दोनों में कक्षाएं - भाषा के कारण कोई भी बच्चा पीछे न रहे.",
               },
               {
                 icon: ShieldCheck,
                 color: "text-amber-600 bg-amber-50",
-                title: "Smart & Modern",
-                desc: "Smart classrooms, computer lab, and dedicated IT literacy from early grades.",
+                title: language === "en" ? "Smart & Modern" : "स्मार्ट और आधुनिक",
+                desc: language === "en"
+                  ? "Smart classrooms, computer lab, and dedicated IT literacy from early grades."
+                  : "स्मार्ट कक्षाएं, कंप्यूटर लैब और शुरुआती कक्षाओं से समर्पित आईटी साक्षरता.",
               },
             ].map((p, i) => {
               const Icon = p.icon;
@@ -403,41 +427,41 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Facilities section removed — shown on /facilities page */}
-
-      {/* ── 8. GALLERY SNIPPET ── */}
-      {previewGallery.length > 0 && (
-        <section className="py-10 bg-white border-b border-border">
+      {loading ? (
+        <div className="py-10 text-center text-xs text-neutral-body italic">
+          {language === "en" ? "Loading campus life gallery..." : "गैलरी लोड हो रही है..."}
+        </div>
+      ) : previewGallery.length > 0 ? (
+        <section className="py-10 bg-white border-b border-border text-left">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
                 <div className="h-1 w-10 bg-accent rounded-full" />
                 <h2 className="text-xl font-black text-neutral-dark">
-                  Life at Nav Jeevan
+                  {language === "en" ? "Life at Nav Jeevan" : "नव जीवन में जीवन के रंग"}
                 </h2>
               </div>
               <Link
                 href="/gallery"
                 className="flex items-center gap-1 text-xs font-bold text-primary hover:underline shrink-0"
               >
-                View All <ChevronRight className="w-3.5 h-3.5" />
+                <span>{language === "en" ? "View All" : "सभी देखें"}</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
             <GalleryGrid items={previewGallery} limit={4} />
           </div>
         </section>
-      )}
+      ) : null}
 
-      {/* ── 9. CTA BANNER ── */}
       <CTASection />
 
-      {/* ── 10. CONTACT QUICK STRIP ── */}
-      <section className="py-10 bg-white">
+      <section className="py-10 bg-white text-left">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-5">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl font-black text-neutral-dark">
-              Get in Touch
+              {language === "en" ? "Get in Touch" : "संपर्क में रहें"}
             </h2>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
@@ -450,7 +474,7 @@ export default async function Home() {
               </div>
               <div>
                 <span className="block text-[10px] font-bold text-neutral-body uppercase tracking-wider">
-                  Call Office
+                  {language === "en" ? "Call Office" : "कार्यालय में कॉल करें"}
                 </span>
                 <span className="block text-sm font-black text-neutral-dark">
                   +91 7880952150
@@ -466,10 +490,10 @@ export default async function Home() {
               </div>
               <div>
                 <span className="block text-[10px] font-bold text-neutral-body uppercase tracking-wider">
-                  Online
+                  {language === "en" ? "Online" : "ऑनलाइन"}
                 </span>
                 <span className="block text-sm font-black text-primary">
-                  Send an Inquiry
+                  {language === "en" ? "Send an Inquiry" : "पूछताछ भेजें"}
                 </span>
               </div>
             </Link>

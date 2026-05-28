@@ -33,8 +33,8 @@ export interface GalleryItem {
 
 export interface Facility {
   id: string;
-  title: string;
-  description: string;
+  title: string | { en: string; hi: string };
+  description: string | { en: string; hi: string };
   iconName: string; // Lucide icon identifier
 }
 

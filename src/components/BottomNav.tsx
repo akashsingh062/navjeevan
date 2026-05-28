@@ -4,17 +4,21 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Bell, Image, Users, Phone } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const bottomNavItems = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/notices", label: "Notices", icon: Bell },
-  { href: "/gallery", label: "Gallery", icon: Image },
-  { href: "/faculty", label: "Faculty", icon: Users },
-  { href: "/contact", label: "Contact", icon: Phone },
+  { href: "/", labelKey: "home", icon: Home },
+  { href: "/notices", labelKey: "notices", icon: Bell },
+  { href: "/gallery", labelKey: "gallery", icon: Image },
+  { href: "/faculty", labelKey: "faculty", icon: Users },
+  { href: "/contact", labelKey: "contact", icon: Phone },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { language } = useLanguage();
+  const t = translations[language];
 
   // Hide bottom nav on admin page
   if (pathname.startsWith("/admin")) return null;
@@ -26,8 +30,17 @@ export default function BottomNav() {
       aria-label="Mobile Bottom Navigation"
     >
       <div className="flex items-stretch justify-around h-16">
-        {bottomNavItems.map(({ href, label, icon: Icon }) => {
+        {bottomNavItems.map(({ href, labelKey, icon: Icon }) => {
           const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          
+          // Get translated label
+          let label = "";
+          if (labelKey === "home") label = t.nav.home;
+          else if (labelKey === "notices") label = t.nav.notices;
+          else if (labelKey === "gallery") label = t.nav.gallery;
+          else if (labelKey === "faculty") label = t.nav.faculty;
+          else if (labelKey === "contact") label = t.nav.contact;
+
           return (
             <Link
               key={href}

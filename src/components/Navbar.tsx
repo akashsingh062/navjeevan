@@ -19,9 +19,12 @@ import {
   MessageCircle,
   MapPin,
   ChevronRight,
+  Languages
 } from "lucide-react";
 import MobileMenu from "./MobileMenu";
 import { navLinks } from "@/lib/navigation";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 const aboutDropdown = [
   {
@@ -96,6 +99,10 @@ export default function Navbar() {
   const aboutBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Consume language context
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 4);
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -132,6 +139,57 @@ export default function Navbar() {
     }
   }, [aboutOpen]);
 
+  // Dynamic bilingual translations mapping
+  const translatedAboutDropdown = aboutDropdown.map((item) => {
+    let label = item.label;
+    let desc = item.desc;
+    if (item.label === "History") {
+      label = language === "en" ? "History" : "इतिहास";
+      desc = language === "en" ? "Our journey since 2008" : "2008 से हमारा सफर";
+    } else if (item.label === "Vision & Mission") {
+      label = language === "en" ? "Vision & Mission" : "दृष्टिकोण और लक्ष्य";
+      desc = language === "en" ? "What we stand for" : "हमारे आदर्श और मूल्य";
+    } else if (item.label === "Manager's Message") {
+      label = language === "en" ? "Manager's Message" : "प्रबंधक का संदेश";
+      desc = language === "en" ? "From the Management Desk" : "प्रबंधन डेस्क से संदेश";
+    } else if (item.label === "Principal's Message") {
+      label = language === "en" ? "Principal's Message" : "प्रधानाचार्य का संदेश";
+      desc = language === "en" ? "From the Principal" : "प्रधानाचार्य की कलम से";
+    } else if (item.label === "Find Us") {
+      label = language === "en" ? "Find Us" : "मार्गदर्शन प्राप्त करें";
+      desc = language === "en" ? "Location & directions" : "विद्यालय का नक्शा और मार्ग";
+    }
+    return { ...item, label, desc };
+  });
+
+  const translatedQuickLinks = quickLinks.map((item) => {
+    let label = item.label;
+    if (item.label === "Admissions") {
+      label = t.nav.admissions;
+    } else if (item.label === "Gallery") {
+      label = t.nav.gallery;
+    } else if (item.label === "Notices") {
+      label = t.nav.notices;
+    } else if (item.label === "Faculty") {
+      label = t.nav.faculty;
+    }
+    return { ...item, label };
+  });
+
+  const translatedNavLinks = navLinks.map((link) => {
+    let label = link.label;
+    if (link.label === "Home") label = t.nav.home;
+    else if (link.label === "About") label = t.nav.about;
+    else if (link.label === "Academics") label = t.nav.academics;
+    else if (link.label === "Admissions") label = t.nav.admissions;
+    else if (link.label === "Faculty") label = t.nav.faculty;
+    else if (link.label === "Facilities") label = t.nav.facilities;
+    else if (link.label === "Gallery") label = t.nav.gallery;
+    else if (link.label === "Notices") label = t.nav.notices;
+    else if (link.label === "Contact") label = t.nav.contact;
+    return { ...link, label };
+  });
+
   return (
     <>
       {/* ===== TIER 1: Brand + Quick Links ===== */}
@@ -161,7 +219,22 @@ export default function Navbar() {
 
             {/* Quick Action Cards — desktop */}
             <div className="hidden md:flex items-center gap-2 shrink-0">
-              {quickLinks.map(
+              {/* Premium Language switch toggle */}
+              <button
+                onClick={toggleLanguage}
+                className="relative flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all cursor-pointer select-none group min-w-[90px] text-left focus:outline-none shadow-3xs"
+                aria-label="Toggle language mode / भाषा बदलें"
+              >
+                <Languages className="w-5 h-5 text-primary group-hover:scale-105 transition-transform" />
+                <div className="flex flex-col items-start leading-none gap-0.5">
+                  <span className="text-[9px] uppercase font-black text-neutral-body/60 tracking-wider">भाषा / Lang</span>
+                  <span className="text-[10px] font-black text-neutral-dark group-hover:text-primary transition-colors">
+                    {language === "en" ? "हिन्दी" : "English"}
+                  </span>
+                </div>
+              </button>
+
+              {translatedQuickLinks.map(
                 ({ label, href, icon: Icon, badge, badgeColor }) => (
                   <Link
                     key={href}
@@ -182,17 +255,28 @@ export default function Navbar() {
                   </Link>
                 ),
               )}
+              
               <Link
                 href="/admin"
                 className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-hover transition-all min-w-[72px] text-center group"
               >
                 <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-bold">Admin</span>
+                <span className="text-[10px] font-bold">{language === "en" ? "Admin" : "प्रशासक"}</span>
               </Link>
             </div>
 
-            {/* Mobile */}
+            {/* Mobile Actions */}
             <div className="flex md:hidden items-center gap-1.5 shrink-0">
+              {/* Dynamic lang toggle directly on header for smartphone visitors */}
+              <button
+                onClick={toggleLanguage}
+                className="p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center font-black text-xs select-none gap-1 focus:outline-none shadow-3xs"
+                aria-label="Switch Language / भाषा बदलें"
+              >
+                <Languages className="w-4 h-4 shrink-0" />
+                <span className="text-[11px] font-black">{language === "en" ? "हिन्दी" : "EN"}</span>
+              </button>
+
               <a
                 href="tel:+917880952150"
                 className="p-2.5 bg-primary-light text-primary rounded-xl"
@@ -200,6 +284,7 @@ export default function Navbar() {
               >
                 <Phone className="w-5 h-5" />
               </a>
+              
               <button
                 onClick={() => setIsOpen(true)}
                 className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
@@ -214,7 +299,7 @@ export default function Navbar() {
 
       {/* ===== TIER 2: Navigation Bar — desktop only ===== */}
       <nav
-        className={`hidden md:flex sticky top-0 z-40 bg-primary transition-shadow ${isScrolled ? "shadow-md" : ""}`}
+        className={`hidden md:flex sticky top-0 z-40 bg-primary transition-shadow ${isScrolled ? "shadow-sm" : ""}`}
         aria-label="Main Navigation"
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
@@ -228,11 +313,11 @@ export default function Navbar() {
               <Home className="w-4 h-4" />
             </Link>
 
-            {/* All nav links */}
-            {navLinks.map((link) => {
+            {/* All translated nav links */}
+            {translatedNavLinks.map((link) => {
               const isActive =
                 pathname === link.href || pathname.startsWith(link.href + "/");
-              const isAbout = link.label === "About";
+              const isAbout = link.href === "/about";
 
               if (isAbout) {
                 return (
@@ -248,7 +333,7 @@ export default function Navbar() {
                     aria-expanded={aboutOpen}
                     aria-haspopup="true"
                   >
-                    About
+                    {link.label}
                     <ChevronDown
                       className={`w-3 h-3 transition-transform duration-200 ${aboutOpen ? "rotate-180" : ""}`}
                     />
@@ -295,7 +380,7 @@ export default function Navbar() {
             zIndex: 99999,
           }}
         >
-          {aboutDropdown.map((item) => {
+          {translatedAboutDropdown.map((item) => {
             const ItemIcon = item.icon;
             return (
               <Link
@@ -325,8 +410,8 @@ export default function Navbar() {
       <MobileMenu
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        navLinks={navLinks}
-        aboutDropdown={aboutDropdown}
+        navLinks={translatedNavLinks}
+        aboutDropdown={translatedAboutDropdown}
       />
     </>
   );

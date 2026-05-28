@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, Phone, MessageSquare, Lock, ChevronRight, ChevronDown } from "lucide-react";
+import { X, Phone, MessageSquare, Lock, ChevronRight, ChevronDown, Languages } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface DropdownItem {
   label: string;
@@ -21,6 +23,8 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }: MobileMenuProps) {
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "unset";
@@ -81,8 +85,22 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
 
             {/* Nav Links */}
             <nav className="flex-1 py-3 px-3 overflow-y-auto" aria-label="Mobile Navigation">
+              {/* Mobile Menu Language Quick Selector pill */}
+              <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
+                <div className="flex items-center gap-2">
+                  <Languages className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-bold text-neutral-dark">{language === "en" ? "भाषा बदलें (हिन्दी)" : "Switch to English"}</span>
+                </div>
+                <button
+                  onClick={toggleLanguage}
+                  className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white text-[10px] font-black rounded-lg cursor-pointer transition-colors focus:outline-none"
+                >
+                  {language === "en" ? "हिन्दी" : "English"}
+                </button>
+              </div>
+
               {navLinks.map((link) => {
-                const isAbout = link.label === "About";
+                const isAbout = link.href === "/about";
 
                 if (isAbout && aboutDropdown) {
                   return (
@@ -93,7 +111,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                         className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
                         aria-expanded={aboutExpanded}
                       >
-                        <span>About</span>
+                        <span>{link.label}</span>
                         <ChevronDown className={`w-4 h-4 text-neutral-body/50 transition-transform duration-200 ${aboutExpanded ? "rotate-180" : ""}`} />
                       </button>
 
@@ -119,7 +137,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                                   >
                                     <ItemIcon className="w-3.5 h-3.5 text-primary shrink-0" />
                                     <span>{item.label}</span>
-                                    <ChevronRight className="w-3 h-3 text-neutral-body/30 ml-auto group-hover:text-primary transition-colors" />
+                                    <ChevronRight className="w-3.5 h-3.5 text-neutral-body/30 ml-auto group-hover:text-primary transition-colors" />
                                   </Link>
                                 );
                               })}
@@ -152,7 +170,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary text-white rounded-2xl font-bold text-sm transition-all"
               >
                 <Phone className="w-4 h-4" />
-                <span>Call School: 7880952150</span>
+                <span>{language === "en" ? "Call School: 7880952150" : "फ़ोन कॉल: 7880952150"}</span>
               </a>
               <a
                 href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
@@ -161,7 +179,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-white rounded-2xl font-bold text-sm"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>WhatsApp Inquiry</span>
+                <span>{language === "en" ? "WhatsApp Inquiry" : "व्हाट्सएप प्रवेश डेस्क"}</span>
               </a>
               <Link
                 href="/admin"
@@ -169,7 +187,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 className="flex items-center justify-center gap-2 w-full py-3 border border-border text-neutral-body hover:bg-neutral-light rounded-2xl font-semibold text-xs transition-all"
               >
                 <Lock className="w-3.5 h-3.5" />
-                <span>Staff Portal Login</span>
+                <span>{t.nav.staffPortal}</span>
               </Link>
             </div>
           </motion.div>
