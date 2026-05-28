@@ -7,12 +7,15 @@ interface MongooseCache {
   promise: Promise<typeof mongoose> | null;
 }
 
-// Global caching for mongoose to prevent multiple connections during hot-reloads
-let cached = (global as any).mongoose as MongooseCache;
-
-if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+declare global {
+  var mongoose: MongooseCache | undefined;
 }
+
+// Global caching for mongoose to prevent multiple connections during hot-reloads
+if (!global.mongoose) {
+  global.mongoose = { conn: null, promise: null };
+}
+const cached: MongooseCache = global.mongoose;
 
 export async function connectToDatabase() {
   if (!MONGODB_URI) {

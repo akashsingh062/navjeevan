@@ -1,82 +1,87 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { ChevronRight, MapPin, Phone, Clock, Navigation } from "lucide-react";
-
-export const metadata = {
-  title: "Find Us | Nav Jeevan Public School",
-  description:
-    "Location and directions to Nav Jeevan Public School, Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh.",
-};
+import { useLanguage } from "@/context/LanguageContext";
+import { findUsDetails } from "@/lib/data/about";
 
 export default function FindUsPage() {
+  const { language } = useLanguage();
+
+  useEffect(() => {
+    document.title = language === "en" 
+      ? "Find Us | Nav Jeevan Public School"
+      : "हमारा स्थान | नव जीवन पब्लिक स्कूल";
+  }, [language]);
+
   return (
-    <div className="flex-1 bg-white">
-      {/* Breadcrumb */}
-      <div className="bg-neutral-light border-b border-border">
+    <div className="flex-1 bg-white animate-fade-in-up">
+      <div className="bg-neutral-light border-b border-border text-left">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs text-neutral-body">
           <Link href="/" className="hover:text-primary transition-colors">
-            Home
+            {language === "en" ? "Home" : "होम"}
           </Link>
           <ChevronRight className="w-3 h-3" />
           <Link href="/about" className="hover:text-primary transition-colors">
-            About
+            {language === "en" ? "About" : "हमारे बारे में"}
           </Link>
           <ChevronRight className="w-3 h-3" />
-          <span className="text-neutral-dark font-semibold">Find Us</span>
+          <span className="text-neutral-dark font-semibold">
+            {findUsDetails.title[language]}
+          </span>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-left">
         <div className="flex items-center gap-3 mb-2">
           <div className="h-1 w-10 bg-primary rounded-full" />
           <span className="text-xs font-black text-primary uppercase tracking-widest">
-            Location
+            {findUsDetails.tag[language]}
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-neutral-dark mb-8">
-          Find Us
+          {findUsDetails.title[language]}
         </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-          {/* Address */}
           <div className="bg-neutral-light rounded-2xl border border-border p-5">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-primary-light rounded-xl flex items-center justify-center">
                 <MapPin className="w-4 h-4 text-primary" />
               </div>
               <h2 className="text-sm font-extrabold text-neutral-dark">
-                Our Address
+                {findUsDetails.addressTitle[language]}
               </h2>
             </div>
             <address className="not-italic text-sm text-neutral-body leading-relaxed">
               <strong className="text-neutral-dark">
-                Nav Jeevan Public School
+                {findUsDetails.addressText.name[language]}
               </strong>
               <br />
-              Khabharabhar, Kaptanganj
+              {findUsDetails.addressText.line1[language]}
               <br />
-              Kushinagar, Uttar Pradesh
+              {findUsDetails.addressText.line2[language]}
               <br />
-              PIN – 274301
+              {findUsDetails.addressText.pin[language]}
               <br />
-              India
+              {findUsDetails.addressText.country[language]}
             </address>
           </div>
 
-          {/* Contact */}
           <div className="bg-neutral-light rounded-2xl border border-border p-5">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-primary-light rounded-xl flex items-center justify-center">
                 <Phone className="w-4 h-4 text-primary" />
               </div>
               <h2 className="text-sm font-extrabold text-neutral-dark">
-                Contact
+                {findUsDetails.contactTitle[language]}
               </h2>
             </div>
             <div className="flex flex-col gap-2 text-sm text-neutral-body">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-body/70">
-                  Phone
+                  {findUsDetails.phoneLabel[language]}
                 </span>
                 <a
                   href="tel:+917880952150"
@@ -87,23 +92,21 @@ export default function FindUsPage() {
               </div>
               <div className="mt-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-body/70">
-                  Office Hours
+                  {findUsDetails.hoursLabel[language]}
                 </span>
                 <p className="font-semibold text-neutral-dark flex items-center gap-1.5 mt-0.5">
-                  <Clock className="w-3.5 h-3.5 text-primary" /> Mon – Sat, 8:00
-                  AM – 4:00 PM
+                  <Clock className="w-3.5 h-3.5 text-primary" /> {findUsDetails.hoursValue[language]}
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Map embed */}
         <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
           <div className="bg-neutral-dark text-white px-4 py-3 flex items-center gap-2">
             <Navigation className="w-4 h-4" />
             <span className="text-sm font-bold">
-              Map — Kaptanganj, Kushinagar
+              {findUsDetails.mapHeader[language]}
             </span>
           </div>
           <iframe
@@ -114,7 +117,7 @@ export default function FindUsPage() {
             allowFullScreen
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
-            title="Nav Jeevan Public School Location — Kaptanganj, Kushinagar"
+            title={findUsDetails.mapTitle[language]}
           />
         </div>
 
@@ -126,13 +129,13 @@ export default function FindUsPage() {
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary-hover transition-all"
           >
             <Navigation className="w-4 h-4" />
-            Open in Google Maps
+            {findUsDetails.openMapButton[language]}
           </a>
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 px-4 py-2.5 border border-border text-neutral-dark rounded-xl font-bold text-sm hover:bg-neutral-light transition-all"
           >
-            Contact Us
+            {findUsDetails.contactUsButton[language]}
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>

@@ -217,3 +217,160 @@ export const principalNote = {
     hi: "एम.एससी., बी.एड., एम.एड. | 22+ वर्ष का शैक्षिक सेवा अनुभव"
   }
 };
+
+export const visionMissionDetails = {
+  title: {
+    en: "Vision & Mission",
+    hi: "विजन और मिशन"
+  },
+  subtitle: {
+    en: "The core principles that guide everything we do at Nav Jeevan.",
+    hi: "मूल सिद्धांत जो नव जीवन में हमारे हर काम का मार्गदर्शन करते हैं।"
+  },
+  vision: {
+    title: {
+      en: "Our Vision",
+      hi: "हमारी दृष्टि"
+    },
+    quote: {
+      en: "\"Every child growing to be educated, committed and empowered global persons.\"",
+      hi: "\"प्रत्येक बच्चा शिक्षित, प्रतिबद्ध और सशक्त वैश्विक नागरिक बनने की दिशा में आगे बढ़े।\""
+    },
+    desc: {
+      en: "We envision a future where no child in rural Uttar Pradesh is deprived of quality education. Every student who walks through our gates leaves with the knowledge, confidence, and character to be a responsible global citizen while remaining rooted in their cultural heritage.",
+      hi: "हम एक ऐसे भविष्य की कल्पना करते हैं जहाँ ग्रामीण उत्तर प्रदेश में कोई भी बच्चा गुणवत्तापूर्ण शिक्षा से वंचित न रहे। हमारे विद्यालय में प्रवेश करने वाला प्रत्येक छात्र ज्ञान, आत्मविश्वास और चरित्र के साथ एक जिम्मेदार वैश्विक नागरिक बनकर निकले, जबकि वह अपनी सांस्कृतिक विरासत से जुड़ा रहे।"
+    }
+  },
+  mission: {
+    title: {
+      en: "Our Mission",
+      hi: "हमारा उद्देश्य"
+    },
+    quote: {
+      en: "\"To accompany every child and facilitate integrated development, joyful learning and empowerment with character and competence.\"",
+      hi: "\"प्रत्येक बच्चे के साथ चलना और चरित्र तथा क्षमता के साथ एकीकृत विकास, आनंदमयी शिक्षा और सशक्तिकरण को सुगम बनाना।\""
+    },
+    desc: {
+      en: "Our mission goes beyond academics. We walk alongside each child as a guide and mentor — nurturing intellectual curiosity, emotional resilience, physical wellness, and moral character so they grow as complete, capable human beings.",
+      hi: "हमारा उद्देश्य केवल शिक्षा तक सीमित नहीं है। हम प्रत्येक बच्चे के साथ एक मार्गदर्शक और सलाहकार के रूप में चलते हैं - बौद्धिक जिज्ञासा, भावनात्मक लचीलापन, शारीरिक कल्याण और नैतिक चरित्र का पोषण करते हैं ताकि वे एक संपूर्ण, सक्षम इंसान के रूप में विकसित हो सकें।"
+    }
+  },
+  strategy: {
+    title: {
+      en: "Our Strategy",
+      hi: "हमारी कार्यनीति"
+    },
+    quote: {
+      en: "\"A process of joyful learning coupled with constant accompaniment, whole person paradigm and child centered education.\"",
+      hi: "\"निरंतर सहयोग, समग्र व्यक्तित्व विकास और बाल-केंद्रित शिक्षा के साथ आनंदमयी सीखने की एक प्रक्रिया।\""
+    },
+    desc: {
+      en: "We implement a child-centered pedagogy that treats every student as a unique individual. Through interactive classrooms, bilingual instruction (Hindi & English), computer literacy, cultural activities, and regular sports, we make learning joyful and holistic — never just rote memorization.",
+      hi: "हम एक बाल-केंद्रित शिक्षाशास्त्र लागू करते हैं जो प्रत्येक छात्र को एक अद्वितीय व्यक्ति के रूप में देखता है। इंटरैक्टिव कक्षाओं, द्विभाषी निर्देश (हिन्दी और अंग्रेजी), कंप्यूटर साक्षरता, सांस्कृतिक गतिविधियों और नियमित खेलकूद के माध्यम से, हम सीखने को आनंदमय और समग्र बनाते हैं - कभी भी केवल रटना नहीं।"
+    }
+  }
+};
+
+export const managerNote = {
+  tag: {
+    en: "Management Desk",
+    hi: "प्रबंधन संदेश"
+  },
+  title: {
+    en: "Message from the Managing Director",
+    hi: "प्रबंध निदेशक का संदेश"
+  },
+  salutation: {
+    en: "Dear Students, Parents, and Well-Wishers,",
+    hi: "प्रिय छात्रों, अभिभावकों और शुभचिंतकों,"
+  },
+  p1: {
+    en: "It is with immense pride and deep humility that I welcome you to Nav Jeevan Public School. When we founded this institution in 2008, our singular goal was simple yet profound — to ensure that no child in Khabharabhar and the surrounding villages of Kaptanganj would have to travel far for quality education.",
+    hi: "मुझे नव जीवन पब्लिक स्कूल में स्वागत करते हुए अत्यधिक गर्व और गहरी विनम्रता की अनुभूति हो रही है। जब हमने 2008 में इस संस्थान की स्थापना की थी, तो हमारा एकमात्र उद्देश्य सरल लेकिन गहरा था - यह सुनिश्चित करना कि खबरभार और कप्तानगंज के आसपास के गाँवों के किसी भी बच्चे को गुणवत्तापूर्ण शिक्षा के लिए दूर न जाना पड़े।"
+  },
+  p2: {
+    en: "Education is not merely the transfer of knowledge. It is the awakening of a young mind to its own potential. At Nav Jeevan, we strive every day to create an environment where children feel safe, celebrated, and inspired to grow — academically, morally, and socially.",
+    hi: "शिक्षा केवल ज्ञान का हस्तांतरण नहीं है। यह एक युवा दिमाग को उसकी अपनी क्षमता के प्रति जागृत करना है। नव जीवन में, हम हर दिन एक ऐसा वातावरण बनाने का प्रयास करते हैं जहाँ बच्चे सुरक्षित, सम्मानित महसूस करें और शैक्षणिक, नैतिक और सामाजिक रूप से आगे बढ़ने के लिए प्रेरित हों।"
+  },
+  p3: {
+    en: "I am deeply grateful to our dedicated faculty, our supportive parent community, and each student who has placed their trust in this institution. Together, we are building a stronger, more educated Kushinagar.",
+    hi: "मैं हमारे समर्पित शिक्षकों, हमारे सहायक अभिभावक समुदाय और प्रत्येक छात्र का हृदय से आभारी हूँ जिन्होंने इस संस्थान में अपना विश्वास जताया है। साथ मिलकर, हम एक मजबूत और अधिक शिक्षित कुशीनगर का निर्माण कर रहे हैं।"
+  },
+  name: {
+    en: "Shri Anil Kumar Singh",
+    hi: "श्री अनिल कुमार सिंह"
+  },
+  role: {
+    en: "Managing Director, Nav Jeevan Public School",
+    hi: "प्रबंध निदेशक, नव जीवन पब्लिक स्कूल"
+  }
+};
+
+export const findUsDetails = {
+  title: {
+    en: "Find Us",
+    hi: "हमें ढूंढें"
+  },
+  tag: {
+    en: "Location",
+    hi: "स्थान"
+  },
+  addressTitle: {
+    en: "Our Address",
+    hi: "हमारा पता"
+  },
+  addressText: {
+    name: {
+      en: "Nav Jeevan Public School",
+      hi: "नव जीवन पब्लिक स्कूल"
+    },
+    line1: {
+      en: "Khabharabhar, Kaptanganj",
+      hi: "खबरभार, कप्तानगंज"
+    },
+    line2: {
+      en: "Kushinagar, Uttar Pradesh",
+      hi: "कुशीनगर, उत्तर प्रदेश"
+    },
+    pin: {
+      en: "PIN – 274301",
+      hi: "पिन – 274301"
+    },
+    country: {
+      en: "India",
+      hi: "भारत"
+    }
+  },
+  contactTitle: {
+    en: "Contact",
+    hi: "संपर्क"
+  },
+  phoneLabel: {
+    en: "Phone",
+    hi: "दूरभाष"
+  },
+  hoursLabel: {
+    en: "Office Hours",
+    hi: "कार्यालय समय"
+  },
+  hoursValue: {
+    en: "Mon – Sat, 8:00 AM – 4:00 PM",
+    hi: "सोम - शनि, सुबह 8:00 - शाम 4:00"
+  },
+  mapHeader: {
+    en: "Map — Kaptanganj, Kushinagar",
+    hi: "मानचित्र — कप्तानगंज, कुशीनगर"
+  },
+  mapTitle: {
+    en: "Nav Jeevan Public School Location — Kaptanganj, Kushinagar",
+    hi: "नव जीवन पब्लिक स्कूल का स्थान — कप्तानगंज, कुशीनगर"
+  },
+  openMapButton: {
+    en: "Open in Google Maps",
+    hi: "गूगल मैप्स में खोलें"
+  },
+  contactUsButton: {
+    en: "Contact Us",
+    hi: "संपर्क करें"
+  }
+};

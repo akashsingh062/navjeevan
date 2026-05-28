@@ -1,37 +1,63 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import NoticesClient from "@/components/NoticesClient";
-import { getNotices } from "@/lib/dataManager";
+import { Notice } from "@/types";
+import { useLanguage } from "@/context/LanguageContext";
 
-export const metadata = {
-  title: "Notice Board | Nav Jeevan Public School Kushinagar",
-  description:
-    "Official Nav Jeevan Public School notice board. Access exam datesheets, holiday announcements, CBSE circulars, and admission updates in Kaptanganj.",
-};
+export default function NoticesPage() {
+  const { language } = useLanguage();
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export const dynamic = "force-dynamic";
+  useEffect(() => {
+    document.title = language === "en"
+      ? "Notice Board | Nav Jeevan Public School"
+      : "सूचना पट्ट | नव जीवन पब्लिक स्कूल";
+  }, [language]);
 
-export default async function NoticesPage() {
-  const notices = await getNotices();
+  useEffect(() => {
+    fetch("/api/notices")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.notices)) {
+          setNotices(data.notices);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load notices:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <div className="py-12 bg-white flex-1">
+    <div className="py-12 bg-white flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Page Header */}
         <div className="mb-14 text-left">
           <span className="text-[10px] uppercase font-black text-accent bg-accent/15 px-3 py-1 rounded-full tracking-wider inline-block mb-3">
-            School Bulletins
+            {language === "en" ? "School Bulletins" : "स्कूल बुलेटिन"}
           </span>
           <SectionHeading
-            title="Official School Notice Board"
-            subtitle="Stay updated with CBSE announcements, exam calendars, summer/winter holiday notices, and parents directives."
+            title={language === "en" ? "Official School Notice Board" : "आधिकारिक स्कूल सूचना पट्ट"}
+            subtitle={language === "en"
+              ? "Stay updated with CBSE announcements, exam calendars, summer/winter holiday notices, and parents directives."
+              : "CBSE घोषणाओं, परीक्षा कैलेंडर, ग्रीष्मकालीन/शीतकालीन अवकाश सूचनाओं और अभिभावकों के निर्देशों के साथ अपडेट रहें।"}
           />
         </div>
 
-        {/* Notices Board Filter System */}
-        <div className="mt-6">
-          <NoticesClient initialNotices={notices} />
-        </div>
+        {loading ? (
+          <div className="text-center py-16">
+            <p className="text-sm font-semibold text-neutral-body animate-pulse">
+              {language === "en" ? "Loading notices..." : "सूचनाएं लोड हो रही हैं..."}
+            </p>
+          </div>
+        ) : (
+          <div className="mt-6">
+            <NoticesClient initialNotices={notices} />
+          </div>
+        )}
       </div>
     </div>
   );

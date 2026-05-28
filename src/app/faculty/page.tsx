@@ -1,40 +1,64 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import TeacherCard from "@/components/TeacherCard";
-import { getFaculty } from "@/lib/dataManager";
+import { Faculty } from "@/types";
+import { useLanguage } from "@/context/LanguageContext";
 
+export default function FacultyPage() {
+  const { language } = useLanguage();
+  const [teachers, setTeachers] = useState<Faculty[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export const metadata = {
-  title: "Our Experienced Faculty | Nav Jeevan Public School Kushinagar",
-  description:
-    "Meet our dedicated teachers, language experts, and IT administrators at Nav Jeevan Public School. Experienced educators in Kaptanganj.",
-};
+  useEffect(() => {
+    document.title = language === "en"
+      ? "Our Experienced Faculty | Nav Jeevan Public School"
+      : "हमारे अनुभवी शिक्षक | नव जीवन पब्लिक स्कूल";
+  }, [language]);
 
-export const dynamic = "force-dynamic";
-
-export default async function FacultyPage() {
-  const teachers = await getFaculty();
+  useEffect(() => {
+    fetch("/api/faculty")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.faculty)) {
+          setTeachers(data.faculty);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load faculty:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <div className="py-12 bg-white flex-1">
+    <div className="py-12 bg-white flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Page Header */}
         <div className="mb-14 text-left">
           <span className="text-[10px] uppercase font-black text-accent bg-accent/15 px-3 py-1 rounded-full tracking-wider inline-block mb-3">
-            Our Mentors
+            {language === "en" ? "Our Mentors" : "हमारे मार्गदर्शक"}
           </span>
           <SectionHeading
-            title="Meet Our Dedicated Faculty"
-            subtitle="The educators, subject experts, and administrative leaders who guide children in Khabharabhar, Kaptanganj."
+            title={language === "en" ? "Meet Our Dedicated Faculty" : "हमारे समर्पित शिक्षकों से मिलें"}
+            subtitle={language === "en" 
+              ? "The educators, subject experts, and administrative leaders who guide children in Khabharabhar, Kaptanganj."
+              : "वे शिक्षक, विषय विशेषज्ञ और प्रशासनिक नेता जो खबरभार, कप्तानगंज में बच्चों का मार्गदर्शन करते हैं।"}
           />
         </div>
 
-
-        {/* Teachers Grid */}
-        {teachers.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-16">
+            <p className="text-sm font-semibold text-neutral-body animate-pulse">
+              {language === "en" ? "Loading faculty profiles..." : "शिक्षक प्रोफाइल लोड हो रही है..."}
+            </p>
+          </div>
+        ) : teachers.length === 0 ? (
           <div className="text-center py-16 bg-neutral-light border border-gray-200 rounded-3xl p-6">
             <p className="text-sm font-semibold text-neutral-body">
-              Faculty profiles are currently being updated by the administrator.
+              {language === "en" 
+                ? "Faculty profiles are currently being updated by the administrator."
+                : "शिक्षक प्रोफाइल वर्तमान में प्रशासक द्वारा अपडेट की जा रही हैं।"}
             </p>
           </div>
         ) : (

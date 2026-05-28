@@ -3,20 +3,29 @@
 import React, { useState } from "react";
 import { Notice } from "@/types";
 import NoticeCard from "@/components/NoticeCard";
-import SectionHeading from "@/components/SectionHeading";
-import { Search, CalendarDays, AlertCircle } from "lucide-react";
+import { Search, AlertCircle } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface NoticesClientProps {
   initialNotices: Notice[];
 }
 
-const CATEGORIES = ["All", "Admission", "Exam", "Holiday", "General", "Others"];
+const CATEGORIES = ["All", "Admission", "Exam", "Holiday", "General", "Others"] as const;
+
+const CATEGORY_NAMES = {
+  All: { en: "All Board", hi: "सभी बोर्ड" },
+  Admission: { en: "Admissions", hi: "प्रवेश" },
+  Exam: { en: "Exams", hi: "परीक्षाएँ" },
+  Holiday: { en: "Holidays", hi: "अवकाश" },
+  General: { en: "General", hi: "सामान्य" },
+  Others: { en: "Others", hi: "अन्य" }
+};
 
 export default function NoticesClient({ initialNotices }: NoticesClientProps) {
+  const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState<typeof CATEGORIES[number]>("All");
 
-  // Filter notices based on category tabs and search input
   const filteredNotices = initialNotices.filter((notice) => {
     const matchesCategory = activeCategory === "All" || notice.category === activeCategory;
     const matchesSearch = 
@@ -27,16 +36,12 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
 
   return (
     <div className="flex flex-col gap-8 text-left">
-      
-      {/* Search & Filter Toolbar */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between p-5 bg-neutral-light border border-gray-200 rounded-3xl shadow-sm">
-        
-        {/* Keyword Search Input */}
         <div className="relative w-full md:max-w-xs">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-body" />
           <input
             type="text"
-            placeholder="Search notice board..."
+            placeholder={language === "en" ? "Search notice board..." : "सूचना पट्ट में खोजें..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 text-sm rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-neutral-dark font-medium transition-all"
@@ -44,7 +49,6 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
           />
         </div>
 
-        {/* Category Tabs */}
         <div 
           className="flex flex-wrap gap-2 w-full md:w-auto md:justify-end"
           role="tablist"
@@ -62,20 +66,22 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
               role="tab"
               aria-selected={activeCategory === cat}
             >
-              {cat} Board
+              {CATEGORY_NAMES[cat][language]}
             </button>
           ))}
         </div>
-
       </div>
 
-      {/* Notices Grid */}
       {filteredNotices.length === 0 ? (
         <div className="text-center py-20 bg-white border border-gray-200 rounded-3xl p-6 flex flex-col items-center gap-3">
           <AlertCircle className="w-12 h-12 text-neutral-body/30" />
-          <p className="text-sm font-extrabold text-neutral-dark">No notices match your criteria.</p>
+          <p className="text-sm font-extrabold text-neutral-dark">
+            {language === "en" ? "No notices match your criteria." : "आपके मानदंडों से मेल खाती कोई सूचना नहीं है।"}
+          </p>
           <p className="text-xs text-neutral-body -mt-1 font-normal leading-relaxed">
-            Try checking another keyword or resetting the filter boards.
+            {language === "en" 
+              ? "Try checking another keyword or resetting the filter boards." 
+              : "कोई अन्य कीवर्ड आज़माएँ या फ़िल्टर रीसेट करें।"}
           </p>
         </div>
       ) : (
@@ -85,7 +91,6 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
           ))}
         </div>
       )}
-
     </div>
   );
 }
