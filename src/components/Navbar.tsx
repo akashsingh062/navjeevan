@@ -94,6 +94,7 @@ export default function Navbar() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const aboutBtnRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 4);
@@ -107,6 +108,8 @@ export default function Navbar() {
     const handleClick = (e: MouseEvent) => {
       if (aboutBtnRef.current && aboutBtnRef.current.contains(e.target as Node))
         return;
+      if (dropdownRef.current && dropdownRef.current.contains(e.target as Node))
+        return;
       setAboutOpen(false);
     };
     document.addEventListener("mousedown", handleClick);
@@ -115,7 +118,10 @@ export default function Navbar() {
 
   // Close on route change
   useEffect(() => {
-    setAboutOpen(false);
+    const timer = setTimeout(() => {
+      setAboutOpen(prev => prev ? false : prev);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   // Measure button position for fixed dropdown
@@ -281,6 +287,7 @@ export default function Navbar() {
       {/* ===== ABOUT DROPDOWN — fixed position, escapes all overflow ===== */}
       {aboutOpen && (
         <div
+          ref={dropdownRef}
           className="fixed w-64 bg-white rounded-2xl shadow-2xl border border-border overflow-hidden"
           style={{
             top: dropdownPos.top,

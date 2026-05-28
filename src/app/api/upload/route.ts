@@ -76,7 +76,13 @@ export async function POST(request: Request) {
         {
           folder: "navjeevan_faculty",
           resource_type: resourceType,
-          public_id: publicId
+          public_id: publicId,
+          // Only apply optimizations to images, raw PDFs/docs should remain untouched
+          ...(isImage && {
+            transformation: [
+              { width: 1200, height: 1200, crop: "limit", quality: "auto", fetch_format: "auto" }
+            ]
+          })
         },
         (error, result) => {
           if (error) reject(error);

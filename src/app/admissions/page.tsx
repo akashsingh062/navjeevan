@@ -1,13 +1,9 @@
 import React from "react";
 import SectionHeading from "@/components/SectionHeading";
-import ContactForm from "@/components/ContactForm";
 import {
   Download,
   FileCheck,
-  Calendar,
-  Clock,
   AlertTriangle,
-  ArrowDown,
 } from "lucide-react";
 
 export const metadata = {
@@ -344,11 +340,6 @@ export default function Admissions() {
                   </span>
                 </div>
               </div>
-            </div>
-
-            {/* Contact Form component */}
-            <div className="lg:col-span-6 flex justify-center w-full">
-              <ContactForm />
             </div>
           </div>
         </section>
