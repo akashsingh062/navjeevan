@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Calendar, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +23,11 @@ export default function ImageModal({
   date,
   onClose
 }: ImageModalProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   useEffect(() => {
     if (isOpen) {
@@ -79,7 +85,9 @@ export default function ImageModal({
     }
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div 
@@ -158,6 +166,7 @@ export default function ImageModal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
