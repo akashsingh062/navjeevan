@@ -99,15 +99,33 @@ export default function Navbar() {
   const aboutBtnRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  
+  const lastScrollY = useRef(0);
+  const [isVisible, setIsVisible] = useState(true);
+
   const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 4);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 4);
+
+      // Smart header scrolling reveal logic for mobile devices
+      if (currentScrollY > lastScrollY.current + 10 && currentScrollY > 80) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY.current - 10 || currentScrollY <= 20) {
+        setIsVisible(true);
+      }
+      lastScrollY.current = currentScrollY;
+    };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Ensure navbar is visible on route transitions
+  useEffect(() => {
+    setIsVisible(true);
+  }, [pathname]);
 
   
   useEffect(() => {
@@ -193,106 +211,113 @@ export default function Navbar() {
   return (
     <>
       {}
-      <div
-        className={`bg-white border-b border-border transition-shadow ${isScrolled ? "shadow-sm" : ""}`}
-      >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
-            {/* Brand */}
-            <Link
-              href="/"
-              className="flex items-center gap-2.5 shrink-0 focus:outline-none group"
-              aria-label="Nav Jeevan Public School Home"
-            >
-              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-primary-light flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
-                <BookOpen className="w-7 h-7 text-primary" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-sm sm:text-base font-black text-neutral-dark tracking-tight leading-tight">
-                  Nav Jeevan Public School
-                </span>
-                <span className="text-[10px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5">
-                  <span className="inline sm:hidden">Kaptanganj, Kushinagar</span>
-                  <span className="hidden sm:inline">Khabharabhar, Kaptanganj, Kushinagar (India) – 274301</span>
-                </span>
-              </div>
-            </Link>
-
-            {/* Quick Action Cards — desktop */}
-            <div className="hidden md:flex items-center gap-2 shrink-0">
-              {/* Premium Language switch toggle */}
-              <button
-                onClick={toggleLanguage}
-                className="relative flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all cursor-pointer select-none group min-w-[90px] text-left focus:outline-none shadow-3xs"
-                aria-label="Toggle language mode / भाषा बदलें"
+      {/* ===== TIER 1: Upper Header Wrapper ===== */}
+      <div className="relative h-16 sm:h-20 md:h-auto z-40">
+        <div
+          className={`bg-white border-b border-border transition-all duration-300 ${
+            isScrolled ? "shadow-sm" : ""
+          } fixed md:relative top-0 left-0 right-0 ${
+            isVisible ? "translate-y-0" : "-translate-y-full md:translate-y-0"
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
+              {/* Brand */}
+              <Link
+                href="/"
+                className="flex items-center gap-2.5 shrink-0 focus:outline-none group"
+                aria-label="Nav Jeevan Public School Home"
               >
-                <Languages className="w-5 h-5 text-primary group-hover:scale-105 transition-transform" />
-                <div className="flex flex-col items-start leading-none gap-0.5">
-                  <span className="text-[9px] uppercase font-black text-neutral-body/60 tracking-wider">भाषा / Lang</span>
-                  <span className="text-[10px] font-black text-neutral-dark group-hover:text-primary transition-colors">
-                    {language === "en" ? "हिन्दी" : "English"}
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-primary-light flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
+                  <BookOpen className="w-7 h-7 text-primary" />
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-sm sm:text-base font-black text-neutral-dark tracking-tight leading-tight">
+                    Nav Jeevan Public School
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5">
+                    <span className="inline sm:hidden">Kaptanganj, Kushinagar</span>
+                    <span className="hidden sm:inline">Khabharabhar, Kaptanganj, Kushinagar (India) – 274301</span>
                   </span>
                 </div>
-              </button>
-
-              {translatedQuickLinks.map(
-                ({ label, href, icon: Icon, badge, badgeColor }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all group min-w-[72px] text-center"
-                  >
-                    {badge && (
-                      <span
-                        className={`absolute -top-1.5 -right-1.5 ${badgeColor} text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none z-10`}
-                      >
-                        {badge}
-                      </span>
-                    )}
-                    <Icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                    <span className="text-[10px] font-bold text-neutral-dark group-hover:text-primary transition-colors">
-                      {label}
-                    </span>
-                  </Link>
-                ),
-              )}
-              
-              <Link
-                href="/admin"
-                className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-hover transition-all min-w-[72px] text-center group"
-              >
-                <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span className="text-[10px] font-bold">{language === "en" ? "Admin" : "प्रशासक"}</span>
               </Link>
-            </div>
 
-            {/* Mobile Actions */}
-            <div className="flex md:hidden items-center gap-1.5 shrink-0">
-              {/* Dynamic lang toggle directly on header for smartphone visitors */}
-              <button
-                onClick={toggleLanguage}
-                className="p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center font-black text-xs select-none gap-1 focus:outline-none shadow-3xs"
-                aria-label="Switch Language / भाषा बदलें"
-              >
-                <Languages className="w-4 h-4 shrink-0" />
-                <span className="text-[11px] font-black">{language === "en" ? "हिन्दी" : "EN"}</span>
-              </button>
+              {/* Quick Action Cards — desktop */}
+              <div className="hidden md:flex items-center gap-2 shrink-0">
+                {/* Premium Language switch toggle */}
+                <button
+                  onClick={toggleLanguage}
+                  className="relative flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all cursor-pointer select-none group min-w-[90px] text-left focus:outline-none shadow-3xs"
+                  aria-label="Toggle language mode / भाषा बदलें"
+                >
+                  <Languages className="w-5 h-5 text-primary group-hover:scale-105 transition-transform" />
+                  <div className="flex flex-col items-start leading-none gap-0.5">
+                    <span className="text-[9px] uppercase font-black text-neutral-body/60 tracking-wider">भाषा / Lang</span>
+                    <span className="text-[10px] font-black text-neutral-dark group-hover:text-primary transition-colors">
+                      {language === "en" ? "हिन्दी" : "English"}
+                    </span>
+                  </div>
+                </button>
 
-              <a
-                href="tel:+917880952150"
-                className="p-2.5 bg-primary-light text-primary rounded-xl"
-                aria-label="Call"
-              >
-                <Phone className="w-5 h-5" />
-              </a>
-              
-              <button
-                onClick={() => setIsOpen(true)}
-                className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
-                aria-label="Open menu"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
+                {translatedQuickLinks.map(
+                  ({ label, href, icon: Icon, badge, badgeColor }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all group min-w-[72px] text-center"
+                    >
+                      {badge && (
+                        <span
+                          className={`absolute -top-1.5 -right-1.5 ${badgeColor} text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none z-10`}
+                        >
+                          {badge}
+                        </span>
+                      )}
+                      <Icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                      <span className="text-[10px] font-bold text-neutral-dark group-hover:text-primary transition-colors">
+                        {label}
+                      </span>
+                    </Link>
+                  ),
+                )}
+                
+                <Link
+                  href="/admin"
+                  className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-hover transition-all min-w-[72px] text-center group"
+                >
+                  <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <span className="text-[10px] font-bold">{language === "en" ? "Admin" : "प्रशासक"}</span>
+                </Link>
+              </div>
+
+              {/* Mobile Actions */}
+              <div className="flex md:hidden items-center gap-1.5 shrink-0">
+                {/* Dynamic lang toggle directly on header for smartphone visitors */}
+                <button
+                  onClick={toggleLanguage}
+                  className="p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center font-black text-xs select-none gap-1 focus:outline-none shadow-3xs"
+                  aria-label="Switch Language / भाषा बदलें"
+                >
+                  <Languages className="w-4 h-4 shrink-0" />
+                  <span className="text-[11px] font-black">{language === "en" ? "हिन्दी" : "EN"}</span>
+                </button>
+
+                <a
+                  href="tel:+917880952150"
+                  className="p-2.5 bg-primary-light text-primary rounded-xl"
+                  aria-label="Call"
+                >
+                  <Phone className="w-5 h-5" />
+                </a>
+                
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
+                  aria-label="Open menu"
+                >
+                  <Menu className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>

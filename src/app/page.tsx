@@ -405,32 +405,35 @@ export default function Home() {
             <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-6xl mx-auto">
             {managementMembers.map((member, i) => {
               const delays = ["", "delay-100", "delay-200", "delay-300"];
               return (
                 <div
                   key={i}
-                  className={`bg-white rounded-2xl border border-border p-4 flex flex-col items-center text-center gap-3 shadow-sm hover:shadow-md hover:border-primary/20 transition-all reveal-on-scroll reveal-fade-up ${delays[i]}`}
+                  className={`bg-white rounded-3xl border border-border p-6 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group reveal-on-scroll reveal-fade-up ${delays[i]}`}
                 >
-                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-primary/20 shrink-0 bg-neutral-light">
-                  <Image
-                    src={member.photo}
-                    alt={`Photo of ${member.name[language]}`}
-                    fill
-                    className="object-cover"
-                    sizes="80px"
-                  />
+                  <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-300" />
+                  
+                  <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl overflow-hidden border-4 border-neutral-light shadow-md group-hover:shadow-lg group-hover:border-primary/20 transition-all duration-300 shrink-0 bg-neutral-light">
+                    <Image
+                      src={member.photo}
+                      alt={`Photo of ${member.name[language]}`}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                      sizes="(max-w-640px) 144px, (max-w-768px) 160px, 176px"
+                    />
+                  </div>
+
+                  <div className="flex flex-col items-center gap-2 mt-2">
+                    <span className="px-3 py-1 bg-primary-light text-primary text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full border border-primary/10 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                      {member.role[language]}
+                    </span>
+                    <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug group-hover:text-primary transition-colors duration-300">
+                      {member.name[language]}
+                    </h3>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs sm:text-sm font-extrabold text-neutral-dark leading-tight">
-                    {member.name[language]}
-                  </p>
-                  <p className="text-[10px] sm:text-xs text-primary font-bold uppercase tracking-wide mt-1">
-                    {member.role[language]}
-                  </p>
-                </div>
-              </div>
               );
             })}
           </div>

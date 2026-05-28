@@ -3,13 +3,15 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Faculty } from "@/types";
-import { GraduationCap, Briefcase, Award } from "lucide-react";
+import { GraduationCap, Briefcase } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface TeacherCardProps {
   member: Faculty;
 }
 
 export default function TeacherCard({ member }: TeacherCardProps) {
+  const { language } = useLanguage();
   const [imageError, setImageError] = useState(false);
 
   const getInitials = (name: string) => {
@@ -19,51 +21,57 @@ export default function TeacherCard({ member }: TeacherCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-row items-center gap-0 group">
+    <div className="bg-white rounded-3xl border border-border p-5 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+      {/* Decorative backdrop glow */}
+      <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-300" />
       
-      {}
-      <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-neutral-light overflow-hidden self-stretch flex items-center justify-center">
+      {/* Image container */}
+      <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-4 border-neutral-light shadow-md group-hover:shadow-lg group-hover:border-primary/20 transition-all duration-300 shrink-0 bg-neutral-light flex items-center justify-center">
         {member.imageUrl && !imageError ? (
           <Image
             src={member.imageUrl}
             alt={`Photo of ${member.name}`}
             fill
-            sizes="96px"
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-w-640px) 128px, 144px"
+            className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
             onError={() => setImageError(true)}
             loading="lazy"
           />
         ) : (
           <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <span className="text-2xl font-black text-primary select-none">
+            <span className="text-3xl font-black text-primary select-none">
               {getInitials(member.name)}
             </span>
           </div>
         )}
       </div>
 
-      {/* Content — right side */}
-      <div className="flex-1 min-w-0 px-3.5 py-3">
-        <h3 className="text-sm font-extrabold text-neutral-dark leading-tight truncate group-hover:text-primary transition-colors">
+      {/* Content */}
+      <div className="flex flex-col items-center gap-2 mt-2 w-full">
+        <span className="px-3 py-1 bg-accent-light text-accent text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full border border-accent/10 group-hover:bg-accent group-hover:text-white transition-all duration-300">
+          {member.subject}
+        </span>
+        
+        <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug group-hover:text-primary transition-colors duration-300">
           {member.name}
         </h3>
-        <div className="flex items-center gap-1 mt-0.5 text-accent">
-          <Award className="w-3 h-3 shrink-0" />
-          <span className="text-xs font-bold uppercase tracking-wide truncate">{member.subject}</span>
-        </div>
 
         {(member.qualification || member.experience) && (
-          <div className="mt-2 flex flex-col gap-1">
+          <div className="w-full border-t border-border mt-3 pt-3 flex flex-col gap-2 text-left">
             {member.qualification && (
-              <div className="flex items-center gap-1.5 text-neutral-body">
-                <GraduationCap className="w-3 h-3 shrink-0 text-primary" />
-                <span className="text-[11px] font-medium truncate">{member.qualification}</span>
+              <div className="flex items-center gap-2 text-neutral-body">
+                <GraduationCap className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs font-semibold text-neutral-dark truncate" title={member.qualification}>
+                  {member.qualification}
+                </span>
               </div>
             )}
             {member.experience && (
-              <div className="flex items-center gap-1.5 text-neutral-body">
-                <Briefcase className="w-3 h-3 shrink-0 text-primary" />
-                <span className="text-[11px] font-medium">{member.experience} exp.</span>
+              <div className="flex items-center gap-2 text-neutral-body">
+                <Briefcase className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs font-semibold text-neutral-dark truncate">
+                  {member.experience} {language === "en" ? "experience" : "अनुभव"}
+                </span>
               </div>
             )}
           </div>
