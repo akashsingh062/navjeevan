@@ -5,18 +5,18 @@ import { z } from "zod";
 const facultySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long"),
   subject: z.string().min(2, "Subject must be at least 2 characters long"),
-  qualification: z.string().min(2, "Qualification must be at least 2 characters long"),
-  experience: z.string().min(2, "Experience details must be provided"),
-  imageUrl: z.string().optional()
+  qualification: z.any().optional(),
+  experience: z.any().optional(),
+  imageUrl: z.any().optional()
 });
 
 export async function GET() {
   try {
     const list = await getFaculty();
     return NextResponse.json({ success: true, faculty: list });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to fetch faculty list." },
+      { success: false, message: error instanceof Error ? error.message : "Failed to fetch faculty list." },
       { status: 500 }
     );
   }
@@ -30,14 +30,14 @@ export async function POST(request: Request) {
     const newMember = await createFacultyMember({
       name: validatedData.name,
       subject: validatedData.subject,
-      qualification: validatedData.qualification,
-      experience: validatedData.experience,
-      imageUrl: validatedData.imageUrl || "",
+      qualification: validatedData.qualification ? String(validatedData.qualification) : "",
+      experience: validatedData.experience ? String(validatedData.experience) : "",
+      imageUrl: validatedData.imageUrl ? String(validatedData.imageUrl) : "",
       order: 99 // Default order at the end of the listing
     });
 
     return NextResponse.json({ success: true, member: newMember }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: error.issues[0]?.message || "Invalid input data." },
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       );
     }
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to add faculty member." },
+      { success: false, message: error instanceof Error ? error.message : "Failed to add faculty member." },
       { status: 500 }
     );
   }
@@ -64,9 +64,9 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: true, message: "Faculty member deleted successfully." });
     }
     return NextResponse.json({ success: false, message: "Faculty member not found or failed to delete." }, { status: 404 });
-  } catch (error: any) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to delete faculty member." },
+      { success: false, message: error instanceof Error ? error.message : "Failed to delete faculty member." },
       { status: 500 }
     );
   }

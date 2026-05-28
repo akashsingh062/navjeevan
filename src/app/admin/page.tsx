@@ -3,9 +3,10 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import SectionHeading from "@/components/SectionHeading";
-import { PlusCircle, FileText, Camera, Users, CheckCircle, AlertCircle, Save, Lock, LogIn, LogOut, Trash2, Paperclip, Download } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { PlusCircle, FileText, Camera, Users, AlertCircle, Save, Lock, LogIn, LogOut, Trash2, Paperclip, Edit } from "lucide-react";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { Notice, Faculty, GalleryItem } from "@/types";
 
 type TabName = "notices" | "gallery" | "faculty";
 
@@ -14,6 +15,8 @@ interface NoticeFormInput {
   description: string;
   category: string;
   isImportant: boolean;
+  importanceColor?: string;
+  attachmentUrl?: string;
 }
 
 interface GalleryFormInput {
@@ -39,13 +42,15 @@ export default function AdminDashboard() {
 
   const [activeTab, setActiveTab] = useState<TabName>("notices");
   const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
-  const [feedbackMsg, setFeedbackMsg] = useState("");
 
   // Persist authentication state
   useEffect(() => {
     const token = localStorage.getItem("navjeevan_admin_auth");
     if (token === "navjeevan-auth-token-2026") {
-      setIsLoggedIn(true);
+      // Defer state update to avoid synchronous cascading renders
+      setTimeout(() => {
+        setIsLoggedIn(true);
+      }, 0);
     }
   }, []);
 
@@ -86,11 +91,13 @@ export default function AdminDashboard() {
   };
 
   // Setup form states for different sections
-  const noticeForm = useForm({
-    defaultValues: { title: "", description: "", category: "General", isImportant: false }
+  const noticeForm = useForm<NoticeFormInput>({
+    defaultValues: { title: "", description: "", category: "General", isImportant: false, importanceColor: "blue" }
   });
 
-  const galleryForm = useForm({
+  const [selectedColor, setSelectedColor] = useState("blue");
+
+  const galleryForm = useForm<GalleryFormInput>({
     defaultValues: { title: "", category: "Annual Function", imageUrl: "" }
   });
 
@@ -105,10 +112,11 @@ export default function AdminDashboard() {
   const [deletingNoticeId, setDeletingNoticeId] = useState<string | null>(null);
   const [deletingGalleryId, setDeletingGalleryId] = useState<string | null>(null);
   const [deletingFacultyId, setDeletingFacultyId] = useState<string | null>(null);
+  const [editingNoticeId, setEditingNoticeId] = useState<string | null>(null);
 
-  const [noticesList, setNoticesList] = useState<any[]>([]);
-  const [facultyList, setFacultyList] = useState<any[]>([]);
-  const [galleryList, setGalleryList] = useState<any[]>([]);
+  const [noticesList, setNoticesList] = useState<Notice[]>([]);
+  const [facultyList, setFacultyList] = useState<Faculty[]>([]);
+  const [galleryList, setGalleryList] = useState<GalleryItem[]>([]);
   const [noticeAttachmentUrl, setNoticeAttachmentUrl] = useState("");
   const [isNoticeAttachmentUploading, setIsNoticeAttachmentUploading] = useState(false);
 
@@ -132,7 +140,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      refreshData();
+      // Defer loading fetch callbacks to prevent compiler rendering cascading warnings
+      setTimeout(() => {
+        refreshData();
+      }, 0);
     }
   }, [isLoggedIn]);
 
@@ -154,7 +165,7 @@ export default function AdminDashboard() {
       const result = await res.json();
       if (res.ok && result.success) {
         setNoticeAttachmentUrl(result.url);
-        noticeForm.setValue("attachmentUrl" as any, result.url);
+        noticeForm.setValue("attachmentUrl", result.url);
         if (result.isDemo) {
           toast.success("Demo Mode: Attachment uploaded (fallback path generated).", { id: loadingToast });
         } else {
@@ -224,7 +235,11 @@ export default function AdminDashboard() {
   const facultyForm = useForm({
     defaultValues: { name: "", subject: "", qualification: "", experience: "", imageUrl: "" }
   });
-  const watchedFacultyImage = facultyForm.watch("imageUrl");
+  const watchedFacultyImage = useWatch({
+    control: facultyForm.control,
+    name: "imageUrl",
+    defaultValue: ""
+  });
   const [facultyImageUploading, setFacultyImageUploading] = useState(false);
 
   const handleFacultyImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -261,25 +276,55 @@ export default function AdminDashboard() {
   };
 
   const onAddNotice = async (data: NoticeFormInput) => {
-    const loadingToast = toast.loading("Publishing notice bulletin...");
+    const isEdit = !!editingNoticeId;
+    const loadingToast = toast.loading(isEdit ? "Saving notice changes..." : "Publishing notice bulletin...");
     try {
-      const res = await fetch("/api/notices", {
-        method: "POST",
+      const url = isEdit ? `/api/notices?id=${editingNoticeId}` : "/api/notices";
+      const method = isEdit ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, attachmentUrl: noticeAttachmentUrl })
       });
       const result = await res.json();
       if (res.ok && result.success) {
-        toast.success(`Notice "${data.title}" published successfully!`, { id: loadingToast });
-        noticeForm.reset();
+        toast.success(
+          isEdit 
+            ? "Notice changes saved successfully!"
+            : `Notice "${data.title}" published successfully!`, 
+          { id: loadingToast }
+        );
+        noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
+        setSelectedColor("blue");
         setNoticeAttachmentUrl("");
+        setEditingNoticeId(null);
         refreshData();
       } else {
-        toast.error(result.message || "Failed to post notice.", { id: loadingToast });
+        toast.error(result.message || "Failed to save notice.", { id: loadingToast });
       }
     } catch {
       toast.error("Failed to connect to notices API.", { id: loadingToast });
     }
+  };
+
+  const handleStartEditNotice = (notice: Notice) => {
+    const noticeId = notice.id || notice._id || null;
+    if (!noticeId) return;
+
+    setEditingNoticeId(noticeId);
+    noticeForm.reset({
+      title: notice.title,
+      description: notice.description,
+      category: notice.category,
+      isImportant: !!notice.isImportant,
+      importanceColor: notice.importanceColor || "blue",
+      attachmentUrl: notice.attachmentUrl || ""
+    });
+    setSelectedColor(notice.importanceColor || "blue");
+    setNoticeAttachmentUrl(notice.attachmentUrl || "");
+
+    // Smooth scroll to the top of the tab panels (Notice Form)
+    window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
   const handleGalleryMultiUpload = async (e: React.FormEvent) => {
@@ -359,9 +404,10 @@ export default function AdminDashboard() {
 
         item.status = "success";
         successCount++;
-      } catch (error: any) {
+      } catch (error) {
+        const errMsg = error instanceof Error ? error.message : "Failed to process photo.";
         item.status = "error";
-        item.errorMsg = error.message || "Failed to process photo.";
+        item.errorMsg = errMsg;
         failCount++;
       }
 
@@ -530,8 +576,14 @@ export default function AdminDashboard() {
           {activeTab === "notices" && (
             <form onSubmit={noticeForm.handleSubmit(onAddNotice)} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1 text-left mb-2">
-                <h3 className="text-base font-extrabold text-neutral-dark">Post New Notice</h3>
-                <p className="text-xs text-neutral-body">Fills the bulletin board instantly with high-priority warnings or exam records.</p>
+                <h3 className="text-base font-extrabold text-neutral-dark">
+                  {editingNoticeId ? "Edit Notice Details" : "Post New Notice"}
+                </h3>
+                <p className="text-xs text-neutral-body">
+                  {editingNoticeId 
+                    ? "Modify notice parameters. Save changes to update the bulletin board instantly." 
+                    : "Fills the bulletin board instantly with high-priority warnings or exam records."}
+                </p>
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -544,6 +596,7 @@ export default function AdminDashboard() {
                   <option value="Admission">Admissions Updates</option>
                   <option value="Exam">Examination Schedule</option>
                   <option value="Holiday">Holidays & Vacations</option>
+                  <option value="Others">Others</option>
                 </select>
               </div>
 
@@ -569,16 +622,40 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <div className="flex items-center gap-2.5 mt-2">
-                <input
-                  id="isImportant"
-                  type="checkbox"
-                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                  {...noticeForm.register("isImportant")}
-                />
-                <label htmlFor="isImportant" className="text-xs font-extrabold text-neutral-dark cursor-pointer">
-                  Mark Notice as High-Priority (Sticky Red/Blue Badge)
-                </label>
+              <div className="flex flex-col gap-2 mt-2">
+                <label className="text-xs font-extrabold text-neutral-dark">Choose Importance & Color Tag</label>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  {[
+                    { color: "red", label: "Critical (Red)", isImportant: true, bg: "bg-red-50 text-red-800 border-red-200 hover:bg-red-100", dot: "bg-red-500" },
+                    { color: "amber", label: "High (Amber)", isImportant: true, bg: "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100", dot: "bg-amber-500" },
+                    { color: "blue", label: "Info (Blue)", isImportant: false, bg: "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100", dot: "bg-blue-500" },
+                    { color: "green", label: "Normal (Green)", isImportant: false, bg: "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100", dot: "bg-emerald-500" },
+                    { color: "purple", label: "Special (Purple)", isImportant: false, bg: "bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100", dot: "bg-purple-500" }
+                  ].map((opt) => (
+                    <button
+                      key={opt.color}
+                      type="button"
+                      onClick={() => {
+                        setSelectedColor(opt.color);
+                        noticeForm.setValue("importanceColor", opt.color);
+                        noticeForm.setValue("isImportant", opt.isImportant);
+                      }}
+                      className={`flex items-center gap-1.5 px-3 py-2 border rounded-xl transition-all text-[11px] font-black uppercase tracking-wider cursor-pointer focus:outline-none ${
+                        selectedColor === opt.color 
+                          ? `${opt.bg} border-current ring-1 ring-offset-1 ring-current`
+                          : "border-gray-200 bg-white text-neutral-body hover:border-gray-300"
+                      }`}
+                    >
+                      <span className={`w-2.5 h-2.5 rounded-full ${opt.dot}`} />
+                      <span>{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+                <input type="hidden" {...noticeForm.register("importanceColor")} />
+                <input type="hidden" {...noticeForm.register("isImportant")} />
+                <p className="text-[10px] text-neutral-body leading-tight mt-0.5">
+                  Notice items with **Critical (Red)** and **High (Amber)** tags are treated as high priority and remain sticky at the top of the bulletins.
+                </p>
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -607,7 +684,7 @@ export default function AdminDashboard() {
                         type="button"
                         onClick={() => {
                           setNoticeAttachmentUrl("");
-                          noticeForm.setValue("attachmentUrl" as any, "");
+                          noticeForm.setValue("attachmentUrl", "");
                         }}
                         className="text-red-600 hover:text-red-800 font-extrabold focus:outline-none"
                       >
@@ -618,14 +695,35 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <button
-                type="submit"
-                disabled={status === "saving" || isNoticeAttachmentUploading}
-                className="w-full mt-4 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
-              >
-                <Save className="w-4 h-4" />
-                <span>{status === "saving" ? "Posting Notice..." : "Publish Notice"}</span>
-              </button>
+              <div className="flex gap-3.5 mt-4">
+                <button
+                  type="submit"
+                  disabled={status === "saving" || isNoticeAttachmentUploading}
+                  className="flex-1 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>
+                    {editingNoticeId 
+                      ? "Save Notice Changes" 
+                      : (status === "saving" ? "Posting Notice..." : "Publish Notice")}
+                  </span>
+                </button>
+
+                {editingNoticeId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingNoticeId(null);
+                      noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
+                      setSelectedColor("blue");
+                      setNoticeAttachmentUrl("");
+                    }}
+                    className="px-6 py-3.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark font-bold text-sm rounded-xl shadow-sm transition-all focus:outline-none cursor-pointer"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
 
               {/* Live Notices List inside Admin Panel for deletion */}
               <div className="mt-10 border-t border-gray-100 pt-8 text-left">
@@ -635,13 +733,19 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="flex flex-col gap-3.5">
                     {noticesList.map((notice) => (
-                      <div key={notice.id || notice._id} className="p-4 bg-neutral-light border border-gray-200 rounded-2xl flex items-start justify-between gap-4">
-                        <div className="flex-1 flex flex-col gap-1.5">
+                      <div key={notice.id || notice._id} className="p-4 bg-neutral-light border border-gray-200 rounded-2xl flex items-start justify-between gap-4 wrap-break-word overflow-hidden">
+                        <div className="flex-1 flex flex-col gap-1.5 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded tracking-wide ${
-                              notice.isImportant 
-                                ? "bg-red-100 text-red-800 border border-red-200"
-                                : "bg-primary/10 text-primary"
+                            <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded tracking-wide border ${
+                              notice.importanceColor === "red"
+                                ? "bg-red-100 text-red-850 border-red-200"
+                                : notice.importanceColor === "amber"
+                                ? "bg-amber-100 text-amber-850 border-amber-200"
+                                : notice.importanceColor === "green"
+                                ? "bg-emerald-100 text-emerald-850 border-emerald-200"
+                                : notice.importanceColor === "purple"
+                                ? "bg-purple-100 text-purple-850 border-purple-200"
+                                : "bg-blue-100 text-blue-850 border-blue-200"
                             }`}>
                               {notice.category}
                             </span>
@@ -649,11 +753,11 @@ export default function AdminDashboard() {
                               {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                             </span>
                           </div>
-                          <h5 className="text-xs font-black text-neutral-dark tracking-wide leading-snug">{notice.title}</h5>
-                          <p className="text-[11px] text-neutral-body leading-relaxed font-medium line-clamp-2">{notice.description}</p>
+                          <h5 className="text-xs font-black text-neutral-dark tracking-wide leading-snug wrap-break-word">{notice.title}</h5>
+                          <p className="text-[11px] text-neutral-body leading-relaxed font-medium line-clamp-2 wrap-break-word">{notice.description}</p>
                           {notice.attachmentUrl && (
                             <a
-                              href={notice.attachmentUrl}
+                              href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline font-bold self-start mt-1"
@@ -663,11 +767,11 @@ export default function AdminDashboard() {
                             </a>
                           )}
                         </div>
-                        {deletingNoticeId === (notice.id || notice._id) ? (
+                        {deletingNoticeId === (notice.id || notice._id || null) ? (
                           <div className="flex gap-1.5 shrink-0">
                             <button
                               type="button"
-                              onClick={() => handleDeleteNotice(notice.id || notice._id)}
+                              onClick={() => handleDeleteNotice(notice.id || notice._id || "")}
                               className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
                             >
                               Confirm
@@ -681,14 +785,24 @@ export default function AdminDashboard() {
                             </button>
                           </div>
                         ) : (
-                          <button
-                            type="button"
-                            onClick={() => setDeletingNoticeId(notice.id || notice._id)}
-                            className="p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                            title="Delete Notice"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                            <div className="flex gap-2 shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditNotice(notice)}
+                                className="p-2 border border-gray-200 hover:bg-neutral-light text-neutral-dark rounded-xl transition-all cursor-pointer focus:outline-none"
+                                title="Edit Notice"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setDeletingNoticeId(notice.id || notice._id || null)}
+                                className="p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                                title="Delete Notice"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                         )}
                       </div>
                     ))}
@@ -718,6 +832,7 @@ export default function AdminDashboard() {
                   <option value="Cultural Events">Cultural Events</option>
                   <option value="Independence Day">Independence Day</option>
                   <option value="Prize Distribution">Prize Distribution</option>
+                  <option value="Others">Others</option>
                 </select>
               </div>
 
@@ -773,15 +888,14 @@ export default function AdminDashboard() {
                         type="file"
                         accept="image/*"
                         multiple
-                        {...({ webkitdirectory: "", directory: "" } as any)}
+                        {...({ webkitdirectory: "", directory: "" } as React.InputHTMLAttributes<HTMLInputElement>)}
                         onChange={(e) => {
                           const files = e.target.files;
                           if (!files) return;
                           // Filter to keep only image files
                           const imageFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
                           if (imageFiles.length === 0) {
-                            setStatus("error");
-                            setFeedbackMsg("No image files found in the selected folder.");
+                            toast.error("No image files found in the selected folder.");
                             return;
                           }
                           const newItems = imageFiles.map(file => ({
@@ -906,11 +1020,11 @@ export default function AdminDashboard() {
                               {photo.title}
                             </h5>
                           </div>
-                          {deletingGalleryId === (photo.id || photo._id) ? (
+                          {deletingGalleryId === (photo.id || photo._id || null) ? (
                             <div className="flex gap-1.5 w-full">
                               <button
                                 type="button"
-                                onClick={() => handleDeleteGallery(photo.id || photo._id)}
+                                onClick={() => handleDeleteGallery(photo.id || photo._id || "")}
                                 className="flex-1 py-1.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-[10px] rounded-lg transition-all text-center focus:outline-none cursor-pointer"
                               >
                                 Confirm
@@ -926,7 +1040,7 @@ export default function AdminDashboard() {
                           ) : (
                             <button
                               type="button"
-                              onClick={() => setDeletingGalleryId(photo.id || photo._id)}
+                              onClick={() => setDeletingGalleryId(photo.id || photo._id || null)}
                               className="w-full py-1.5 border border-red-200 hover:bg-red-50 text-red-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer focus:outline-none"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -980,18 +1094,16 @@ export default function AdminDashboard() {
                   <input
                     type="text"
                     placeholder="e.g. M.Sc. (Zoology), B.Ed."
-                    required
                     className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
                     {...facultyForm.register("qualification")}
                   />
                 </div>
-
+ 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-extrabold text-neutral-dark">Teaching Tenure Experience</label>
                   <input
                     type="text"
                     placeholder="e.g. 9 Years"
-                    required
                     className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
                     {...facultyForm.register("experience")}
                   />
@@ -1094,11 +1206,11 @@ export default function AdminDashboard() {
                           <p className="text-[10px] text-accent font-extrabold mt-0.5 truncate">{member.subject}</p>
                           <p className="text-[9px] text-neutral-body mt-0.5 truncate">{member.qualification}</p>
                         </div>
-                        {deletingFacultyId === (member.id || member._id) ? (
+                        {deletingFacultyId === (member.id || member._id || null) ? (
                           <div className="flex gap-1 shrink-0">
                             <button
                               type="button"
-                              onClick={() => handleDeleteFaculty(member.id || member._id)}
+                              onClick={() => handleDeleteFaculty(member.id || member._id || "")}
                               className="px-2 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[9px] font-extrabold uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
                             >
                               Confirm
@@ -1114,7 +1226,7 @@ export default function AdminDashboard() {
                         ) : (
                           <button
                             type="button"
-                            onClick={() => setDeletingFacultyId(member.id || member._id)}
+                            onClick={() => setDeletingFacultyId(member.id || member._id || null)}
                             className="p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
                             title="Delete Faculty Profile"
                           >

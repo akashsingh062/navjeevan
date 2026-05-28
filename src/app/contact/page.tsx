@@ -13,7 +13,7 @@ import {
 export const metadata = {
   title: "Contact Us | Nav Jeevan Public School Kushinagar",
   description:
-    "Get in touch with Nav Jeevan Public School in Khabharabhar, Captanganj, Kushinagar, UP. Call +91 7880952150 or fill out our online inquiry form.",
+    "Get in touch with Nav Jeevan Public School in Khabharabhar, Kaptanganj, Kushinagar, UP. Call +91 7880952150 or fill out our online inquiry form.",
 };
 
 export default function ContactPage() {
@@ -27,7 +27,7 @@ export default function ContactPage() {
           </span>
           <SectionHeading
             title="Get in Touch With Us"
-            subtitle="We welcome you to visit our campus in Captanganj or reach out via phone, email, or WhatsApp."
+            subtitle="We welcome you to visit our campus in Kaptanganj or reach out via phone, email, or WhatsApp."
           />
         </div>
 
@@ -41,7 +41,7 @@ export default function ContactPage() {
                 Campus Address
               </h4>
               <p className="text-xs text-neutral-body mt-1 leading-relaxed">
-                Khabharabhar, Captanganj,
+                Khabharabhar, Kaptanganj,
                 <br />
                 Kushinagar, Uttar Pradesh - 274301
               </p>
@@ -136,16 +136,15 @@ export default function ContactPage() {
               </h3>
               <p className="text-xs md:text-sm text-neutral-body leading-relaxed font-normal">
                 Located in Khabharabhar, just a short distance from the main
-                Captanganj block road, making it highly accessible for students
+                Kaptanganj block road, making it highly accessible for students
                 and bus routes.
               </p>
             </div>
 
-            {/* Google Map Safe iframe Frame */}
             <div className="relative w-full aspect-video rounded-3xl border border-gray-200 overflow-hidden shadow-sm bg-neutral-light">
               <iframe
                 title="Nav Jeevan Public School Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113794.13783709033!2d83.67022068997321!3d26.927236531557022!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39915cdad5d7d363%3A0xe5a3bb408b02130e!2sKhabharabhar%2C%20Captanganj%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1716892300000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3584.2831206161474!2d83.70648051493035!3d26.87901608307221!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3993fb10720e70e7%3A0xd607f29150455540!2sNav%20Jeevan%20Public%20School!5e0!3m2!1sen!2sin!4v1717282800000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

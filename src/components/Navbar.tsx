@@ -1,69 +1,263 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, BookOpen, Lock } from "lucide-react";
+import {
+  Phone,
+  BookOpen,
+  Lock,
+  Menu,
+  Bell,
+  ChevronDown,
+  Home,
+  GraduationCap,
+  Image as ImageIcon,
+  Users,
+  History,
+  Target,
+  MessageCircle,
+  MapPin,
+  ChevronRight,
+} from "lucide-react";
 import MobileMenu from "./MobileMenu";
 import { navLinks } from "@/lib/navigation";
+
+const aboutDropdown = [
+  {
+    label: "History",
+    href: "/about/history",
+    icon: History,
+    desc: "Our journey since 2008",
+  },
+  {
+    label: "Vision & Mission",
+    href: "/about/vision-mission",
+    icon: Target,
+    desc: "What we stand for",
+  },
+  {
+    label: "Manager's Message",
+    href: "/about/message-manager",
+    icon: MessageCircle,
+    desc: "From the Management Desk",
+  },
+  {
+    label: "Principal's Message",
+    href: "/about/message-principal",
+    icon: MessageCircle,
+    desc: "From the Principal",
+  },
+  {
+    label: "Find Us",
+    href: "/about/find-us",
+    icon: MapPin,
+    desc: "Location & directions",
+  },
+];
+
+const quickLinks = [
+  {
+    label: "Admissions",
+    href: "/admissions",
+    icon: GraduationCap,
+    badge: "Open",
+    badgeColor: "bg-accent",
+  },
+  {
+    label: "Notices",
+    href: "/notices",
+    icon: Bell,
+    badge: null,
+    badgeColor: "",
+  },
+  {
+    label: "Gallery",
+    href: "/gallery",
+    icon: ImageIcon,
+    badge: null,
+    badgeColor: "",
+  },
+  {
+    label: "Faculty",
+    href: "/faculty",
+    icon: Users,
+    badge: null,
+    badgeColor: "",
+  },
+];
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
+  const aboutBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close on outside click
+  useEffect(() => {
+    if (!aboutOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (aboutBtnRef.current && aboutBtnRef.current.contains(e.target as Node))
+        return;
+      setAboutOpen(false);
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [aboutOpen]);
+
+  // Close on route change
+  useEffect(() => {
+    setAboutOpen(false);
+  }, [pathname]);
+
+  // Measure button position for fixed dropdown
+  useLayoutEffect(() => {
+    if (aboutOpen && aboutBtnRef.current) {
+      const rect = aboutBtnRef.current.getBoundingClientRect();
+      setDropdownPos({ top: rect.bottom, left: rect.left });
+    }
+  }, [aboutOpen]);
+
   return (
     <>
-      <header
-        className={`sticky top-0 z-40 w-full transition-all duration-200 border-b ${
-          isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md border-neutral-light py-2"
-            : "bg-white border-transparent py-4"
-        }`}
+      {/* ===== TIER 1: Brand + Quick Links ===== */}
+      <div
+        className={`bg-white border-b border-border transition-shadow ${isScrolled ? "shadow-sm" : ""}`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Brand Logo and Name */}
-          <Link
-            href="/"
-            className="flex items-center gap-3 focus:outline-none rounded-lg p-1 group"
-            aria-label="Nav Jeevan Public School Home"
-          >
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold group-hover:scale-105 transition-transform">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg md:text-xl font-black text-neutral-dark tracking-tight leading-tight">
-                Nav Jeevan
-              </span>
-              <span className="text-[10px] uppercase font-bold text-accent tracking-widest leading-none">
-                Public School • CBSE
-              </span>
-            </div>
-          </Link>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
+            {/* Brand */}
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 shrink-0 focus:outline-none group"
+              aria-label="Nav Jeevan Public School Home"
+            >
+              <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-primary-light flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
+                <BookOpen className="w-7 h-7 text-primary" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="text-sm sm:text-base font-black text-neutral-dark tracking-tight leading-tight">
+                  Nav Jeevan Public School
+                </span>
+                <span className="text-[10px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5">
+                  Khabharabhar, Kaptanganj, Kushinagar (India) – 274301
+                </span>
+              </div>
+            </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav
-            className="hidden xl:flex items-center gap-1"
-            aria-label="Main Navigation"
-          >
+            {/* Quick Action Cards — desktop */}
+            <div className="hidden md:flex items-center gap-2 shrink-0">
+              {quickLinks.map(
+                ({ label, href, icon: Icon, badge, badgeColor }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all group min-w-[72px] text-center"
+                  >
+                    {badge && (
+                      <span
+                        className={`absolute -top-1.5 -right-1.5 ${badgeColor} text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none z-10`}
+                      >
+                        {badge}
+                      </span>
+                    )}
+                    <Icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-[10px] font-bold text-neutral-dark group-hover:text-primary transition-colors">
+                      {label}
+                    </span>
+                  </Link>
+                ),
+              )}
+              <Link
+                href="/admin"
+                className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-hover transition-all min-w-[72px] text-center group"
+              >
+                <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                <span className="text-[10px] font-bold">Admin</span>
+              </Link>
+            </div>
+
+            {/* Mobile */}
+            <div className="flex md:hidden items-center gap-1.5 shrink-0">
+              <a
+                href="tel:+917880952150"
+                className="p-2.5 bg-primary-light text-primary rounded-xl"
+                aria-label="Call"
+              >
+                <Phone className="w-5 h-5" />
+              </a>
+              <button
+                onClick={() => setIsOpen(true)}
+                className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
+                aria-label="Open menu"
+              >
+                <Menu className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== TIER 2: Navigation Bar — desktop only ===== */}
+      <nav
+        className={`hidden md:flex sticky top-0 z-40 bg-primary transition-shadow ${isScrolled ? "shadow-md" : ""}`}
+        aria-label="Main Navigation"
+      >
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+          <div className="flex items-center h-11">
+            {/* Home icon */}
+            <Link
+              href="/"
+              className="flex items-center justify-center w-10 h-full text-white hover:bg-white/15 transition-colors border-r border-white/20 shrink-0"
+              aria-label="Home"
+            >
+              <Home className="w-4 h-4" />
+            </Link>
+
+            {/* All nav links */}
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive =
+                pathname === link.href || pathname.startsWith(link.href + "/");
+              const isAbout = link.label === "About";
+
+              if (isAbout) {
+                return (
+                  <button
+                    key={link.href}
+                    ref={aboutBtnRef}
+                    onClick={() => setAboutOpen((o) => !o)}
+                    className={`flex items-center gap-1 px-4 h-full text-[12px] font-semibold whitespace-nowrap transition-colors shrink-0 border-r border-white/20 ${
+                      isActive || aboutOpen
+                        ? "bg-white/20 text-white"
+                        : "text-white/90 hover:bg-white/15 hover:text-white"
+                    }`}
+                    aria-expanded={aboutOpen}
+                    aria-haspopup="true"
+                  >
+                    About
+                    <ChevronDown
+                      className={`w-3 h-3 transition-transform duration-200 ${aboutOpen ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                );
+              }
+
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 text-sm font-semibold rounded-lg transition-colors focus:outline-none ${
+                  className={`flex items-center px-4 h-full text-[12px] font-semibold whitespace-nowrap transition-colors shrink-0 border-r border-white/20 ${
                     isActive
-                      ? "text-primary bg-neutral-light"
-                      : "text-neutral-body hover:text-primary hover:bg-neutral-light/50"
+                      ? "bg-white/20 text-white"
+                      : "text-white/90 hover:bg-white/15 hover:text-white"
                   }`}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -71,60 +265,61 @@ export default function Navbar() {
                 </Link>
               );
             })}
-          </nav>
 
-          {/* Quick Info / Call Actions (Desktop) */}
-          <div className="hidden xl:flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 px-4 py-2 text-xs font-extrabold text-neutral-body hover:text-primary hover:bg-neutral-light/50 border border-gray-200 rounded-xl transition-all"
-              title="Staff Portal Login"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>Staff Login</span>
-            </Link>
+            {/* Phone */}
             <a
               href="tel:+917880952150"
-              className="flex items-center gap-2 px-4 py-2 text-xs font-extrabold text-primary bg-primary/10 hover:bg-primary/20 rounded-xl transition-all"
-              title="Call School Office"
+              className="ml-auto flex items-center gap-1.5 px-3 h-full text-white/90 hover:bg-white/15 text-[11px] font-bold border-l border-white/20 shrink-0 transition-colors"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>+91 7880952150</span>
+              <span>7880952150</span>
             </a>
-            <Link
-              href="/admissions"
-              className="px-5 py-2.5 text-xs font-black text-white bg-accent hover:bg-accent-hover rounded-xl shadow-sm transition-all text-center uppercase tracking-wider"
-            >
-              Admission open
-            </Link>
-          </div>
-
-          {/* Hamburger Menu & Mobile Call Button (Mobile & Tablet) */}
-          <div className="flex xl:hidden items-center gap-2">
-            <a
-              href="tel:+917880952150"
-              className="p-2.5 text-primary bg-primary/10 rounded-full hover:bg-primary/20"
-              aria-label="Call School Office"
-            >
-              <Phone className="w-5 h-5" />
-            </a>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-full focus:outline-none"
-              aria-label="Open navigation menu"
-              aria-expanded={isOpen}
-            >
-              <Menu className="w-6 h-6" />
-            </button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Slide-out mobile menu */}
+      {/* ===== ABOUT DROPDOWN — fixed position, escapes all overflow ===== */}
+      {aboutOpen && (
+        <div
+          className="fixed w-64 bg-white rounded-2xl shadow-2xl border border-border overflow-hidden"
+          style={{
+            top: dropdownPos.top,
+            left: dropdownPos.left,
+            zIndex: 99999,
+          }}
+        >
+          {aboutDropdown.map((item) => {
+            const ItemIcon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setAboutOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 hover:bg-primary-light transition-colors group border-b border-border last:border-0"
+              >
+                <div className="w-8 h-8 rounded-lg bg-primary-light group-hover:bg-primary/20 flex items-center justify-center shrink-0 transition-colors">
+                  <ItemIcon className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-neutral-dark group-hover:text-primary transition-colors">
+                    {item.label}
+                  </p>
+                  <p className="text-[10px] text-neutral-body leading-tight">
+                    {item.desc}
+                  </p>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-neutral-body/40 group-hover:text-primary transition-colors shrink-0" />
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
       <MobileMenu
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         navLinks={navLinks}
+        aboutDropdown={aboutDropdown}
       />
     </>
   );

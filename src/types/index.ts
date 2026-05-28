@@ -15,8 +15,8 @@ export interface Faculty {
   id?: string;
   name: string;
   subject: string;
-  qualification: string;
-  experience: string; // e.g. "8+ Years"
+  qualification?: string;
+  experience?: string; // e.g. "8+ Years"
   imageUrl?: string;
   order?: number;
 }

@@ -3,17 +3,17 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { 
-  Phone, 
-  Mail, 
-  User, 
-  MessageSquare, 
-  Send, 
-  CheckCircle2, 
-  AlertCircle, 
-  Sparkles, 
-  MessageCircle, 
-  X 
+import {
+  Phone,
+  Mail,
+  User,
+  MessageSquare,
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  MessageCircle,
+  X,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,19 +22,22 @@ import { motion, AnimatePresence } from "framer-motion";
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string()
+  phone: z
+    .string()
     .min(10, "Phone number must be at least 10 digits")
     .max(12, "Phone number must not exceed 12 digits")
     .regex(/^[6-9]\d{9}$/, "Please enter a valid 10-digit mobile number"),
   message: z.string().min(10, "Message must be at least 10 characters long"),
-  honeypot: z.string().optional() // Bot trap honeypot field
+  honeypot: z.string().optional(), // Bot trap honeypot field
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
 export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
@@ -43,7 +46,7 @@ export default function ContactForm() {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors },
   } = useForm<ContactFormData>();
 
   // Prevent background scrolling when modal is open
@@ -94,8 +97,8 @@ export default function ContactForm() {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          message: data.message
-        })
+          message: data.message,
+        }),
       });
 
       const result = await response.json();
@@ -108,14 +111,21 @@ export default function ContactForm() {
         reset();
       } else {
         setSubmitStatus("error");
-        setErrorMessage(result.message || "Failed to submit inquiry. Please try again.");
-        toast.error(result.message || "Failed to submit inquiry. Please try again.");
+        setErrorMessage(
+          result.message || "Failed to submit inquiry. Please try again.",
+        );
+        toast.error(
+          result.message || "Failed to submit inquiry. Please try again.",
+        );
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setSubmitStatus("error");
-      const msg = err instanceof z.ZodError 
-        ? (err.issues[0]?.message || "Invalid input data.") 
-        : "An unexpected error occurred. Please check your connection.";
+      let msg = "An unexpected error occurred. Please check your connection.";
+      if (err instanceof z.ZodError) {
+        msg = err.issues[0]?.message || "Invalid input data.";
+      } else if (err instanceof Error) {
+        msg = err.message;
+      }
       setErrorMessage(msg);
       toast.error(msg);
     } finally {
@@ -125,20 +135,20 @@ export default function ContactForm() {
 
   return (
     <>
-      <form 
-        onSubmit={handleSubmit(onSubmit)} 
+      <form
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-white border border-gray-200 rounded-3xl p-6 md:p-8 shadow-sm flex flex-col gap-5 w-full max-w-lg"
       >
         <div className="flex flex-col gap-1.5 mb-2">
           <h3 className="text-lg font-extrabold text-neutral-dark">Send Online Inquiry</h3>
           <p className="text-xs text-neutral-body font-normal leading-relaxed">
-            Fill out the form below, and our team in Captanganj will call you back.
+            Fill out the form below, and our team in Kaptanganj will call you back.
           </p>
         </div>
 
         {/* Error Banner */}
         {submitStatus === "error" && (
-          <div 
+          <div
             className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-xl flex gap-2.5 items-start text-xs font-semibold leading-relaxed"
             role="alert"
           >
@@ -150,12 +160,12 @@ export default function ContactForm() {
         {/* Honeypot Spam Bot Trap (hidden visually but readable by bots) */}
         <div className="hidden" aria-hidden="true">
           <label htmlFor="honeypot">Leave this field blank</label>
-          <input 
-            id="honeypot" 
-            type="text" 
-            tabIndex={-1} 
+          <input
+            id="honeypot"
+            type="text"
+            tabIndex={-1}
             autoComplete="off"
-            {...register("honeypot")} 
+            {...register("honeypot")}
           />
         </div>
 
@@ -288,7 +298,7 @@ export default function ContactForm() {
       {/* Success Modal Popup Overlay */}
       <AnimatePresence>
         {showSuccessModal && (
-          <div 
+          <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             role="dialog"
             aria-modal="true"
@@ -336,20 +346,26 @@ export default function ContactForm() {
 
               {/* Content */}
               <div className="flex flex-col gap-2">
-                <h3 
-                  id="modal-title" 
+                <h3
+                  id="modal-title"
                   className="text-lg md:text-xl font-extrabold text-neutral-dark flex items-center justify-center gap-1.5"
                 >
                   <span>Inquiry Submitted!</span>
                   <Sparkles className="w-5 h-5 text-amber-500 fill-amber-500 animate-pulse" />
                 </h3>
-                
+
                 <p className="text-xs md:text-sm font-medium text-neutral-body leading-relaxed max-w-sm">
-                  Thank you, <strong className="text-neutral-dark font-black">{submittedName}</strong>! We have registered your inquiry details successfully.
+                  Thank you,{" "}
+                  <strong className="text-neutral-dark font-black">
+                    {submittedName}
+                  </strong>
+                  ! We have registered your inquiry details successfully.
                 </p>
-                
+
                 <p className="text-xs text-neutral-body/90 leading-relaxed max-w-sm bg-neutral-light/50 p-3 rounded-2xl border border-gray-150 mt-1">
-                  Our admissions team and school administration staff at Kushinagar will review your message and contact you on your mobile number shortly.
+                  Our admissions team and school administration staff at
+                  Kushinagar will review your message and contact you on your
+                  mobile number shortly.
                 </p>
               </div>
 
@@ -385,4 +401,3 @@ export default function ContactForm() {
     </>
   );
 }
-

@@ -8,6 +8,8 @@ export const metadata = {
   description: "Browse pictures of annual function dances, sports days, classroom activities, independence day flag hosting and prize distributions at Nav Jeevan School.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function GalleryPage() {
   const images = await getGallery();
 

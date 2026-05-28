@@ -34,7 +34,7 @@ export const defaultFacilities: Facility[] = [
   {
     id: "fac-6",
     title: "Secure Transportation",
-    description: "Experienced drivers and school bus routes covering Captanganj, Khabharabhar, and adjacent villages within 15 km.",
+    description: "Experienced drivers and school bus routes covering Kaptanganj, Khabharabhar, and adjacent villages within 15 km.",
     iconName: "Bus"
   },
   {

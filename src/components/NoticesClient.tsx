@@ -10,7 +10,7 @@ interface NoticesClientProps {
   initialNotices: Notice[];
 }
 
-const CATEGORIES = ["All", "Admission", "Exam", "Holiday", "General"];
+const CATEGORIES = ["All", "Admission", "Exam", "Holiday", "General", "Others"];
 
 export default function NoticesClient({ initialNotices }: NoticesClientProps) {
   const [searchTerm, setSearchTerm] = useState("");

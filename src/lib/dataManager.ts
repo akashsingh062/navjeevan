@@ -5,13 +5,43 @@ import { defaultFaculty } from "./data/faculty";
 import { defaultGallery } from "./data/gallery";
 import { defaultFacilities } from "./data/facilities";
 import { Notice, Faculty, GalleryItem, Facility, ContactInquiry } from "@/types";
+import { deleteCloudinaryAsset } from "./cloudinary";
+
+interface DBNotice {
+  _id: { toString(): string };
+  title: string;
+  description: string;
+  date: string;
+  category: "General" | "Exam" | "Holiday" | "Admission" | "Others";
+  isImportant?: boolean;
+  importanceColor?: "blue" | "red" | "amber" | "green" | "purple";
+  attachmentUrl?: string;
+}
+
+interface DBFaculty {
+  _id: { toString(): string };
+  name: string;
+  subject: string;
+  qualification?: string;
+  experience?: string;
+  imageUrl?: string;
+  order?: number;
+}
+
+interface DBGalleryItem {
+  _id: { toString(): string };
+  imageUrl: string;
+  category: "Annual Function" | "Sports Day" | "Classroom Activities" | "Cultural Events" | "Independence Day" | "Prize Distribution" | "Others";
+  title: string;
+  uploadedAt: string;
+}
 
 // Helper to check if DB is connected
 async function isDbConnected(): Promise<boolean> {
   try {
     const conn = await connectToDatabase();
     return conn !== null;
-  } catch (error) {
+  } catch {
     console.warn("Database connection failed. Falling back to local static data.");
     return false;
   }
@@ -47,14 +77,15 @@ export async function getNotices(): Promise<Notice[]> {
   if (await isDbConnected()) {
     try {
       await ensureDbSeeded();
-      const rawNotices = await NoticeModel.find({}).sort({ isImportant: -1, date: -1 }).lean();
-      return rawNotices.map((n: any) => ({
+      const rawNotices = await NoticeModel.find({}).sort({ isImportant: -1, date: -1 }).lean() as unknown as DBNotice[];
+      return rawNotices.map((n: DBNotice) => ({
         id: n._id.toString(),
         title: n.title,
         description: n.description,
         date: n.date,
         category: n.category,
-        isImportant: n.isImportant,
+        isImportant: !!n.isImportant,
+        importanceColor: n.importanceColor || "blue",
         attachmentUrl: n.attachmentUrl || ""
       }));
     } catch (err) {
@@ -72,15 +103,15 @@ export async function getFaculty(): Promise<Faculty[]> {
   if (await isDbConnected()) {
     try {
       await ensureDbSeeded();
-      const rawFaculty = await FacultyModel.find({}).sort({ order: 1, name: 1 }).lean();
-      return rawFaculty.map((f: any) => ({
+      const rawFaculty = await FacultyModel.find({}).sort({ order: 1, name: 1 }).lean() as unknown as DBFaculty[];
+      return rawFaculty.map((f: DBFaculty) => ({
         id: f._id.toString(),
         name: f.name,
         subject: f.subject,
-        qualification: f.qualification,
-        experience: f.experience,
-        imageUrl: f.imageUrl,
-        order: f.order
+        qualification: f.qualification || "",
+        experience: f.experience || "",
+        imageUrl: f.imageUrl || "",
+        order: f.order || 99
       }));
     } catch (err) {
       console.error("Failed to fetch faculty from database, using static fallback:", err);
@@ -93,8 +124,8 @@ export async function getGallery(): Promise<GalleryItem[]> {
   if (await isDbConnected()) {
     try {
       await ensureDbSeeded();
-      const rawGallery = await GalleryModel.find({}).sort({ uploadedAt: -1 }).lean();
-      return rawGallery.map((g: any) => ({
+      const rawGallery = await GalleryModel.find({}).sort({ uploadedAt: -1 }).lean() as unknown as DBGalleryItem[];
+      return rawGallery.map((g: DBGalleryItem) => ({
         id: g._id.toString(),
         imageUrl: g.imageUrl,
         category: g.category,
@@ -177,11 +208,52 @@ export async function saveContactInquiry(inquiry: Omit<ContactInquiry, "_id">): 
   return true;
 }
 
+export async function updateNotice(id: string, notice: Omit<Notice, "id" | "_id">): Promise<Notice | null> {
+  if (await isDbConnected()) {
+    try {
+      const doc = await NoticeModel.findByIdAndUpdate(id, notice, { new: true });
+      if (doc) {
+        return {
+          id: doc._id.toString(),
+          title: doc.title,
+          description: doc.description,
+          date: doc.date,
+          category: doc.category,
+          isImportant: doc.isImportant,
+          importanceColor: doc.importanceColor || "blue",
+          attachmentUrl: doc.attachmentUrl || ""
+        };
+      }
+      return null;
+    } catch (err) {
+      console.error("Failed to update notice in database:", err);
+      return null;
+    }
+  }
+  const index = defaultNotices.findIndex(n => n.id === id);
+  if (index !== -1) {
+    const updated = {
+      id,
+      ...notice
+    };
+    defaultNotices[index] = updated;
+    return updated;
+  }
+  return null;
+}
+
 export async function deleteNotice(id: string): Promise<boolean> {
   if (await isDbConnected()) {
     try {
-      const res = await NoticeModel.findByIdAndDelete(id);
-      return res !== null;
+      const doc = await NoticeModel.findById(id);
+      if (doc) {
+        if (doc.attachmentUrl) {
+          await deleteCloudinaryAsset(doc.attachmentUrl);
+        }
+        await NoticeModel.findByIdAndDelete(id);
+        return true;
+      }
+      return false;
     } catch (err) {
       console.error("Failed to delete notice from database:", err);
       return false;
@@ -198,8 +270,15 @@ export async function deleteNotice(id: string): Promise<boolean> {
 export async function deleteGalleryItem(id: string): Promise<boolean> {
   if (await isDbConnected()) {
     try {
-      const res = await GalleryModel.findByIdAndDelete(id);
-      return res !== null;
+      const doc = await GalleryModel.findById(id);
+      if (doc) {
+        if (doc.imageUrl) {
+          await deleteCloudinaryAsset(doc.imageUrl);
+        }
+        await GalleryModel.findByIdAndDelete(id);
+        return true;
+      }
+      return false;
     } catch (err) {
       console.error("Failed to delete gallery item from database:", err);
       return false;
@@ -216,8 +295,15 @@ export async function deleteGalleryItem(id: string): Promise<boolean> {
 export async function deleteFacultyMember(id: string): Promise<boolean> {
   if (await isDbConnected()) {
     try {
-      const res = await FacultyModel.findByIdAndDelete(id);
-      return res !== null;
+      const doc = await FacultyModel.findById(id);
+      if (doc) {
+        if (doc.imageUrl) {
+          await deleteCloudinaryAsset(doc.imageUrl);
+        }
+        await FacultyModel.findByIdAndDelete(id);
+        return true;
+      }
+      return false;
     } catch (err) {
       console.error("Failed to delete faculty member from database:", err);
       return false;

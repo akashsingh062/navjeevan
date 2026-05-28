@@ -7,10 +7,11 @@ const NoticeSchema = new Schema({
   date: { type: String, required: true }, // ISO String
   category: { 
     type: String, 
-    enum: ["General", "Exam", "Holiday", "Admission"], 
+    enum: ["General", "Exam", "Holiday", "Admission", "Others"], 
     required: true 
   },
   isImportant: { type: Boolean, default: false },
+  importanceColor: { type: String, default: "blue" }, // red, amber, green, blue, purple
   attachmentUrl: { type: String, default: "" }
 }, { timestamps: true });
 
@@ -25,7 +26,8 @@ const GallerySchema = new Schema({
       "Classroom Activities", 
       "Cultural Events", 
       "Independence Day", 
-      "Prize Distribution"
+      "Prize Distribution",
+      "Others"
     ], 
     required: true 
   },
@@ -37,8 +39,8 @@ const GallerySchema = new Schema({
 const FacultySchema = new Schema({
   name: { type: String, required: true },
   subject: { type: String, required: true },
-  qualification: { type: String, required: true },
-  experience: { type: String, required: true },
+  qualification: { type: String, default: "" },
+  experience: { type: String, default: "" },
   imageUrl: { type: String, default: "" },
   order: { type: Number, default: 0 }
 }, { timestamps: true });

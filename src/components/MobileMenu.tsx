@@ -1,126 +1,176 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, Phone, MessageSquare, Lock } from "lucide-react";
+import { X, Phone, MessageSquare, Lock, ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface DropdownItem {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  desc: string;
+}
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   navLinks: { label: string; href: string }[];
+  aboutDropdown?: DropdownItem[];
 }
 
-export default function MobileMenu({
-  isOpen,
-  onClose,
-  navLinks,
-}: MobileMenuProps) {
-  // Prevent background scrolling when mobile menu is open
+export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }: MobileMenuProps) {
+  const [aboutExpanded, setAboutExpanded] = useState(false);
+
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+    document.body.style.overflow = isOpen ? "hidden" : "unset";
+    return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
 
-  // Handle escape key
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
+
+  // Reset about dropdown when menu closes
+  useEffect(() => {
+    if (!isOpen) setAboutExpanded(false);
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop overlay */}
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.5 }}
+            animate={{ opacity: 0.4 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black z-50 pointer-events-auto"
+            className="fixed inset-0 bg-neutral-dark z-50"
             aria-hidden="true"
           />
 
-          {/* Slide-out drawer */}
+          {/* Drawer */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-            className="fixed inset-y-0 right-0 w-4/5 max-w-sm bg-white shadow-2xl z-50 flex flex-col p-6 pointer-events-auto border-l border-neutral-light"
+            transition={{ type: "spring", bounce: 0, duration: 0.28 }}
+            className="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-white z-50 flex flex-col shadow-2xl"
+            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             role="dialog"
             aria-modal="true"
-            aria-label="Mobile Navigation Menu"
+            aria-label="Navigation Menu"
           >
-            {/* Header section inside drawer */}
-            <div className="flex items-center justify-between pb-6 border-b border-neutral-light">
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-primary leading-tight">
-                  Nav Jeevan
-                </span>
-                <span className="text-[10px] uppercase font-semibold text-accent tracking-wider">
-                  Public School
-                </span>
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <div>
+                <span className="text-base font-black text-neutral-dark block leading-tight">Nav Jeevan</span>
+                <span className="text-[9px] uppercase font-bold text-accent tracking-widest">Public School</span>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 -mr-2 text-neutral-dark rounded-full hover:bg-neutral-light focus:outline-none"
+                className="p-2 text-neutral-body hover:bg-neutral-light rounded-xl focus:outline-none"
                 aria-label="Close menu"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Navigation links */}
-            <nav className="flex-1 py-8 flex flex-col gap-4 overflow-y-auto">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={onClose}
-                  className="text-lg font-semibold text-neutral-dark hover:text-primary py-2 px-3 rounded-lg hover:bg-neutral-light transition-all flex items-center"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            {/* Nav Links */}
+            <nav className="flex-1 py-3 px-3 overflow-y-auto" aria-label="Mobile Navigation">
+              {navLinks.map((link) => {
+                const isAbout = link.label === "About";
+
+                if (isAbout && aboutDropdown) {
+                  return (
+                    <div key={link.href}>
+                      {/* About expandable row */}
+                      <button
+                        onClick={() => setAboutExpanded((v) => !v)}
+                        className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+                        aria-expanded={aboutExpanded}
+                      >
+                        <span>About</span>
+                        <ChevronDown className={`w-4 h-4 text-neutral-body/50 transition-transform duration-200 ${aboutExpanded ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {/* Sub-items */}
+                      <AnimatePresence>
+                        {aboutExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="ml-3 mb-1 border-l-2 border-primary/20 pl-3 flex flex-col gap-0.5">
+                              {aboutDropdown.map((item) => {
+                                const ItemIcon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={onClose}
+                                    className="flex items-center gap-2.5 px-3 py-2.5 text-xs font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all group"
+                                  >
+                                    <ItemIcon className="w-3.5 h-3.5 text-primary shrink-0" />
+                                    <span>{item.label}</span>
+                                    <ChevronRight className="w-3 h-3 text-neutral-body/30 ml-auto group-hover:text-primary transition-colors" />
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={onClose}
+                    className="flex items-center justify-between px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+                  >
+                    <span>{link.label}</span>
+                    <ChevronRight className="w-4 h-4 text-neutral-body/50" />
+                  </Link>
+                );
+              })}
             </nav>
 
-            {/* Quick Action buttons for quick access */}
-            <div className="pt-6 border-t border-neutral-light flex flex-col gap-3">
-              <Link
-                href="/admin"
-                onClick={onClose}
-                className="flex items-center justify-center gap-2 w-full py-3.5 border border-gray-200 text-neutral-dark hover:bg-neutral-light rounded-xl font-bold text-sm transition-all focus:outline-none"
-              >
-                <Lock className="w-4 h-4 text-primary shrink-0" />
-                <span>Staff Portal Login</span>
-              </Link>
+            {/* Quick Actions */}
+            <div className="px-4 py-4 border-t border-border flex flex-col gap-2.5">
               <a
                 href="tel:+917880952150"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover text-sm"
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary text-white rounded-2xl font-bold text-sm transition-all"
               >
                 <Phone className="w-4 h-4" />
-                Call School Office
+                <span>Call School: 7880952150</span>
               </a>
               <a
                 href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-accent text-white rounded-xl font-bold hover:bg-accent-hover text-sm"
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-white rounded-2xl font-bold text-sm"
               >
                 <MessageSquare className="w-4 h-4" />
-                WhatsApp Admission Cell
+                <span>WhatsApp Inquiry</span>
               </a>
+              <Link
+                href="/admin"
+                onClick={onClose}
+                className="flex items-center justify-center gap-2 w-full py-3 border border-border text-neutral-body hover:bg-neutral-light rounded-2xl font-semibold text-xs transition-all"
+              >
+                <Lock className="w-3.5 h-3.5" />
+                <span>Staff Portal Login</span>
+              </Link>
             </div>
           </motion.div>
         </>

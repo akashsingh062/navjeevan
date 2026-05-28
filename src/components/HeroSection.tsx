@@ -1,114 +1,158 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Phone, Award } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+
+const slides = [
+  {
+    id: 1,
+    image: "/hero-banner.png",
+    title: "Nav Jeevan Public School",
+    subtitle: "Empowering Rural Minds Through Quality Education",
+    tag: "Session 2026–27 Admissions Open",
+    cta: { label: "Apply for Admission", href: "/admissions" },
+  },
+  {
+    id: 2,
+    image: "/hero-slide2.png",
+    title: "Morning Assembly & Values",
+    subtitle: "Discipline, Devotion & Daily Learning — Nurturing Whole Persons",
+    tag: "CBSE Pattern · Hindi & English Medium",
+    cta: { label: "Explore Facilities", href: "/facilities" },
+  },
+  {
+    id: 3,
+    image: "/hero-slide3.png",
+    title: "Annual Sports Day",
+    subtitle: "Building Character, Competence & Community Since 2008",
+    tag: "1,200+ Students · 35+ Dedicated Educators",
+    cta: { label: "Know More About Us", href: "/about" },
+  },
+];
 
 export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+
+  const goTo = useCallback((indexOrUpdater: number | ((prev: number) => number)) => {
+    setTransitioning(true);
+    setTimeout(() => {
+      setCurrent(prev => typeof indexOrUpdater === "function" ? indexOrUpdater(prev) : indexOrUpdater);
+      setTransitioning(false);
+    }, 350);
+  }, []);
+
+  // Auto-advance slider
+  useEffect(() => {
+    const timer = setInterval(() => {
+      goTo((c: number) => (c + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [goTo]);
+
+  const prev = () => goTo((c: number) => (c - 1 + slides.length) % slides.length);
+  const next = () => goTo((c: number) => (c + 1) % slides.length);
+
+  const slide = slides[current];
+
   return (
-    <section className="relative bg-linear-to-br from-neutral-dark via-gray-900 to-primary py-20 lg:py-28 text-white overflow-hidden border-b-4 border-accent">
-      {/* Dynamic background layout overlays (Zero weights, pure CSS vectors) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(22,163,74,0.15),transparent)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(37,99,235,0.2),transparent)] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl pointer-events-none -mr-24 -mb-24" />
+    <section className="relative w-full overflow-hidden" style={{ height: "clamp(230px, 46vw, 540px)" }}>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Hero text details */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left gap-6">
-            
-            {/* CBSE Affiliation Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-accent/25 border border-accent/40 rounded-full font-black text-xs uppercase tracking-widest text-white">
-              <Award className="w-4 h-4 text-accent" />
-              <span>CBSE Pattern • Both Hindi & English Medium</span>
-            </div>
-
-            {/* School Title */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-none text-white">
-              Nav Jeevan <br className="hidden sm:inline" />
-              <span className="text-primary">Public School</span>
-            </h1>
-
-            {/* Tagline */}
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl font-medium leading-relaxed">
-              Empowering rural communities in Kushinagar through affordable, high-quality, smart education. Shaping active minds and characters from Nursery to Class XII.
-            </p>
-
-            {/* Touch-optimized actions grid */}
-            <div className="mt-4 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-              <Link
-                href="/admissions"
-                className="flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary-hover transition-all shadow-md focus:outline-none text-sm cursor-pointer"
-              >
-                <span>Admission 2026-27</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/contact"
-                className="flex items-center justify-center gap-2 w-full sm:w-auto px-7 py-4 bg-white/10 border border-white/20 text-white hover:bg-white/20 rounded-xl font-bold transition-all focus:outline-none text-sm cursor-pointer"
-              >
-                <Phone className="w-4 h-4" />
-                <span>Contact Office</span>
-              </Link>
-            </div>
-
-            {/* School location summary */}
-            <p className="text-xs text-gray-400 font-semibold tracking-wide">
-              📍 Khabharabhar, Captanganj, Kushinagar, Uttar Pradesh - 274301
-            </p>
-
-          </div>
-
-          {/* Interactive highlight box (Visual representation of school values, instead of a heavy image) */}
-          <div className="lg:col-span-5 w-full flex justify-center">
-            <div className="w-full max-w-md bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-sm flex flex-col gap-6 shadow-xl relative">
-              <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-accent animate-pulse" />
-              
-              <h3 className="text-lg font-extrabold text-white tracking-wide border-b border-white/10 pb-3">
-                Key Announcements
-              </h3>
-              
-              <div className="flex flex-col gap-4.5">
-                <div className="flex gap-3.5 items-start">
-                  <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center font-bold text-accent shrink-0 text-xs">
-                    01
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white leading-snug">Registration Open</h4>
-                    <p className="text-xs text-gray-400 mt-0.5 leading-relaxed font-normal">
-                      Collect offline forms from Captanganj school counter today.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3.5 items-start">
-                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center font-bold text-primary shrink-0 text-xs">
-                    02
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white leading-snug">Smart IT Lab Setup</h4>
-                    <p className="text-xs text-gray-400 mt-0.5 leading-relaxed font-normal">
-                      Equipped with 20+ computer seats for student practical exercises.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3.5 items-start">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center font-bold text-amber-500 shrink-0 text-xs">
-                    03
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white leading-snug">Vedic Math Classes</h4>
-                    <p className="text-xs text-gray-400 mt-0.5 leading-relaxed font-normal">
-                      Special weekly speed calculation sessions for class VI onwards.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
+      {/* === All slide images stacked, only active one visible === */}
+      {slides.map((s, i) => (
+        <div
+          key={s.id}
+          className="absolute inset-0 transition-opacity duration-700"
+          style={{ opacity: i === current && !transitioning ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+          aria-hidden={i !== current}
+        >
+          <Image
+            src={s.image}
+            alt={s.title}
+            fill
+            priority={i === 0}
+            className="object-cover"
+            sizes="100vw"
+          />
         </div>
+      ))}
+
+      {/* === Persistent overlay (above all images, z-index 2) === */}
+      <div className="absolute inset-0 bg-linear-to-r from-neutral-dark/85 via-neutral-dark/50 to-transparent" style={{ zIndex: 2 }} />
+      <div className="absolute inset-0 bg-linear-to-t from-neutral-dark/55 via-transparent to-transparent" style={{ zIndex: 2 }} />
+
+      {/* === Slide Content (z-index 3) === */}
+      <div
+        className="relative h-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col justify-center transition-opacity duration-300"
+        style={{ zIndex: 3, opacity: transitioning ? 0 : 1 }}
+      >
+        <div className="max-w-xl">
+          {/* Tag badge */}
+          <span className="inline-block bg-primary text-white text-[10px] sm:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3 sm:mb-4">
+            {slide.tag}
+          </span>
+
+          {/* Title */}
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md mb-2 sm:mb-3">
+            {slide.title}
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-xs sm:text-sm lg:text-base text-white/85 font-medium leading-relaxed mb-4 sm:mb-6 max-w-md drop-shadow">
+            {slide.subtitle}
+          </p>
+
+          {/* CTA */}
+          <Link
+            href={slide.cta.href}
+            className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-xs sm:text-sm shadow-lg transition-all active:scale-95"
+          >
+            <span>{slide.cta.label}</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </div>
+
+      {/* === Prev/Next Controls (z-index 4) === */}
+      <button
+        onClick={prev}
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/30 hover:bg-black/55 text-white flex items-center justify-center backdrop-blur-sm transition-all active:scale-90"
+        aria-label="Previous slide"
+        style={{ zIndex: 4 }}
+      >
+        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/30 hover:bg-black/55 text-white flex items-center justify-center backdrop-blur-sm transition-all active:scale-90"
+        aria-label="Next slide"
+        style={{ zIndex: 4 }}
+      >
+        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+      </button>
+
+      {/* === Dot Indicators (z-index 4) === */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 4 }}>
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className={`rounded-full transition-all duration-300 ${
+              i === current ? "w-6 h-2.5 bg-white" : "w-2.5 h-2.5 bg-white/45 hover:bg-white/70"
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* === Slide counter (top-right) === */}
+      <div
+        className="absolute top-3 right-3 sm:right-6 bg-black/30 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full"
+        style={{ zIndex: 4 }}
+      >
+        {current + 1} / {slides.length}
       </div>
     </section>
   );

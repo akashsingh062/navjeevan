@@ -12,71 +12,62 @@ interface TeacherCardProps {
 export default function TeacherCard({ member }: TeacherCardProps) {
   const [imageError, setImageError] = useState(false);
 
-  // Get initials for the fallback avatar
   const getInitials = (name: string) => {
-    // Strip prefixes like Shri, Smt., Ms., Dr.
-    const cleanName = name.replace(/^(Shri|Smt\.|Ms\.|Mr\.|Dr\.)\s+/i, "");
-    const parts = cleanName.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-    }
-    return (parts[0] ? parts[0][0] : "NJ").toUpperCase();
+    const clean = name.replace(/^(Shri|Smt\.|Ms\.|Mr\.|Dr\.)\s+/i, "").trim().split(/\s+/);
+    if (clean.length >= 2) return (clean[0][0] + clean[clean.length - 1][0]).toUpperCase();
+    return (clean[0]?.[0] ?? "NJ").toUpperCase();
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col h-full group">
+    <div className="bg-white rounded-2xl border border-border shadow-sm hover:shadow-md hover:border-primary/20 transition-all overflow-hidden flex flex-row items-center gap-0 group">
       
-      {/* Teacher Photograph Section */}
-      <div className="relative aspect-square w-full bg-neutral-light overflow-hidden flex items-center justify-center">
+      {/* Avatar — square on left, full height */}
+      <div className="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 bg-neutral-light overflow-hidden self-stretch flex items-center justify-center">
         {member.imageUrl && !imageError ? (
           <Image
             src={member.imageUrl}
-            alt={`Photograph of ${member.name}`}
+            alt={`Photo of ${member.name}`}
             fill
-            sizes="(max-w-768px) 100vw, (max-w-1200px) 33vw, 250px"
+            sizes="96px"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             onError={() => setImageError(true)}
             loading="lazy"
           />
         ) : (
-          /* Fallback Initials Badge */
-          <div className="absolute inset-0 bg-linear-to-tr from-primary to-accent/40 flex flex-col items-center justify-center text-white">
-            <span className="text-4xl font-black tracking-wider drop-shadow-sm select-none">
+          <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <span className="text-2xl font-black text-primary select-none">
               {getInitials(member.name)}
-            </span>
-            <span className="text-[10px] mt-1 uppercase font-bold opacity-75 tracking-widest select-none">
-              Nav Jeevan Faculty
             </span>
           </div>
         )}
       </div>
 
-      {/* Teacher Profile Content Section */}
-      <div className="p-5 flex-1 flex flex-col justify-between">
-        <div>
-          {/* Faculty Name */}
-          <h3 className="text-base font-extrabold text-neutral-dark leading-snug group-hover:text-primary transition-colors">
-            {member.name}
-          </h3>
-          
-          {/* Subject Badge */}
-          <div className="mt-1 flex items-center gap-1.5 text-accent font-extrabold text-xs uppercase tracking-wide">
-            <Award className="w-3.5 h-3.5" />
-            <span>{member.subject}</span>
-          </div>
+      {/* Content — right side */}
+      <div className="flex-1 min-w-0 px-3.5 py-3">
+        <h3 className="text-sm font-extrabold text-neutral-dark leading-tight truncate group-hover:text-primary transition-colors">
+          {member.name}
+        </h3>
+        <div className="flex items-center gap-1 mt-0.5 text-accent">
+          <Award className="w-3 h-3 shrink-0" />
+          <span className="text-xs font-bold uppercase tracking-wide truncate">{member.subject}</span>
         </div>
 
-        {/* Credentials & Details Grid */}
-        <div className="mt-5 pt-4 border-t border-gray-100 flex flex-col gap-2.5 text-xs text-neutral-body">
-          <div className="flex items-start gap-2 font-medium">
-            <GraduationCap className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-            <span>{member.qualification}</span>
+        {(member.qualification || member.experience) && (
+          <div className="mt-2 flex flex-col gap-1">
+            {member.qualification && (
+              <div className="flex items-center gap-1.5 text-neutral-body">
+                <GraduationCap className="w-3 h-3 shrink-0 text-primary" />
+                <span className="text-[11px] font-medium truncate">{member.qualification}</span>
+              </div>
+            )}
+            {member.experience && (
+              <div className="flex items-center gap-1.5 text-neutral-body">
+                <Briefcase className="w-3 h-3 shrink-0 text-primary" />
+                <span className="text-[11px] font-medium">{member.experience} exp.</span>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2 font-medium">
-            <Briefcase className="w-4 h-4 text-primary shrink-0" />
-            <span>{member.experience} Teaching Experience</span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

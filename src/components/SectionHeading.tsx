@@ -4,25 +4,22 @@ interface SectionHeadingProps {
   title: string;
   subtitle?: string;
   centered?: boolean;
+  accent?: string; // optional small tag above title
 }
 
-export default function SectionHeading({
-  title,
-  subtitle,
-  centered = false,
-}: SectionHeadingProps) {
+export default function SectionHeading({ title, subtitle, centered = false, accent }: SectionHeadingProps) {
   return (
-    <div className={`mb-10 ${centered ? "text-center" : "text-left"}`}>
-      <h2 className="text-2xl md:text-3xl font-extrabold text-neutral-dark tracking-tight leading-tight">
+    <div className={`flex flex-col gap-2 ${centered ? "items-center text-center" : "items-start text-left"}`}>
+      {accent && (
+        <span className="text-[10px] uppercase font-black text-primary bg-primary-light px-3 py-1 rounded-full tracking-widest">
+          {accent}
+        </span>
+      )}
+      <h2 className="text-xl sm:text-2xl font-black text-neutral-dark leading-tight tracking-tight">
         {title}
       </h2>
-      <div
-        className={`h-1 w-16 bg-primary mt-2 rounded-full ${
-          centered ? "mx-auto" : "mr-auto"
-        }`}
-      />
       {subtitle && (
-        <p className="mt-3 text-base text-neutral-body max-w-2xl font-normal leading-relaxed">
+        <p className="text-sm text-neutral-body leading-relaxed max-w-2xl font-medium">
           {subtitle}
         </p>
       )}

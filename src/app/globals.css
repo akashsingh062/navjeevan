@@ -1,23 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-accent: #16a34a;
-  --color-accent-hover: #15803d;
-  --color-brand-red: #dc2626;
-  --color-brand-yellow: #ca8a04;
-  --color-neutral-dark: #111827;
-  --color-neutral-light: #f3f4f6;
-  --color-neutral-body: #4b5563;
-  --font-sans: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* === Primary: Deep Saffron === */
+  --color-primary: #D4621A;
+  --color-primary-hover: #B8521A;
+  --color-primary-light: #FEF0E6;
+
+  /* === Accent: Forest Green === */
+  --color-accent: #1A6B45;
+  --color-accent-hover: #155838;
+  --color-accent-light: #E6F4ED;
+
+  /* === Neutrals === */
+  --color-neutral-dark: #1A1A2E;
+  --color-neutral-body: #4A5568;
+  --color-neutral-light: #F7F5F2;
+  --color-surface: #FFFFFF;
+  --color-border: #E8E4DF;
+
+  /* === Status Colors === */
+  --color-brand-red: #DC2626;
+  --color-brand-amber: #D97706;
+  --color-brand-blue: #2563EB;
+  --color-brand-purple: #7C3AED;
+
+  /* === Spacing === */
+  --bottom-nav-height: 64px;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #111827;
-  --primary: #2563eb;
-  --accent: #16a34a;
+  --background: #FAFAF7;
+  --foreground: #1A1A2E;
+}
+
+/* ===========================
+   BASE
+=========================== */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -26,17 +47,80 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* Bottom padding for sticky bottom nav on mobile */
+  padding-bottom: var(--bottom-nav-height);
 }
 
-/* Touch target optimizations for mobile devices */
+@media (min-width: 1024px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* ===========================
+   TOUCH & ACCESSIBILITY
+=========================== */
 button, a {
   min-height: 44px;
   min-width: 44px;
 }
 
-/* High contrast visual focus outline for accessibility */
 *:focus-visible {
-  outline: 3px solid #2563eb;
+  outline: 3px solid #D4621A;
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
+/* ===========================
+   UTILITIES
+=========================== */
+@utility wrap-break-word {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+@utility hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===========================
+   ANIMATIONS
+=========================== */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.15) 50%, transparent 75%);
+  background-size: 200% auto;
+  animation: shimmer 2.5s linear infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}

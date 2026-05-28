@@ -1,82 +1,85 @@
 import React from "react";
 import { Notice } from "@/types";
-import { Calendar, AlertCircle, Paperclip } from "lucide-react";
+import { Calendar, AlertTriangle, Paperclip, FileDown } from "lucide-react";
 
 interface NoticeCardProps {
   notice: Notice;
 }
 
 export default function NoticeCard({ notice }: NoticeCardProps) {
-  // Format date helper (simple format to ensure fast execution and zero third-party dependencies)
   const formatDate = (isoString: string) => {
     try {
-      const date = new Date(isoString);
-      return date.toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
+      return new Date(isoString).toLocaleDateString("en-IN", {
+        day: "numeric", month: "short", year: "numeric",
       });
-    } catch {
-      return isoString;
-    }
+    } catch { return isoString; }
   };
 
-  // Get color configurations based on category
-  const categoryStyles = {
-    Admission: { bg: "bg-blue-50 text-blue-800 border-blue-200", badge: "bg-blue-600 text-white" },
-    Holiday: { bg: "bg-emerald-50 text-emerald-800 border-emerald-200", badge: "bg-emerald-600 text-white" },
-    Exam: { bg: "bg-red-50 text-red-800 border-red-200", badge: "bg-red-600 text-white" },
-    General: { bg: "bg-amber-50 text-amber-800 border-amber-200", badge: "bg-amber-600 text-white" }
+  const categoryConfig = {
+    Admission: { badge: "bg-blue-100 text-blue-800", border: "border-l-blue-500" },
+    Holiday:   { badge: "bg-emerald-100 text-emerald-800", border: "border-l-emerald-500" },
+    Exam:      { badge: "bg-red-100 text-red-800", border: "border-l-red-500" },
+    General:   { badge: "bg-amber-100 text-amber-800", border: "border-l-amber-500" },
+    Others:    { badge: "bg-purple-100 text-purple-800", border: "border-l-purple-500" },
   };
 
-  const style = categoryStyles[notice.category] || categoryStyles.General;
+  const importanceBorder = {
+    red:    "border-l-red-500",
+    amber:  "border-l-amber-500",
+    green:  "border-l-emerald-500",
+    blue:   "border-l-blue-500",
+    purple: "border-l-purple-500",
+  };
+
+  const cfg = categoryConfig[notice.category] || categoryConfig.General;
+  const borderColor = notice.isImportant
+    ? (importanceBorder[notice.importanceColor ?? "red"] ?? "border-l-red-500")
+    : cfg.border;
 
   return (
-    <article 
-      className={`p-5 rounded-2xl border transition-all ${
-        notice.isImportant 
-          ? "border-primary bg-primary/5 shadow-sm" 
-          : "border-gray-200 bg-white hover:border-gray-300"
-      }`}
+    <article
+      className={`bg-white rounded-2xl border border-border border-l-4 ${borderColor} shadow-sm overflow-hidden wrap-break-word transition-all hover:shadow-md`}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-        {/* Category Tag */}
-        <span className={`text-[11px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider ${style.badge}`}>
-          {notice.category}
-        </span>
-
-        {/* Date Display */}
-        <div className="flex items-center gap-1.5 text-xs text-neutral-body font-medium">
-          <Calendar className="w-3.5 h-3.5 text-neutral-body" />
-          <time dateTime={notice.date}>{formatDate(notice.date)}</time>
+      <div className="px-4 pt-4 pb-3">
+        {/* Top row: badge + date */}
+        <div className="flex items-center justify-between gap-2 mb-2.5">
+          <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase tracking-wider shrink-0 ${cfg.badge}`}>
+            {notice.category}
+          </span>
+          <div className="flex items-center gap-1 text-[11px] text-neutral-body font-medium shrink-0">
+            <Calendar className="w-3 h-3" />
+            <time dateTime={notice.date}>{formatDate(notice.date)}</time>
+          </div>
         </div>
+
+        {/* Title */}
+        <h3 className="text-sm font-extrabold text-neutral-dark leading-snug flex items-start gap-1.5 wrap-break-word">
+          {notice.isImportant && (
+            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" aria-label="Important" />
+          )}
+          <span>{notice.title}</span>
+        </h3>
+
+        {/* Description */}
+        <p className="text-xs text-neutral-body leading-relaxed mt-2 whitespace-pre-line wrap-break-word line-clamp-3">
+          {notice.description}
+        </p>
       </div>
 
-      {/* Notice Title */}
-      <h3 className="text-base font-extrabold text-neutral-dark mb-2 flex items-start gap-2 leading-snug">
-        {notice.isImportant && (
-          <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" aria-label="Important Announcement" />
-        )}
-        <span>{notice.title}</span>
-      </h3>
-
-      {/* Notice Body Text */}
-      <p className="text-sm text-neutral-body leading-relaxed font-normal whitespace-pre-line">
-        {notice.description}
-      </p>
-
+      {/* Attachment — full width tap area */}
       {notice.attachmentUrl && (
-        <div className="mt-4 pt-3.5 border-t border-gray-100 flex">
-          <a
-            href={notice.attachmentUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl text-xs font-extrabold transition-all cursor-pointer"
-          >
-            <Paperclip className="w-3.5 h-3.5" />
-            <span>Download / View Official Circular</span>
-          </a>
-        </div>
+        <a
+          href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-4 py-3 bg-primary-light border-t border-border text-primary text-xs font-bold transition-colors hover:bg-primary/15 active:bg-primary/20 w-full"
+        >
+          <div className="flex items-center gap-1.5 flex-1">
+            <Paperclip className="w-3.5 h-3.5 shrink-0" />
+            <span>View / Download Circular</span>
+          </div>
+          <FileDown className="w-3.5 h-3.5 shrink-0" />
+        </a>
       )}
     </article>
   );

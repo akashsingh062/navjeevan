@@ -10,7 +10,8 @@ const gallerySchema = z.object({
     "Classroom Activities",
     "Cultural Events",
     "Independence Day",
-    "Prize Distribution"
+    "Prize Distribution",
+    "Others"
   ]),
   imageUrl: z.string().url("Please provide a valid image URL link")
 });
