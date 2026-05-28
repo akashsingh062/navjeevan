@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import SectionHeading from "@/components/SectionHeading";
+import ConfirmModal from "@/components/ConfirmModal";
 import { PlusCircle, FileText, Camera, Users, AlertCircle, Save, Lock, LogIn, LogOut, Trash2, Paperclip, Edit } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
@@ -116,6 +117,30 @@ export default function AdminDashboard() {
   const [editingFacultyId, setEditingFacultyId] = useState<string | null>(null);
   const [selectedNoticeIds, setSelectedNoticeIds] = useState<string[]>([]);
   const [selectedGalleryIds, setSelectedGalleryIds] = useState<string[]>([]);
+
+  const [confirmModalConfig, setConfirmModalConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: () => {}
+  });
+
+  const triggerConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setConfirmModalConfig({
+      isOpen: true,
+      title,
+      message,
+      onConfirm: () => {
+        onConfirm();
+        setConfirmModalConfig(prev => ({ ...prev, isOpen: false }));
+      }
+    });
+  };
 
   const [noticesList, setNoticesList] = useState<Notice[]>([]);
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
@@ -821,7 +846,13 @@ export default function AdminDashboard() {
                       {selectedNoticeIds.length > 0 && (
                         <button
                           type="button"
-                          onClick={handleBulkDeleteNotices}
+                          onClick={() => {
+                            triggerConfirm(
+                              "Delete Selected Notices",
+                              `Are you sure you want to permanently delete all ${selectedNoticeIds.length} selected notices? This action cannot be undone.`,
+                              handleBulkDeleteNotices
+                            );
+                          }}
                           className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
                         >
                           Delete Selected ({selectedNoticeIds.length})
@@ -884,43 +915,30 @@ export default function AdminDashboard() {
                             </a>
                           )}
                         </div>
-                        {deletingNoticeId === (notice.id || notice._id || null) ? (
-                          <div className="flex gap-1.5 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteNotice(notice.id || notice._id || "")}
-                              className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDeletingNoticeId(null)}
-                              className="px-2.5 py-1.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                            <div className="flex gap-2 shrink-0">
-                              <button
-                                type="button"
-                                onClick={() => handleStartEditNotice(notice)}
-                                className="flex items-center justify-center p-2 border border-gray-200 hover:bg-neutral-light text-neutral-dark rounded-xl transition-all cursor-pointer focus:outline-none"
-                                title="Edit Notice"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setDeletingNoticeId(notice.id || notice._id || null)}
-                                className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                                title="Delete Notice"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                        )}
+                        <div className="flex gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleStartEditNotice(notice)}
+                            className="flex items-center justify-center p-2 border border-gray-200 hover:bg-neutral-light text-neutral-dark rounded-xl transition-all cursor-pointer focus:outline-none"
+                            title="Edit Notice"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Notice",
+                                "Are you sure you want to permanently delete this notice bulletin? This action cannot be undone.",
+                                () => handleDeleteNotice(notice.id || notice._id || "")
+                              );
+                            }}
+                            className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                            title="Delete Notice"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1132,7 +1150,13 @@ export default function AdminDashboard() {
                       {selectedGalleryIds.length > 0 && (
                         <button
                           type="button"
-                          onClick={handleBulkDeleteGallery}
+                          onClick={() => {
+                            triggerConfirm(
+                              "Delete Selected Photos",
+                              `Are you sure you want to permanently delete all ${selectedGalleryIds.length} selected event photos? This action cannot be undone.`,
+                              handleBulkDeleteGallery
+                            );
+                          }}
                           className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
                         >
                           Delete Selected ({selectedGalleryIds.length})
@@ -1180,33 +1204,20 @@ export default function AdminDashboard() {
                               {photo.title}
                             </h5>
                           </div>
-                          {deletingGalleryId === (photo.id || photo._id || null) ? (
-                            <div className="flex gap-1.5 w-full">
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteGallery(photo.id || photo._id || "")}
-                                className="flex-1 py-1.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-[10px] rounded-lg transition-all text-center focus:outline-none cursor-pointer"
-                              >
-                                Confirm
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setDeletingGalleryId(null)}
-                                className="flex-1 py-1.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark font-extrabold text-[10px] rounded-lg transition-all text-center focus:outline-none cursor-pointer"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => setDeletingGalleryId(photo.id || photo._id || null)}
-                              className="w-full py-1.5 border border-red-200 hover:bg-red-50 text-red-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer focus:outline-none"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                              <span>Delete Photo</span>
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Photo",
+                                "Are you sure you want to permanently delete this photo from the school gallery? This action cannot be undone.",
+                                () => handleDeleteGallery(photo.id || photo._id || "")
+                              );
+                            }}
+                            className="w-full py-1.5 border border-red-200 hover:bg-red-50 text-red-600 font-extrabold text-[10px] rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer focus:outline-none"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete Photo</span>
+                          </button>
                         </div>
                       </div>
                     ))}
@@ -1394,43 +1405,30 @@ export default function AdminDashboard() {
                           <p className="text-[10px] text-accent font-extrabold mt-0.5 truncate">{member.subject}</p>
                           <p className="text-[9px] text-neutral-body mt-0.5 truncate">{member.qualification}</p>
                         </div>
-                        {deletingFacultyId === (member.id || member._id || null) ? (
-                          <div className="flex gap-1 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteFaculty(member.id || member._id || "")}
-                              className="px-2 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[9px] font-extrabold uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
-                            >
-                              Confirm
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDeletingFacultyId(null)}
-                              className="px-2 py-1.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark text-[9px] font-extrabold uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex gap-1.5 shrink-0">
-                            <button
-                              type="button"
-                              onClick={() => handleStartEditFaculty(member)}
-                              className="flex items-center justify-center p-2 border border-blue-200 hover:bg-blue-50 text-blue-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                              title="Edit Faculty Profile"
-                            >
-                              <Edit className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDeletingFacultyId(member.id || member._id || null)}
-                              className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                              title="Delete Faculty Profile"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        )}
+                        <div className="flex gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleStartEditFaculty(member)}
+                            className="flex items-center justify-center p-2 border border-blue-200 hover:bg-blue-50 text-blue-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                            title="Edit Faculty Profile"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Teacher Profile",
+                                `Are you sure you want to permanently delete the profile card of "${member.name}"? This action cannot be undone.`,
+                                () => handleDeleteFaculty(member.id || member._id || "")
+                              );
+                            }}
+                            className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                            title="Delete Faculty Profile"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -1442,6 +1440,14 @@ export default function AdminDashboard() {
         </div>
 
       </div>
+
+      <ConfirmModal
+        isOpen={confirmModalConfig.isOpen}
+        onClose={() => setConfirmModalConfig(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={confirmModalConfig.onConfirm}
+        title={confirmModalConfig.title}
+        message={confirmModalConfig.message}
+      />
     </div>
   );
 }
