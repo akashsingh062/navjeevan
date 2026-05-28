@@ -53,7 +53,7 @@ export default function HeroSection() {
   const slide = slides[current];
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: "clamp(230px, 46vw, 540px)" }}>
+    <section className="relative w-full overflow-hidden" style={{ height: "clamp(380px, 50vh, 800px)" }}>
 
       
       {slides.map((s, i) => (
