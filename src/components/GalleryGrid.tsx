@@ -397,16 +397,30 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
       )}
 
       {/* Image Modal Lightbox Pop-up portal */}
-      {selectedItem && (
-        <ImageModal
-          isOpen={!!selectedItem}
-          imageUrl={selectedItem.imageUrl}
-          category={selectedItem.category}
-          title={selectedItem.title}
-          date={selectedItem.uploadedAt}
-          onClose={() => setSelectedItem(null)}
-        />
-      )}
+      {selectedItem && (() => {
+        const currentIndex = displayedItems.findIndex(x => (x.id || x._id) === (selectedItem.id || selectedItem._id));
+        const handlePrev = displayedItems.length > 1 ? () => {
+          const prevIndex = (currentIndex - 1 + displayedItems.length) % displayedItems.length;
+          setSelectedItem(displayedItems[prevIndex]);
+        } : undefined;
+        const handleNext = displayedItems.length > 1 ? () => {
+          const nextIndex = (currentIndex + 1) % displayedItems.length;
+          setSelectedItem(displayedItems[nextIndex]);
+        } : undefined;
+
+        return (
+          <ImageModal
+            isOpen={!!selectedItem}
+            imageUrl={selectedItem.imageUrl}
+            category={selectedItem.category}
+            title={selectedItem.title}
+            date={selectedItem.uploadedAt}
+            onClose={() => setSelectedItem(null)}
+            onPrev={handlePrev}
+            onNext={handleNext}
+          />
+        );
+      })()}
     </div>
   );
 }

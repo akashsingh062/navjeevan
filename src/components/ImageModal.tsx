@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { X, Calendar, Download } from "lucide-react";
+import { X, Calendar, Download, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ImageModalProps {
@@ -13,6 +13,8 @@ interface ImageModalProps {
   title: string;
   date?: string;
   onClose: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
 }
 
 export default function ImageModal({
@@ -21,12 +23,17 @@ export default function ImageModal({
   category,
   title,
   date,
-  onClose
+  onClose,
+  onPrev,
+  onNext
 }: ImageModalProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
   
   useEffect(() => {
@@ -44,10 +51,12 @@ export default function ImageModal({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft" && onPrev) onPrev();
+      if (e.key === "ArrowRight" && onNext) onNext();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
+  }, [onClose, onPrev, onNext]);
 
   const formatDate = (isoString: string) => {
     try {
@@ -133,6 +142,34 @@ export default function ImageModal({
                 className="object-contain"
                 priority
               />
+
+              {/* Prev Button */}
+              {onPrev && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onPrev();
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all active:scale-90 focus:outline-none cursor-pointer"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              )}
+
+              {/* Next Button */}
+              {onNext && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNext();
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-2.5 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all active:scale-90 focus:outline-none cursor-pointer"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              )}
             </div>
 
             {/* Description panel */}
