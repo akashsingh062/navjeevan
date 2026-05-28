@@ -50,7 +50,7 @@ export default function CTASection() {
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-white/60">
           <Phone className="w-3.5 h-3.5" />
           <span>
-            Helpline: <strong className="text-white/90">+91 99210 08807</strong>
+            Helpline: <strong className="text-white/90">+91 99356 61144</strong>
           </span>
         </div>
       </div>

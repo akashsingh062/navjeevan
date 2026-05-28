@@ -315,7 +315,7 @@ export default function Navbar() {
                 </button>
 
                 <a
-                  href="tel:+91 99210 08807"
+                  href="tel:+919935661144"
                   className="p-2.5 bg-primary-light text-primary rounded-xl"
                   aria-label="Call"
                 >
@@ -397,11 +397,11 @@ export default function Navbar() {
 
             {/* Phone */}
             <a
-              href="tel:+91 99210 08807"
+              href="tel:+919935661144"
               className="ml-auto flex items-center gap-1.5 px-3 h-full text-white/90 hover:bg-white/15 text-[11px] font-bold border-l border-white/20 shrink-0 transition-colors"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>99210 08807</span>
+              <span>99356 61144</span>
             </a>
           </div>
         </div>

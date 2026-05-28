@@ -236,7 +236,7 @@ export default function Admissions() {
 
           <div className="flex flex-wrap gap-3.5 shrink-0">
             <a
-              href="https://wa.me/9199210 08807?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%2520admission%2520inquiry."
+              href="https://wa.me/919935661144?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%2520admission%2520inquiry."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm transition-all shadow-md focus:outline-none shrink-0 cursor-pointer"

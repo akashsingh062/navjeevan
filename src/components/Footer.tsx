@@ -101,7 +101,7 @@ export default function Footer() {
               <div className="flex gap-2.5 items-center">
                 {}
                 <a
-                  href="https://wa.me/9199210 08807?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                  href="https://wa.me/919935661144?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl transition-all duration-300 shadow-2xs hover:shadow-xs focus:outline-none"
@@ -325,9 +325,9 @@ export default function Footer() {
             description:
               "Nav Jeevan Public School (NJPS) is a co-educational CBSE-pattern school in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh, offering English and Hindi medium education from Nursery to Class 8 with smart classrooms, computer labs, and holistic development programs.",
             url: "https://njpskhabharabhar.vercel.app",
-            logo: "https+91 99210 08807rabhar.vercel.app/opengraph-image",
+            logo: "https://njpskhabharabhar.vercel.app/opengraph-image",
             image: "https://njpskhabharabhar.vercel.app/about-students.png",
-            telephone: "+9199210 08807",
+            telephone: "+919935661144",
             email: "info@navjeevanschool.org",
             foundingDate: "2008",
             award: "Affiliated to CBSE Pattern",
