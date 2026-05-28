@@ -722,14 +722,14 @@ export default function AdminDashboard() {
               </div>
 
               <div className="flex flex-col gap-2 mt-2">
-                <label className="text-xs font-extrabold text-neutral-dark">Choose Importance & Color Tag</label>
+                <label className="text-xs font-extrabold text-neutral-dark">Choose Importance Tag</label>
                 <div className="flex items-center gap-2.5 flex-wrap">
                   {[
-                    { color: "red", label: "Critical (Red)", isImportant: true, bg: "bg-red-50 text-red-800 border-red-200 hover:bg-red-100", dot: "bg-red-500" },
-                    { color: "amber", label: "High (Amber)", isImportant: true, bg: "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100", dot: "bg-amber-500" },
-                    { color: "blue", label: "Info (Blue)", isImportant: false, bg: "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100", dot: "bg-blue-500" },
-                    { color: "green", label: "Normal (Green)", isImportant: false, bg: "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100", dot: "bg-emerald-500" },
-                    { color: "purple", label: "Special (Purple)", isImportant: false, bg: "bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100", dot: "bg-purple-500" }
+                    { color: "red", label: "Urgent Alert", isImportant: true, bg: "bg-red-50 text-red-800 border-red-200 hover:bg-red-100", dot: "bg-red-500" },
+                    { color: "amber", label: "Important", isImportant: true, bg: "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100", dot: "bg-amber-500" },
+                    { color: "blue", label: "Information", isImportant: false, bg: "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100", dot: "bg-blue-500" },
+                    { color: "green", label: "General Info", isImportant: false, bg: "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100", dot: "bg-emerald-500" },
+                    { color: "purple", label: "Special Notice", isImportant: false, bg: "bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100", dot: "bg-purple-500" }
                   ].map((opt) => (
                     <button
                       key={opt.color}
@@ -753,7 +753,7 @@ export default function AdminDashboard() {
                 <input type="hidden" {...noticeForm.register("importanceColor")} />
                 <input type="hidden" {...noticeForm.register("isImportant")} />
                 <p className="text-[10px] text-neutral-body leading-tight mt-0.5">
-                  Notice items with **Critical (Red)** and **High (Amber)** tags are treated as high priority and remain sticky at the top of the bulletins.
+                  Notice bulletins marked as **Urgent Alert** or **Important** are treated as high priority and remain sticky at the top of the feed.
                 </p>
               </div>
 
