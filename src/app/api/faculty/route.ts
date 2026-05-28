@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const facultySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long"),
-  subject: z.string().min(2, "Subject must be at least 2 characters long"),
+  subject: z.any().optional(),
   qualification: z.any().optional(),
   experience: z.any().optional(),
   imageUrl: z.any().optional()

@@ -38,7 +38,7 @@ const GallerySchema = new Schema({
 
 const FacultySchema = new Schema({
   name: { type: String, required: true },
-  subject: { type: String, required: true },
+  subject: { type: String, default: "" },
   qualification: { type: String, default: "" },
   experience: { type: String, default: "" },
   imageUrl: { type: String, default: "" },

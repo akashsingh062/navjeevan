@@ -27,7 +27,7 @@ interface GalleryFormInput {
 
 interface FacultyFormInput {
   name: string;
-  subject: string;
+  subject?: string;
   qualification: string;
   experience: string;
   imageUrl: string;
@@ -822,7 +822,7 @@ export default function AdminDashboard() {
                         <button
                           type="button"
                           onClick={handleBulkDeleteNotices}
-                          className="px-2.5 py-1.5 bg-red-650 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                          className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
                         >
                           Delete Selected ({selectedNoticeIds.length})
                         </button>
@@ -1133,7 +1133,7 @@ export default function AdminDashboard() {
                         <button
                           type="button"
                           onClick={handleBulkDeleteGallery}
-                          className="px-2.5 py-1.5 bg-red-650 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                          className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
                         >
                           Delete Selected ({selectedGalleryIds.length})
                         </button>
@@ -1247,7 +1247,6 @@ export default function AdminDashboard() {
                   <input
                     type="text"
                     placeholder="e.g. Science & Biology"
-                    required
                     className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
                     {...facultyForm.register("subject")}
                   />
