@@ -100,7 +100,7 @@ export default function Home() {
     });
   }, []);
 
-  const previewNotices = notices.slice(0, 4);
+  const previewNotices = notices.slice(0, 5);
   const previewGallery = galleryItems.slice(0, 4);
 
   return (
@@ -128,7 +128,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="p-4 flex flex-col gap-3">
+              <div className="p-4">
                 {loading ? (
                   <p className="text-xs text-neutral-body italic py-4 text-center">
                     {language === "en" ? "Loading notices..." : "सूचनाएँ लोड हो रही हैं..."}
@@ -138,24 +138,82 @@ export default function Home() {
                     {language === "en" ? "No notices posted yet." : "अभी तक कोई सूचना पोस्ट नहीं की गई है।"}
                   </p>
                 ) : (
-                  previewNotices.map((notice) => (
-                    <div key={notice.id} className="flex items-center justify-between gap-4 py-2.5 border-b border-gray-100 last:border-0 hover:bg-neutral-light/50 px-2 rounded-xl transition-colors">
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                        <Link href="/notices" className="text-xs font-bold text-neutral-dark hover:text-primary transition-colors truncate block">
-                          {notice.title}
-                        </Link>
-                        {notice.attachmentUrl && (
-                          <span className="shrink-0" title="Attachment circular available">
-                            <Paperclip className="w-3 h-3 text-neutral-body/45" />
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[10px] text-neutral-body font-semibold shrink-0">
-                        {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
-                      </span>
+                  <>
+                    {/* Desktop View: Normal detailed notice cards */}
+                    <div className="hidden md:flex flex-col gap-4">
+                      {previewNotices.map((notice) => (
+                        <NoticeCard key={notice.id || notice._id} notice={notice} />
+                      ))}
                     </div>
-                  ))
+
+                    {/* Mobile View: Compact, distinguishable list layout */}
+                    <div className="md:hidden flex flex-col gap-3">
+                      {previewNotices.map((notice) => {
+                        const isImportant = notice.isImportant;
+                        const borderColors = {
+                          red: "border-l-red-500",
+                          amber: "border-l-amber-500",
+                          green: "border-l-emerald-500",
+                          blue: "border-l-blue-500",
+                          purple: "border-l-purple-500"
+                        };
+                        const categoryBorders = {
+                          Admission: "border-l-blue-500",
+                          Holiday: "border-l-emerald-500",
+                          Exam: "border-l-red-500",
+                          General: "border-l-amber-500",
+                          Others: "border-l-purple-500"
+                        };
+                        const categoryBadges = {
+                          Admission: "bg-blue-55/10 text-blue-700 border border-blue-200/50",
+                          Holiday: "bg-emerald-55/10 text-emerald-700 border border-emerald-200/50",
+                          Exam: "bg-red-55/10 text-red-700 border border-red-200/50",
+                          General: "bg-amber-55/10 text-amber-700 border border-amber-200/50",
+                          Others: "bg-purple-55/10 text-purple-700 border border-purple-200/50"
+                        };
+                        const activeBorderColor = isImportant
+                          ? (borderColors[notice.importanceColor ?? "red"] ?? "border-l-red-500")
+                          : (categoryBorders[notice.category] ?? categoryBorders.General);
+                        const activeBadgeStyle = categoryBadges[notice.category] ?? categoryBadges.General;
+
+                        return (
+                          <div
+                            key={notice.id || notice._id}
+                            className={`p-3 bg-neutral-light border border-gray-200 border-l-4 ${activeBorderColor} rounded-xl shadow-3xs flex flex-col gap-2 text-left`}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider ${activeBadgeStyle}`}>
+                                {notice.category}
+                              </span>
+                              <span className="text-[9px] text-neutral-body font-bold">
+                                {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                              </span>
+                            </div>
+
+                            <div className="flex items-start justify-between gap-2.5 min-w-0">
+                              <h4 className="text-xs font-extrabold text-neutral-dark leading-snug break-words flex-1">
+                                {isImportant && (
+                                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 align-middle animate-pulse" />
+                                )}
+                                <span className="align-middle">{notice.title}</span>
+                              </h4>
+                              {notice.attachmentUrl && (
+                                <a
+                                  href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="p-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors shrink-0 flex items-center justify-center"
+                                  title="Download Circular"
+                                >
+                                  <Paperclip className="w-3.5 h-3.5" />
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
                 )}
               </div>
             </div>
