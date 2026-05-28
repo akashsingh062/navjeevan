@@ -17,6 +17,7 @@ import {
   Award,
   HeartHandshake,
   ShieldCheck,
+  Paperclip,
 } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import NoticeCard from "@/components/NoticeCard";
@@ -138,13 +139,28 @@ export default function Home() {
                   </p>
                 ) : (
                   previewNotices.map((notice) => (
-                    <NoticeCard key={notice.id} notice={notice} />
+                    <div key={notice.id} className="flex items-center justify-between gap-4 py-2.5 border-b border-gray-100 last:border-0 hover:bg-neutral-light/50 px-2 rounded-xl transition-colors">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                        <Link href="/notices" className="text-xs font-bold text-neutral-dark hover:text-primary transition-colors truncate block">
+                          {notice.title}
+                        </Link>
+                        {notice.attachmentUrl && (
+                          <span className="shrink-0" title="Attachment circular available">
+                            <Paperclip className="w-3 h-3 text-neutral-body/45" />
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-neutral-body font-semibold shrink-0">
+                        {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                      </span>
+                    </div>
                   ))
                 )}
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 text-left">
+            <div className="hidden md:flex flex-col gap-4 text-left">
               <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
                 <div className="px-5 py-3.5 bg-neutral-dark text-white flex items-center gap-2">
                   <Lock className="w-4 h-4" />

@@ -27,8 +27,26 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
   const t = translations[language];
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "unset";
-    return () => { document.body.style.overflow = "unset"; };
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+    const originalTop = document.body.style.top;
+    const originalWidth = document.body.style.width;
+    const scrollY = window.scrollY;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+      document.body.style.top = originalTop;
+      document.body.style.width = originalWidth;
+      window.scrollTo(0, scrollY);
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -62,8 +80,13 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", bounce: 0, duration: 0.28 }}
-            className="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-white z-50 flex flex-col shadow-2xl"
-            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+             className="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-white z-50 flex flex-col shadow-2xl"
+             style={{ 
+               paddingBottom: "env(safe-area-inset-bottom)",
+               overflowY: "auto",
+               overscrollBehavior: "contain",
+               WebkitOverflowScrolling: "touch"
+             }}
             role="dialog"
             aria-modal="true"
             aria-label="Navigation Menu"
@@ -84,7 +107,7 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             </div>
 
             {}
-            <nav className="flex-1 py-3 px-3 overflow-y-auto" aria-label="Mobile Navigation">
+             <nav className="py-3 px-3" aria-label="Mobile Navigation">
               {}
               <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
                 <div className="flex items-center gap-2">
@@ -161,6 +184,19 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                   </Link>
                 );
               })}
+
+              {/* Staff Login menu item */}
+              <Link
+                href="/admin"
+                onClick={onClose}
+                className="flex items-center justify-between px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
+              >
+                <div className="flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-neutral-body/50" />
+                  <span>{language === "en" ? "Staff Login" : "स्टाफ लॉगिन"}</span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-neutral-body/50" />
+              </Link>
             </nav>
 
             {/* Quick Actions */}

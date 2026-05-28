@@ -113,6 +113,9 @@ export default function AdminDashboard() {
   const [deletingGalleryId, setDeletingGalleryId] = useState<string | null>(null);
   const [deletingFacultyId, setDeletingFacultyId] = useState<string | null>(null);
   const [editingNoticeId, setEditingNoticeId] = useState<string | null>(null);
+  const [editingFacultyId, setEditingFacultyId] = useState<string | null>(null);
+  const [selectedNoticeIds, setSelectedNoticeIds] = useState<string[]>([]);
+  const [selectedGalleryIds, setSelectedGalleryIds] = useState<string[]>([]);
 
   const [noticesList, setNoticesList] = useState<Notice[]>([]);
   const [facultyList, setFacultyList] = useState<Faculty[]>([]);
@@ -212,6 +215,52 @@ export default function AdminDashboard() {
       }
     } catch {
       toast.error("Failed to connect to gallery delete API.", { id: loadingToast });
+    }
+  };
+
+  const handleBulkDeleteNotices = async () => {
+    if (selectedNoticeIds.length === 0) return;
+    const loadingToast = toast.loading(`Deleting ${selectedNoticeIds.length} notices...`);
+    try {
+      let successCount = 0;
+      let failCount = 0;
+      for (const id of selectedNoticeIds) {
+        const res = await fetch(`/api/notices?id=${id}`, { method: "DELETE" });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      }
+      toast.success(`Successfully deleted ${successCount} notices.${failCount > 0 ? ` Failed to delete ${failCount} notices.` : ""}`, { id: loadingToast });
+      setSelectedNoticeIds([]);
+      refreshData();
+    } catch {
+      toast.error("Failed to execute bulk deletion.", { id: loadingToast });
+    }
+  };
+
+  const handleBulkDeleteGallery = async () => {
+    if (selectedGalleryIds.length === 0) return;
+    const loadingToast = toast.loading(`Deleting ${selectedGalleryIds.length} photos...`);
+    try {
+      let successCount = 0;
+      let failCount = 0;
+      for (const id of selectedGalleryIds) {
+        const res = await fetch(`/api/gallery?id=${id}`, { method: "DELETE" });
+        const result = await res.json();
+        if (res.ok && result.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      }
+      toast.success(`Successfully deleted ${successCount} photos.${failCount > 0 ? ` Failed to delete ${failCount} photos.` : ""}`, { id: loadingToast });
+      setSelectedGalleryIds([]);
+      refreshData();
+    } catch {
+      toast.error("Failed to execute bulk deletion.", { id: loadingToast });
     }
   };
 
@@ -428,24 +477,49 @@ export default function AdminDashboard() {
   };
 
   const onAddFaculty = async (data: FacultyFormInput) => {
-    const loadingToast = toast.loading("Adding teacher profile...");
+    const isEdit = !!editingFacultyId;
+    const loadingToast = toast.loading(isEdit ? "Saving teacher profile changes..." : "Adding teacher profile...");
     try {
-      const res = await fetch("/api/faculty", {
-        method: "POST",
+      const url = isEdit ? `/api/faculty?id=${editingFacultyId}` : "/api/faculty";
+      const method = isEdit ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
       const result = await res.json();
       if (res.ok && result.success) {
-        toast.success(`Teacher profile for "${data.name}" added successfully!`, { id: loadingToast });
-        facultyForm.reset();
+        toast.success(
+          isEdit
+            ? `Teacher profile for "${data.name}" updated successfully!`
+            : `Teacher profile for "${data.name}" added successfully!`,
+          { id: loadingToast }
+        );
+        facultyForm.reset({ name: "", subject: "", qualification: "", experience: "", imageUrl: "" });
+        setEditingFacultyId(null);
         refreshData();
       } else {
-        toast.error(result.message || "Failed to add faculty profile.", { id: loadingToast });
+        toast.error(result.message || "Failed to save faculty profile.", { id: loadingToast });
       }
     } catch {
       toast.error("Failed to connect to faculty API.", { id: loadingToast });
     }
+  };
+
+  const handleStartEditFaculty = (member: Faculty) => {
+    const memberId = member.id || member._id || null;
+    if (!memberId) return;
+
+    setEditingFacultyId(memberId);
+    facultyForm.reset({
+      name: member.name,
+      subject: member.subject,
+      qualification: member.qualification || "",
+      experience: member.experience || "",
+      imageUrl: member.imageUrl || ""
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const tabs = [
@@ -727,13 +801,56 @@ export default function AdminDashboard() {
 
               {/* Live Notices List inside Admin Panel for deletion */}
               <div className="mt-10 border-t border-gray-100 pt-8 text-left">
-                <h4 className="text-sm font-extrabold text-neutral-dark mb-4">Active Notices ({noticesList.length})</h4>
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <h4 className="text-sm font-extrabold text-neutral-dark">Active Notices ({noticesList.length})</h4>
+                  {noticesList.length > 0 && (
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (selectedNoticeIds.length === noticesList.length) {
+                            setSelectedNoticeIds([]);
+                          } else {
+                            setSelectedNoticeIds(noticesList.map(n => n.id || n._id || "").filter(Boolean));
+                          }
+                        }}
+                        className="px-2.5 py-1.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                      >
+                        {selectedNoticeIds.length === noticesList.length ? "Deselect All" : "Select All"}
+                      </button>
+                      {selectedNoticeIds.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleBulkDeleteNotices}
+                          className="px-2.5 py-1.5 bg-red-650 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                        >
+                          Delete Selected ({selectedNoticeIds.length})
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
                 {noticesList.length === 0 ? (
                   <p className="text-xs text-neutral-body italic">No active notices found.</p>
                 ) : (
                   <div className="flex flex-col gap-3.5">
                     {noticesList.map((notice) => (
                       <div key={notice.id || notice._id} className="p-4 bg-neutral-light border border-gray-200 rounded-2xl flex items-start justify-between gap-4 wrap-break-word overflow-hidden">
+                        <div className="pt-0.5">
+                          <input
+                            type="checkbox"
+                            checked={selectedNoticeIds.includes(notice.id || notice._id || "")}
+                            onChange={(e) => {
+                              const id = notice.id || notice._id || "";
+                              if (e.target.checked) {
+                                setSelectedNoticeIds(prev => [...prev, id]);
+                              } else {
+                                setSelectedNoticeIds(prev => prev.filter(x => x !== id));
+                              }
+                            }}
+                            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                          />
+                        </div>
                         <div className="flex-1 flex flex-col gap-1.5 min-w-0">
                           <div className="flex items-center gap-2">
                             <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded tracking-wide border ${
@@ -789,7 +906,7 @@ export default function AdminDashboard() {
                               <button
                                 type="button"
                                 onClick={() => handleStartEditNotice(notice)}
-                                className="p-2 border border-gray-200 hover:bg-neutral-light text-neutral-dark rounded-xl transition-all cursor-pointer focus:outline-none"
+                                className="flex items-center justify-center p-2 border border-gray-200 hover:bg-neutral-light text-neutral-dark rounded-xl transition-all cursor-pointer focus:outline-none"
                                 title="Edit Notice"
                               >
                                 <Edit className="w-4 h-4" />
@@ -797,7 +914,7 @@ export default function AdminDashboard() {
                               <button
                                 type="button"
                                 onClick={() => setDeletingNoticeId(notice.id || notice._id || null)}
-                                className="p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                                className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
                                 title="Delete Notice"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -995,13 +1112,56 @@ export default function AdminDashboard() {
 
               {/* Live Event Photos inside Admin Panel for deletion */}
               <div className="mt-10 border-t border-gray-100 pt-8 text-left">
-                <h4 className="text-sm font-extrabold text-neutral-dark mb-4">Uploaded Gallery Photos ({galleryList.length})</h4>
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                  <h4 className="text-sm font-extrabold text-neutral-dark">Uploaded Gallery Photos ({galleryList.length})</h4>
+                  {galleryList.length > 0 && (
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (selectedGalleryIds.length === galleryList.length) {
+                            setSelectedGalleryIds([]);
+                          } else {
+                            setSelectedGalleryIds(galleryList.map(p => p.id || p._id || "").filter(Boolean));
+                          }
+                        }}
+                        className="px-2.5 py-1.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                      >
+                        {selectedGalleryIds.length === galleryList.length ? "Deselect All" : "Select All"}
+                      </button>
+                      {selectedGalleryIds.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleBulkDeleteGallery}
+                          className="px-2.5 py-1.5 bg-red-650 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                        >
+                          Delete Selected ({selectedGalleryIds.length})
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
                 {galleryList.length === 0 ? (
                   <p className="text-xs text-neutral-body italic">No uploaded event photos found.</p>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     {galleryList.map((photo) => (
                       <div key={photo.id || photo._id} className="bg-neutral-light border border-gray-200 rounded-2xl overflow-hidden shadow-sm relative group flex flex-col h-full">
+                        <div className="absolute top-2.5 left-2.5 z-10 bg-white/80 p-1 rounded-lg backdrop-blur-xs shadow-xs border border-gray-100 flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedGalleryIds.includes(photo.id || photo._id || "")}
+                            onChange={(e) => {
+                              const id = photo.id || photo._id || "";
+                              if (e.target.checked) {
+                                setSelectedGalleryIds(prev => [...prev, id]);
+                              } else {
+                                setSelectedGalleryIds(prev => prev.filter(x => x !== id));
+                              }
+                            }}
+                            className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                          />
+                        </div>
                         <div className="relative aspect-video w-full bg-gray-200 shrink-0">
                           <Image
                             src={photo.imageUrl}
@@ -1060,8 +1220,14 @@ export default function AdminDashboard() {
           {activeTab === "faculty" && (
             <form onSubmit={facultyForm.handleSubmit(onAddFaculty)} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1 text-left mb-2">
-                <h3 className="text-base font-extrabold text-neutral-dark">Register New Teacher</h3>
-                <p className="text-xs text-neutral-body">Adds a teacher profile card to the Faculty portal.</p>
+                <h3 className="text-base font-extrabold text-neutral-dark">
+                  {editingFacultyId ? "Edit Teacher Profile" : "Register New Teacher"}
+                </h3>
+                <p className="text-xs text-neutral-body">
+                  {editingFacultyId 
+                    ? "Modify an existing teacher's profile details." 
+                    : "Adds a teacher profile card to the Faculty portal."}
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1168,14 +1334,37 @@ export default function AdminDashboard() {
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={status === "saving"}
-                className="w-full mt-4 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>{status === "saving" ? "Adding Teacher..." : "Register Teacher Profile"}</span>
-              </button>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={status === "saving"}
+                  className="flex-1 mt-4 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
+                >
+                  {editingFacultyId ? (
+                    <Save className="w-4 h-4" />
+                  ) : (
+                    <PlusCircle className="w-4 h-4" />
+                  )}
+                  <span>
+                    {editingFacultyId 
+                      ? "Save Teacher Changes" 
+                      : (status === "saving" ? "Adding Teacher..." : "Register Teacher Profile")}
+                  </span>
+                </button>
+
+                {editingFacultyId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingFacultyId(null);
+                      facultyForm.reset({ name: "", subject: "", qualification: "", experience: "", imageUrl: "" });
+                    }}
+                    className="mt-4 px-6 py-3.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark font-bold text-sm rounded-xl shadow-sm transition-all focus:outline-none cursor-pointer"
+                  >
+                    Cancel Edit
+                  </button>
+                )}
+              </div>
 
               {/* Live Faculty Profiles inside Admin Panel for deletion */}
               <div className="mt-10 border-t border-gray-100 pt-8 text-left">
@@ -1224,14 +1413,24 @@ export default function AdminDashboard() {
                             </button>
                           </div>
                         ) : (
-                          <button
-                            type="button"
-                            onClick={() => setDeletingFacultyId(member.id || member._id || null)}
-                            className="p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                            title="Delete Faculty Profile"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          <div className="flex gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => handleStartEditFaculty(member)}
+                              className="flex items-center justify-center p-2 border border-blue-200 hover:bg-blue-50 text-blue-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                              title="Edit Faculty Profile"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDeletingFacultyId(member.id || member._id || null)}
+                              className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                              title="Delete Faculty Profile"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         )}
                       </div>
                     ))}

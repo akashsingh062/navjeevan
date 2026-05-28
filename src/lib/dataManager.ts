@@ -242,6 +242,39 @@ export async function updateNotice(id: string, notice: Omit<Notice, "id" | "_id"
   return null;
 }
 
+export async function updateFacultyMember(id: string, member: Omit<Faculty, "id" | "_id">): Promise<Faculty | null> {
+  if (await isDbConnected()) {
+    try {
+      const doc = await FacultyModel.findByIdAndUpdate(id, member, { new: true });
+      if (doc) {
+        return {
+          id: doc._id.toString(),
+          name: doc.name,
+          subject: doc.subject,
+          qualification: doc.qualification || "",
+          experience: doc.experience || "",
+          imageUrl: doc.imageUrl || "",
+          order: doc.order || 99
+        };
+      }
+      return null;
+    } catch (err) {
+      console.error("Failed to update faculty member in database:", err);
+      return null;
+    }
+  }
+  const index = defaultFaculty.findIndex(f => f.id === id);
+  if (index !== -1) {
+    const updated = {
+      id,
+      ...member
+    };
+    defaultFaculty[index] = updated;
+    return updated;
+  }
+  return null;
+}
+
 export async function deleteNotice(id: string): Promise<boolean> {
   if (await isDbConnected()) {
     try {
