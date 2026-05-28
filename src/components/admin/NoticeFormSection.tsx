@@ -126,7 +126,7 @@ export default function NoticeFormSection({
     setSelectedColor(notice.importanceColor || "blue");
     setNoticeAttachmentUrl(notice.attachmentUrl || "");
 
-    window.scrollTo({ top: 300, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDeleteNotice = async (id: string) => {

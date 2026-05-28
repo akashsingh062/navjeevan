@@ -89,9 +89,6 @@ button, a {
   display: none;
 }
 
-/* ===========================
-   ANIMATIONS
-=========================== */
 @keyframes shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
@@ -125,9 +122,6 @@ button, a {
   animation: pulse-dot 2s ease-in-out infinite;
 }
 
-/* ==========================================
-   SCROLL REVEAL EFFECTS (Scroll reveals)
-   ========================================== */
 .reveal-on-scroll {
   opacity: 0;
   transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
