@@ -15,29 +15,74 @@ const outfit = Outfit({
   display: "swap",
 });
 
+const SITE_URL = "https://njpskhabharabhar.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Nav Jeevan Public School | Best CBSE School in Kushinagar, UP",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default:
+      "Nav Jeevan Public School – NJPS Khabharabhar | Best School in Kushinagar, UP",
+    template:
+      "%s | Nav Jeevan Public School – NJPS Khabharabhar",
+  },
   description:
-    "Welcome to Nav Jeevan Public School in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh. Offering high-quality co-educational CBSE-pattern learning in Hindi & English medium with smart classrooms, advanced computer labs, and modern facilities.",
+    "Nav Jeevan Public School (NJPS) Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh — co-educational CBSE-pattern school offering English & Hindi medium education with smart classrooms, computer labs, experienced faculty, and holistic child development from Nursery to Class 8.",
   keywords: [
     "Nav Jeevan Public School",
+    "Nav Jeevan Public School Khabharabhar",
+    "NJPS Khabharabhar",
+    "NJPS",
     "Nav Jeevan School Kushinagar",
     "Best CBSE school Kushinagar",
+    "Best school in Kushinagar",
     "English medium school Kaptanganj",
-    "Schools in Khabharabhar",
+    "School in Khabharabhar",
+    "Schools in Kaptanganj",
     "Admissions open Kushinagar",
+    "Top school Kaptanganj Kushinagar",
     "Rural schools Uttar Pradesh",
-    "Top school in Kaptanganj",
+    "CBSE school Kaptanganj",
+    "Primary school Kushinagar",
+    "Nav Jeevan Vidyalaya",
+    "नव जीवन पब्लिक स्कूल",
+    "नव जीवन पब्लिक स्कूल खभरबहार",
   ],
-  authors: [{ name: "Nav Jeevan School Team" }],
-  robots: "index, follow",
+  authors: [{ name: "Nav Jeevan Public School" }],
+  creator: "Nav Jeevan Public School",
+  publisher: "Nav Jeevan Public School",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "/",
+  },
+  verification: {
+    google: "googlee07843d3e8ac66fc",
+  },
   openGraph: {
-    title: "Nav Jeevan Public School | Best CBSE School in Kushinagar, UP",
+    title:
+      "Nav Jeevan Public School – NJPS Khabharabhar | Best School in Kushinagar, UP",
     description:
-      "Empowering rural students with modern IT literacy, smart learning blocks, and excellent CBSE academics in Khabharabhar, Kaptanganj.",
+      "Empowering students with modern IT literacy, smart classrooms, and excellent CBSE-pattern academics in Khabharabhar, Kaptanganj, Kushinagar.",
+    url: SITE_URL,
+    siteName: "Nav Jeevan Public School",
     type: "website",
     locale: "en_IN",
-    siteName: "Nav Jeevan Public School",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "Nav Jeevan Public School – NJPS Khabharabhar",
+    description:
+      "Best CBSE-pattern school in Khabharabhar, Kaptanganj, Kushinagar, UP. Smart classrooms, computer labs & holistic education.",
   },
 };
 

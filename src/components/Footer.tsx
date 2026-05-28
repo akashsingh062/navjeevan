@@ -305,14 +305,26 @@ export default function Footer() {
 
       </div>
 
-      {}
+      {/* Schema.org JSON-LD Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "School",
+            "@type": ["School", "EducationalOrganization"],
             name: "Nav Jeevan Public School",
+            alternateName: [
+              "NJPS",
+              "NJPS Khabharabhar",
+              "Nav Jeevan Public School Khabharabhar",
+              "नव जीवन पब्लिक स्कूल",
+              "नव जीवन पब्लिक स्कूल खभरबहार",
+            ],
+            description:
+              "Nav Jeevan Public School (NJPS) is a co-educational CBSE-pattern school in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh, offering English and Hindi medium education from Nursery to Class 8 with smart classrooms, computer labs, and holistic development programs.",
+            url: "https://njpskhabharabhar.vercel.app",
+            telephone: "+917880952150",
+            email: "info@navjeevanschool.org",
             address: {
               "@type": "PostalAddress",
               streetAddress: "Khabharabhar, Kaptanganj",
@@ -321,9 +333,56 @@ export default function Footer() {
               postalCode: "274301",
               addressCountry: "IN",
             },
-            url: "https://navjeevanschool.org",
-            telephone: "+917880952150",
-            email: "info@navjeevanschool.org",
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: 26.7348,
+              longitude: 83.7889,
+            },
+            areaServed: [
+              {
+                "@type": "City",
+                name: "Kaptanganj",
+              },
+              {
+                "@type": "AdministrativeArea",
+                name: "Kushinagar",
+              },
+              {
+                "@type": "State",
+                name: "Uttar Pradesh",
+              },
+            ],
+            hasOfferCatalog: {
+              "@type": "OfferCatalog",
+              name: "Academic Programs",
+              itemListElement: [
+                {
+                  "@type": "Course",
+                  name: "Nursery to UKG (Pre-Primary)",
+                  description:
+                    "Activity-based early childhood education program",
+                },
+                {
+                  "@type": "Course",
+                  name: "Class 1 to Class 5 (Primary)",
+                  description:
+                    "CBSE-pattern primary education in English and Hindi medium",
+                },
+                {
+                  "@type": "Course",
+                  name: "Class 6 to Class 8 (Middle School)",
+                  description:
+                    "CBSE-pattern middle school education with science labs and computer training",
+                },
+              ],
+            },
+            amenityFeature: [
+              { "@type": "LocationFeatureSpecification", name: "Smart Classrooms" },
+              { "@type": "LocationFeatureSpecification", name: "Computer Lab" },
+              { "@type": "LocationFeatureSpecification", name: "Library" },
+              { "@type": "LocationFeatureSpecification", name: "Playground" },
+              { "@type": "LocationFeatureSpecification", name: "Assembly Hall" },
+            ],
           }),
         }}
       />
