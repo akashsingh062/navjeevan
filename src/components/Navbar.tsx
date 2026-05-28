@@ -19,7 +19,7 @@ import {
   MessageCircle,
   MapPin,
   ChevronRight,
-  Languages
+  Languages,
 } from "lucide-react";
 import MobileMenu from "./MobileMenu";
 import { navLinks } from "@/lib/navigation";
@@ -120,7 +120,10 @@ export default function Navbar() {
       // Smart header scrolling reveal logic for mobile devices
       if (currentScrollY > lastScrollY.current + 10 && currentScrollY > 80) {
         setIsVisible(false);
-      } else if (currentScrollY < lastScrollY.current - 10 || currentScrollY <= 20) {
+      } else if (
+        currentScrollY < lastScrollY.current - 10 ||
+        currentScrollY <= 20
+      ) {
         setIsVisible(true);
       }
       lastScrollY.current = currentScrollY;
@@ -142,7 +145,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [aboutOpen]);
 
-  
   useLayoutEffect(() => {
     if (aboutOpen && aboutBtnRef.current) {
       const rect = aboutBtnRef.current.getBoundingClientRect();
@@ -150,7 +152,6 @@ export default function Navbar() {
     }
   }, [aboutOpen]);
 
-  
   const translatedAboutDropdown = aboutDropdown.map((item) => {
     let label = item.label;
     let desc = item.desc;
@@ -162,13 +163,21 @@ export default function Navbar() {
       desc = language === "en" ? "What we stand for" : "हमारे आदर्श और मूल्य";
     } else if (item.label === "Manager's Message") {
       label = language === "en" ? "Manager's Message" : "प्रबंधक का संदेश";
-      desc = language === "en" ? "From the Management Desk" : "प्रबंधन डेस्क से संदेश";
+      desc =
+        language === "en"
+          ? "From the Management Desk"
+          : "प्रबंधन डेस्क से संदेश";
     } else if (item.label === "Principal's Message") {
-      label = language === "en" ? "Principal's Message" : "प्रधानाचार्य का संदेश";
-      desc = language === "en" ? "From the Principal" : "प्रधानाचार्य की कलम से";
+      label =
+        language === "en" ? "Principal's Message" : "प्रधानाचार्य का संदेश";
+      desc =
+        language === "en" ? "From the Principal" : "प्रधानाचार्य की कलम से";
     } else if (item.label === "Find Us") {
       label = language === "en" ? "Find Us" : "मार्गदर्शन प्राप्त करें";
-      desc = language === "en" ? "Location & directions" : "विद्यालय का नक्शा और मार्ग";
+      desc =
+        language === "en"
+          ? "Location & directions"
+          : "विद्यालय का नक्शा और मार्ग";
     }
     return { ...item, label, desc };
   });
@@ -229,8 +238,12 @@ export default function Navbar() {
                     Nav Jeevan Public School
                   </span>
                   <span className="text-[10px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5">
-                    <span className="inline sm:hidden">Kaptanganj, Kushinagar</span>
-                    <span className="hidden sm:inline">Khabharabhar, Kaptanganj, Kushinagar (India) – 274301</span>
+                    <span className="inline sm:hidden">
+                      Kaptanganj, Kushinagar
+                    </span>
+                    <span className="hidden sm:inline">
+                      Khabharabhar, Kaptanganj, Kushinagar (India) – 274301
+                    </span>
                   </span>
                 </div>
               </Link>
@@ -245,7 +258,9 @@ export default function Navbar() {
                 >
                   <Languages className="w-5 h-5 text-primary group-hover:scale-105 transition-transform" />
                   <div className="flex flex-col items-start leading-none gap-0.5">
-                    <span className="text-[9px] uppercase font-black text-neutral-body/60 tracking-wider">भाषा / Lang</span>
+                    <span className="text-[9px] uppercase font-black text-neutral-body/60 tracking-wider">
+                      भाषा / Lang
+                    </span>
                     <span className="text-[10px] font-black text-neutral-dark group-hover:text-primary transition-colors">
                       {language === "en" ? "हिन्दी" : "English"}
                     </span>
@@ -273,13 +288,15 @@ export default function Navbar() {
                     </Link>
                   ),
                 )}
-                
+
                 <Link
                   href="/admin"
                   className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-hover transition-all min-w-[72px] text-center group"
                 >
                   <Lock className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="text-[10px] font-bold">{language === "en" ? "Admin" : "प्रशासक"}</span>
+                  <span className="text-[10px] font-bold">
+                    {language === "en" ? "Admin" : "प्रशासक"}
+                  </span>
                 </Link>
               </div>
 
@@ -292,17 +309,19 @@ export default function Navbar() {
                   aria-label="Switch Language / भाषा बदलें"
                 >
                   <Languages className="w-4 h-4 shrink-0" />
-                  <span className="text-[11px] font-black">{language === "en" ? "हिन्दी" : "EN"}</span>
+                  <span className="text-[11px] font-black">
+                    {language === "en" ? "हिन्दी" : "EN"}
+                  </span>
                 </button>
 
                 <a
-                  href="tel:+917880952150"
+                  href="tel:+91 99210 08807"
                   className="p-2.5 bg-primary-light text-primary rounded-xl"
                   aria-label="Call"
                 >
                   <Phone className="w-5 h-5" />
                 </a>
-                
+
                 <button
                   onClick={() => setIsOpen(true)}
                   className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
@@ -378,11 +397,11 @@ export default function Navbar() {
 
             {/* Phone */}
             <a
-              href="tel:+917880952150"
+              href="tel:+91 99210 08807"
               className="ml-auto flex items-center gap-1.5 px-3 h-full text-white/90 hover:bg-white/15 text-[11px] font-bold border-l border-white/20 shrink-0 transition-colors"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>7880952150</span>
+              <span>99210 08807</span>
             </a>
           </div>
         </div>

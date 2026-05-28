@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ChevronRight, Quote } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { principalNote } from "@/lib/data/about";
+import AboutNavigation from "@/components/AboutNavigation";
 
 export default function PrincipalMessagePage() {
   const { language } = useLanguage();
@@ -54,6 +55,8 @@ export default function PrincipalMessagePage() {
                 fill
                 className="object-cover"
                 sizes="200px"
+                priority
+                loading="eager"
               />
             </div>
             <div className="text-center">
@@ -91,6 +94,7 @@ export default function PrincipalMessagePage() {
             </div>
           </div>
         </div>
+        <AboutNavigation />
       </div>
     </div>
   );

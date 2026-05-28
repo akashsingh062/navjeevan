@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact Us – Phone, Email & Address",
   description:
-    "Contact Nav Jeevan Public School (NJPS) Khabharabhar, Kaptanganj, Kushinagar. Phone: +91 7880952150. Address: Khabharabhar, Kaptanganj, Kushinagar, UP 274301. Enquiry form available.",
+    "Contact Nav Jeevan Public School (NJPS) Khabharabhar, Kaptanganj, Kushinagar. Phone: +91 99210 08807. Address: Khabharabhar, Kaptanganj, Kushinagar, UP 274301. Enquiry form available.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact NJPS Khabharabhar – Get in Touch",

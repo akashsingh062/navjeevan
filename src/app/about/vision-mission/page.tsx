@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Target, Compass, Lightbulb, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { visionMissionDetails } from "@/lib/data/about";
+import AboutNavigation from "@/components/AboutNavigation";
 
 export default function VisionMissionPage() {
   const { language } = useLanguage();
@@ -93,6 +94,7 @@ export default function VisionMissionPage() {
             </div>
           </div>
         </div>
+        <AboutNavigation />
       </div>
     </div>
   );

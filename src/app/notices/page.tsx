@@ -40,6 +40,7 @@ export default function NoticesPage() {
             {language === "en" ? "School Bulletins" : "स्कूल बुलेटिन"}
           </span>
           <SectionHeading
+            as="h1"
             title={language === "en" ? "Official School Notice Board" : "आधिकारिक स्कूल सूचना पट्ट"}
             subtitle={language === "en"
               ? "Stay updated with CBSE announcements, exam calendars, summer/winter holiday notices, and parents directives."

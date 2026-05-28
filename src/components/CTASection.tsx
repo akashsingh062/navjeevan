@@ -24,7 +24,8 @@ export default function CTASection() {
 
         {}
         <p className="mt-4 text-sm sm:text-base text-white/80 text-center max-w-xl mx-auto leading-relaxed font-medium">
-          Enrollment open from Nursery to Class XII. Smart classrooms, computer lab, experienced teachers — all in Kushinagar.
+          Enrollment open from Nursery to Class XII. Smart classrooms, computer
+          lab, experienced teachers — all in Kushinagar.
         </p>
 
         {}
@@ -48,7 +49,9 @@ export default function CTASection() {
         {}
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-white/60">
           <Phone className="w-3.5 h-3.5" />
-          <span>Helpline: <strong className="text-white/90">+91 7880952150</strong></span>
+          <span>
+            Helpline: <strong className="text-white/90">+91 99210 08807</strong>
+          </span>
         </div>
       </div>
     </section>

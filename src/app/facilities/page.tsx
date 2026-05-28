@@ -19,6 +19,7 @@ export default function FacilitiesPage() {
             {language === "en" ? "Our Infrastructure" : "हमारा बुनियादी ढांचा"}
           </span>
           <SectionHeading
+            as="h1"
             title={language === "en" ? "Our Modern School Facilities" : "हमारी आधुनिक स्कूल सुविधाएं"}
             subtitle={language === "en" ? "Providing essential and advanced resources that foster a safe, clean, and interactive learning environment." : "सुरक्षित, स्वच्छ और इंटरैक्टिव शिक्षण वातावरण को बढ़ावा देने वाले आवश्यक और उन्नत संसाधन प्रदान करना।"}
           />

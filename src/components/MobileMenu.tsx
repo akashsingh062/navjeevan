@@ -3,7 +3,15 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { X, Phone, MessageSquare, Lock, ChevronRight, ChevronDown, Languages } from "lucide-react";
+import {
+  X,
+  Phone,
+  MessageSquare,
+  Lock,
+  ChevronRight,
+  ChevronDown,
+  Languages,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -21,7 +29,12 @@ interface MobileMenuProps {
   aboutDropdown?: DropdownItem[];
 }
 
-export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }: MobileMenuProps) {
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  navLinks,
+  aboutDropdown,
+}: MobileMenuProps) {
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const { language, toggleLanguage } = useLanguage();
   const [mounted, setMounted] = useState(false);
@@ -45,7 +58,9 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
   }, [isOpen]);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
@@ -85,8 +100,12 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             {/* Header (fixed, non-scrolling) */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
               <div>
-                <span className="text-base font-black text-neutral-dark block leading-tight">Nav Jeevan</span>
-                <span className="text-[9px] uppercase font-bold text-accent tracking-widest">Public School</span>
+                <span className="text-base font-black text-neutral-dark block leading-tight">
+                  Nav Jeevan
+                </span>
+                <span className="text-[9px] uppercase font-bold text-accent tracking-widest">
+                  Public School
+                </span>
               </div>
               <button
                 onClick={onClose}
@@ -98,11 +117,11 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             </div>
 
             {/* Scrollable Navigation List (scrolling area) */}
-            <div 
+            <div
               className="flex-1 overflow-y-auto min-h-0"
-              style={{ 
+              style={{
                 overscrollBehavior: "contain",
-                WebkitOverflowScrolling: "touch"
+                WebkitOverflowScrolling: "touch",
               }}
             >
               <nav className="py-3 px-3" aria-label="Mobile Navigation">
@@ -110,7 +129,11 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
                   <div className="flex items-center gap-2">
                     <Languages className="w-4 h-4 text-primary" />
-                    <span className="text-xs font-bold text-neutral-dark">{language === "en" ? "भाषा बदलें (हिन्दी)" : "Switch to English"}</span>
+                    <span className="text-xs font-bold text-neutral-dark">
+                      {language === "en"
+                        ? "भाषा बदलें (हिन्दी)"
+                        : "Switch to English"}
+                    </span>
                   </div>
                   <button
                     onClick={toggleLanguage}
@@ -133,7 +156,9 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                           aria-expanded={aboutExpanded}
                         >
                           <span>{link.label}</span>
-                          <ChevronDown className={`w-4 h-4 text-neutral-body/50 transition-transform duration-200 ${aboutExpanded ? "rotate-180" : ""}`} />
+                          <ChevronDown
+                            className={`w-4 h-4 text-neutral-body/50 transition-transform duration-200 ${aboutExpanded ? "rotate-180" : ""}`}
+                          />
                         </button>
 
                         {/* Sub-items */}
@@ -191,7 +216,9 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
                 >
                   <div className="flex items-center gap-2">
                     <Lock className="w-4 h-4 text-neutral-body/50" />
-                    <span>{language === "en" ? "Staff Login" : "स्टाफ लॉगिन"}</span>
+                    <span>
+                      {language === "en" ? "Staff Login" : "स्टाफ लॉगिन"}
+                    </span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-neutral-body/50" />
                 </Link>
@@ -199,33 +226,41 @@ export default function MobileMenu({ isOpen, onClose, navLinks, aboutDropdown }:
             </div>
 
             {/* Quick Actions (fixed, sticky at bottom) */}
-            <div 
+            <div
               className="px-4 py-4 border-t border-border flex flex-col gap-2.5 shrink-0 bg-white"
               style={{
-                paddingBottom: "calc(16px + env(safe-area-inset-bottom))"
+                paddingBottom: "calc(16px + env(safe-area-inset-bottom))",
               }}
             >
               <a
-                href="tel:+917880952150"
+                href="tel:+91 99210 08807"
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary text-white rounded-2xl font-bold text-sm transition-all"
               >
                 <Phone className="w-4 h-4" />
-                <span>{language === "en" ? "Call School: 7880952150" : "फ़ोन कॉल: 7880952150"}</span>
+                <span>
+                  {language === "en"
+                    ? "Call School: 99210 08807"
+                    : "फ़ोन कॉल: 99210 08807"}
+                </span>
               </a>
               <a
-                href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                href="https://wa.me/9199210 08807?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-white rounded-2xl font-bold text-sm"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>{language === "en" ? "WhatsApp Inquiry" : "व्हाट्सएप प्रवेश डेस्क"}</span>
+                <span>
+                  {language === "en"
+                    ? "WhatsApp Inquiry"
+                    : "व्हाट्सएप प्रवेश डेस्क"}
+                </span>
               </a>
             </div>
           </motion.div>
         </>
       )}
     </AnimatePresence>,
-    document.body
+    document.body,
   );
 }

@@ -33,6 +33,7 @@ export default function About() {
             {language === "en" ? "Since 2008" : "2008 से स्थापित"}
           </span>
           <SectionHeading
+            as="h1"
             title={language === "en" ? "About Nav Jeevan Public School" : "नव जीवन पब्लिक स्कूल के बारे में"}
             subtitle={language === "en" ? "The story of our dedication, academic excellence, and community building in rural Kushinagar." : "ग्रामीण कुशीनगर में हमारे समर्पण, शैक्षणिक उत्कृष्टता और सामुदायिक निर्माण की कहानी।"}
           />

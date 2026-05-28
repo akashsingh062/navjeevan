@@ -5,14 +5,16 @@ import Link from "next/link";
 import { ChevronRight, MapPin, Phone, Clock, Navigation } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { findUsDetails } from "@/lib/data/about";
+import AboutNavigation from "@/components/AboutNavigation";
 
 export default function FindUsPage() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    document.title = language === "en" 
-      ? "Find Us | Nav Jeevan Public School"
-      : "हमारा स्थान | नव जीवन पब्लिक स्कूल";
+    document.title =
+      language === "en"
+        ? "Find Us | Nav Jeevan Public School"
+        : "हमारा स्थान | नव जीवन पब्लिक स्कूल";
   }, [language]);
 
   return (
@@ -84,10 +86,10 @@ export default function FindUsPage() {
                   {findUsDetails.phoneLabel[language]}
                 </span>
                 <a
-                  href="tel:+917880952150"
+                  href="tel:+91 99210 08807"
                   className="block font-bold text-neutral-dark hover:text-primary transition-colors"
                 >
-                  +91 7880952150
+                  +91 99210 08807
                 </a>
               </div>
               <div className="mt-1">
@@ -95,7 +97,8 @@ export default function FindUsPage() {
                   {findUsDetails.hoursLabel[language]}
                 </span>
                 <p className="font-semibold text-neutral-dark flex items-center gap-1.5 mt-0.5">
-                  <Clock className="w-3.5 h-3.5 text-primary" /> {findUsDetails.hoursValue[language]}
+                  <Clock className="w-3.5 h-3.5 text-primary" />{" "}
+                  {findUsDetails.hoursValue[language]}
                 </p>
               </div>
             </div>
@@ -139,6 +142,7 @@ export default function FindUsPage() {
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
+        <AboutNavigation />
       </div>
     </div>
   );

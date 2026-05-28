@@ -2,11 +2,7 @@
 
 import React from "react";
 import SectionHeading from "@/components/SectionHeading";
-import {
-  Download,
-  FileCheck,
-  AlertTriangle,
-} from "lucide-react";
+import { Download, FileCheck, AlertTriangle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
 import {
@@ -23,12 +19,14 @@ export default function Admissions() {
   return (
     <div className="py-12 bg-white flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         <div className="mb-14 text-left">
           <span className="text-[10px] uppercase font-black text-white bg-accent px-3.5 py-1.5 rounded-full tracking-wider inline-block mb-3.5 shadow-sm select-none">
-            {language === "en" ? "Admission Session 2026 - 2027 Open" : "प्रवेश सत्र 2026 - 2027 खुला है"}
+            {language === "en"
+              ? "Admission Session 2026 - 2027 Open"
+              : "प्रवेश सत्र 2026 - 2027 खुला है"}
           </span>
           <SectionHeading
+            as="h1"
             title={t.admissions.bannerTitle}
             subtitle={t.admissions.bannerDesc}
           />
@@ -36,8 +34,16 @@ export default function Admissions() {
 
         <section className="mb-16">
           <SectionHeading
-            title={language === "en" ? "Our Admission Process" : "हमारी प्रवेश प्रक्रिया"}
-            subtitle={language === "en" ? "A transparent, simple, and step-by-step pipeline to join our educational community." : "हमारे शैक्षणिक परिवार में शामिल होने के लिए एक पारदर्शी, सरल और चरण-दर-चरण प्रक्रिया।"}
+            title={
+              language === "en"
+                ? "Our Admission Process"
+                : "हमारी प्रवेश प्रक्रिया"
+            }
+            subtitle={
+              language === "en"
+                ? "A transparent, simple, and step-by-step pipeline to join our educational community."
+                : "हमारे शैक्षणिक परिवार में शामिल होने के लिए एक पारदर्शी, सरल और चरण-दर-चरण प्रक्रिया।"
+            }
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8 text-left">
             {admissionSteps.map((step) => (
@@ -69,9 +75,15 @@ export default function Admissions() {
               <table className="w-full text-left border-collapse text-xs md:text-sm">
                 <thead>
                   <tr className="bg-neutral-light border-b border-gray-200 text-neutral-dark font-extrabold text-xs uppercase">
-                    <th className="p-4 font-bold">{language === "en" ? "Class Offered" : "कक्षा"}</th>
-                    <th className="p-4 font-bold">{t.admissions.ageRequirement}</th>
-                    <th className="p-4 font-bold">{language === "en" ? "Key Criteria" : "मुख्य पात्रता"}</th>
+                    <th className="p-4 font-bold">
+                      {language === "en" ? "Class Offered" : "कक्षा"}
+                    </th>
+                    <th className="p-4 font-bold">
+                      {t.admissions.ageRequirement}
+                    </th>
+                    <th className="p-4 font-bold">
+                      {language === "en" ? "Key Criteria" : "मुख्य पात्रता"}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-neutral-body font-normal">
@@ -86,7 +98,9 @@ export default function Admissions() {
                       <td className="p-4 font-semibold text-primary whitespace-nowrap">
                         {el.age}
                       </td>
-                      <td className="p-4 leading-relaxed">{el.criteria[language]}</td>
+                      <td className="p-4 leading-relaxed">
+                        {el.criteria[language]}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -117,7 +131,11 @@ export default function Admissions() {
 
         <section className="py-16 border-t border-gray-100 mb-16 text-left">
           <SectionHeading
-            title={language === "en" ? "Affordable & Subsidized Fee Structure" : "किफायती और रियायती शुल्क संरचना"}
+            title={
+              language === "en"
+                ? "Affordable & Subsidized Fee Structure"
+                : "किफायती और रियायती शुल्क संरचना"
+            }
             subtitle={t.admissions.guidelineSubtitle}
           />
 
@@ -125,10 +143,24 @@ export default function Admissions() {
             <table className="w-full text-left border-collapse text-xs md:text-sm">
               <thead>
                 <tr className="bg-neutral-light border-b border-gray-200 text-neutral-dark font-extrabold text-xs uppercase">
-                  <th className="p-4 font-bold">{language === "en" ? "Class / Wing" : "कक्षा वर्ग"}</th>
-                  <th className="p-4 font-bold">{language === "en" ? "One-Time Admission Fee" : "एक बार प्रवेश शुल्क"}</th>
-                  <th className="p-4 font-bold">{language === "en" ? "Monthly Tuition Fee" : "मासिक शिक्षण शुल्क"}</th>
-                  <th className="p-4 font-bold">{language === "en" ? "Term Examination Fee" : "सत्र परीक्षा शुल्क"}</th>
+                  <th className="p-4 font-bold">
+                    {language === "en" ? "Class / Wing" : "कक्षा वर्ग"}
+                  </th>
+                  <th className="p-4 font-bold">
+                    {language === "en"
+                      ? "One-Time Admission Fee"
+                      : "एक बार प्रवेश शुल्क"}
+                  </th>
+                  <th className="p-4 font-bold">
+                    {language === "en"
+                      ? "Monthly Tuition Fee"
+                      : "मासिक शिक्षण शुल्क"}
+                  </th>
+                  <th className="p-4 font-bold">
+                    {language === "en"
+                      ? "Term Examination Fee"
+                      : "सत्र परीक्षा शुल्क"}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-neutral-body font-normal">
@@ -158,10 +190,14 @@ export default function Admissions() {
           <div className="mt-5 p-4.5 bg-amber-50 border border-amber-200 rounded-xl flex gap-3 items-start text-xs text-amber-800 leading-relaxed font-semibold">
             <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-extrabold">{language === "en" ? "Important Fee Notes:" : "महत्वपूर्ण शुल्क दिशानिर्देश:"}</h4>
+              <h4 className="font-extrabold">
+                {language === "en"
+                  ? "Important Fee Notes:"
+                  : "महत्वपूर्ण शुल्क दिशानिर्देश:"}
+              </h4>
               <ul className="list-disc list-inside mt-1 font-medium text-[11px] flex flex-col gap-1">
                 <li>
-                  {language === "en" 
+                  {language === "en"
                     ? "Monthly tuition fees must be deposited at the counter by the 10th of every month."
                     : "मासिक शिक्षण शुल्क हर महीने की 10 तारीख तक स्कूल काउंटर पर जमा किया जाना चाहिए।"}
                 </li>
@@ -181,7 +217,7 @@ export default function Admissions() {
         </section>
 
         <section
-          id="admissions-helpdesk"
+          id="download"
           className="py-12 bg-neutral-light border border-gray-200 rounded-3xl p-6 md:p-8 flex flex-col lg:flex-row items-center justify-between gap-8 mb-16 text-left"
         >
           <div className="flex flex-col gap-2 max-w-xl">
@@ -200,17 +236,20 @@ export default function Admissions() {
 
           <div className="flex flex-wrap gap-3.5 shrink-0">
             <a
-              href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%2520admission%2520inquiry."
+              href="https://wa.me/9199210 08807?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%2520admission%2520inquiry."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm transition-all shadow-md focus:outline-none shrink-0 cursor-pointer"
             >
               <Download className="w-5 h-5 shrink-0 rotate-270" />
-              <span>{language === "en" ? "Chat Admissions Desk" : "व्हाट्सएप प्रवेश डेस्क"}</span>
+              <span>
+                {language === "en"
+                  ? "Chat Admissions Desk"
+                  : "व्हाट्सएप प्रवेश डेस्क"}
+              </span>
             </a>
           </div>
         </section>
-
       </div>
     </div>
   );

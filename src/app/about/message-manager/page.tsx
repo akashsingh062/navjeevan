@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ChevronRight, Quote } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { managerNote } from "@/lib/data/about";
+import AboutNavigation from "@/components/AboutNavigation";
 
 export default function ManagerMessagePage() {
   const { language } = useLanguage();
@@ -54,6 +55,8 @@ export default function ManagerMessagePage() {
                 fill
                 className="object-cover"
                 sizes="200px"
+                priority
+                loading="eager"
               />
             </div>
             <div className="text-center">
@@ -90,6 +93,7 @@ export default function ManagerMessagePage() {
             </div>
           </div>
         </div>
+        <AboutNavigation />
       </div>
     </div>
   );

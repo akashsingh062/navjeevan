@@ -9,7 +9,7 @@ import {
   Compass,
   ExternalLink,
   Languages,
-  ShieldCheck
+  ShieldCheck,
 } from "lucide-react";
 import { navLinks } from "@/lib/navigation";
 import { useLanguage } from "@/context/LanguageContext";
@@ -18,7 +18,6 @@ import { translations } from "@/lib/translations";
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
-  
   const { language } = useLanguage();
   const t = translations[language];
 
@@ -28,7 +27,6 @@ export default function Footer() {
     }
   };
 
-  
   const translatedNavLinks = navLinks.map((link) => {
     let label = link.label;
     if (link.label === "Home") label = t.nav.home;
@@ -43,13 +41,14 @@ export default function Footer() {
     return { ...link, label };
   });
 
-  
-  const exploreLinks = translatedNavLinks.filter(link => 
-    ["/", "/about", "/academics", "/admissions", "/facilities"].includes(link.href)
+  const exploreLinks = translatedNavLinks.filter((link) =>
+    ["/", "/about", "/academics", "/admissions", "/facilities"].includes(
+      link.href,
+    ),
   );
-  
-  const infoLinks = translatedNavLinks.filter(link => 
-    ["/faculty", "/gallery", "/notices", "/contact"].includes(link.href)
+
+  const infoLinks = translatedNavLinks.filter((link) =>
+    ["/faculty", "/gallery", "/notices", "/contact"].includes(link.href),
   );
 
   return (
@@ -64,7 +63,6 @@ export default function Footer() {
       {}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
-          
           {}
           <div className="md:col-span-4 flex flex-col gap-5 text-left">
             <div className="flex items-center gap-3">
@@ -76,7 +74,9 @@ export default function Footer() {
                   Nav Jeevan Public School
                 </span>
                 <span className="text-[10px] uppercase font-black text-accent tracking-wider block mt-0.5">
-                  {language === "en" ? "Kushinagar, Uttar Pradesh" : "कुशीनगर, उत्तर प्रदेश"}
+                  {language === "en"
+                    ? "Kushinagar, Uttar Pradesh"
+                    : "कुशीनगर, उत्तर प्रदेश"}
                 </span>
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function Footer() {
               <div className="flex gap-2.5 items-center">
                 {}
                 <a
-                  href="https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                  href="https://wa.me/9199210 08807?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl transition-all duration-300 shadow-2xs hover:shadow-xs focus:outline-none"
@@ -195,7 +195,7 @@ export default function Footer() {
               <h3 className="text-white font-black text-xs uppercase tracking-widest border-b border-gray-800 pb-3 mb-4">
                 {t.common.campusTimings}
               </h3>
-              
+
               <div className="flex flex-col gap-3 text-sm text-gray-400">
                 {}
                 <div className="flex gap-2.5 items-start">
@@ -248,7 +248,9 @@ export default function Footer() {
                   <Compass className="w-5 h-5 text-primary group-hover:rotate-45 transition-transform duration-500" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-white">{t.common.directionsDesk}</h4>
+                  <h4 className="text-xs font-black text-white">
+                    {t.common.directionsDesk}
+                  </h4>
                   <p className="text-[10px] text-gray-400 mt-1 leading-normal font-medium">
                     {language === "en"
                       ? "26.8790° N, 83.7087° E. Khabharabhar Campus, Kaptanganj."
@@ -272,26 +274,27 @@ export default function Footer() {
               <Languages className="w-3.5 h-3.5 text-accent animate-pulse" />
               <span>{t.common.bilingualSupport}</span>
             </div>
-
           </div>
-
         </div>
 
         {}
         <div className="border-t border-gray-800/80 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-medium">
           <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4 text-center sm:text-left">
-            <p>© {currentYear} Nav Jeevan Public School. {t.common.rightsReserved}</p>
+            <p>
+              © {currentYear} Nav Jeevan Public School.{" "}
+              {t.common.rightsReserved}
+            </p>
             <span className="hidden sm:inline text-gray-700">•</span>
             <p className="flex items-center gap-1">
               <span>{t.common.madeInKushinagar}</span>
             </p>
           </div>
-          
+
           <div className="flex items-center gap-4.5">
             <span className="text-[10px] font-black text-gray-500 border border-gray-800 rounded-md px-1.5 py-0.5 tracking-wider uppercase">
               {language === "en" ? "Affiliated Model" : "सम्बद्ध मॉडल"}
             </span>
-            
+
             {}
             <button
               onClick={scrollToTop}
@@ -302,7 +305,6 @@ export default function Footer() {
             </button>
           </div>
         </div>
-
       </div>
 
       {/* Schema.org JSON-LD Structured Data */}
@@ -311,7 +313,7 @@ export default function Footer() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": ["School", "EducationalOrganization"],
+            "@type": "School",
             name: "Nav Jeevan Public School",
             alternateName: [
               "NJPS",
@@ -323,8 +325,19 @@ export default function Footer() {
             description:
               "Nav Jeevan Public School (NJPS) is a co-educational CBSE-pattern school in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh, offering English and Hindi medium education from Nursery to Class 8 with smart classrooms, computer labs, and holistic development programs.",
             url: "https://njpskhabharabhar.vercel.app",
-            telephone: "+917880952150",
+            logo: "https+91 99210 08807rabhar.vercel.app/opengraph-image",
+            image: "https://njpskhabharabhar.vercel.app/about-students.png",
+            telephone: "+9199210 08807",
             email: "info@navjeevanschool.org",
+            foundingDate: "2008",
+            award: "Affiliated to CBSE Pattern",
+            knowsAbout: [
+              "CBSE Curriculum",
+              "Primary Education",
+              "IT Literacy",
+              "Holistic Child Development",
+            ],
+            sameAs: ["https://facebook.com", "https://youtube.com"],
             address: {
               "@type": "PostalAddress",
               streetAddress: "Khabharabhar, Kaptanganj",
@@ -377,11 +390,17 @@ export default function Footer() {
               ],
             },
             amenityFeature: [
-              { "@type": "LocationFeatureSpecification", name: "Smart Classrooms" },
+              {
+                "@type": "LocationFeatureSpecification",
+                name: "Smart Classrooms",
+              },
               { "@type": "LocationFeatureSpecification", name: "Computer Lab" },
               { "@type": "LocationFeatureSpecification", name: "Library" },
               { "@type": "LocationFeatureSpecification", name: "Playground" },
-              { "@type": "LocationFeatureSpecification", name: "Assembly Hall" },
+              {
+                "@type": "LocationFeatureSpecification",
+                name: "Assembly Hall",
+              },
             ],
           }),
         }}

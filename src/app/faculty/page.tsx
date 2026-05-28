@@ -40,6 +40,7 @@ export default function FacultyPage() {
             {language === "en" ? "Our Mentors" : "हमारे मार्गदर्शक"}
           </span>
           <SectionHeading
+            as="h1"
             title={language === "en" ? "Meet Our Dedicated Faculty" : "हमारे समर्पित शिक्षकों से मिलें"}
             subtitle={language === "en" 
               ? "The educators, subject experts, and administrative leaders who guide children in Khabharabhar, Kaptanganj."

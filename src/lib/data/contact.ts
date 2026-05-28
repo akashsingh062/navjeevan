@@ -22,8 +22,8 @@ export const contactDirectory: ContactCard[] = [
       hi: "सामान्य हॉटलाइन"
     },
     detail: {
-      en: "+91 7880952150",
-      hi: "+91 7880952150"
+      en: "+91 99210 08807",
+      hi: "+91 99210 08807"
     },
     desc: {
       en: "For general admission queries, parent updates, and document requests.",
@@ -33,7 +33,7 @@ export const contactDirectory: ContactCard[] = [
       en: "Call Helpline",
       hi: "हेल्पलाइन कॉल करें"
     },
-    href: "tel:+917880952150",
+    href: "tel:+91 99210 08807",
     iconName: "Phone",
     accentBg: "bg-primary-light",
     accentText: "text-primary",
@@ -56,7 +56,7 @@ export const contactDirectory: ContactCard[] = [
       en: "Message Desk",
       hi: "व्हाट्सएप चैट"
     },
-    href: "https://wa.me/917880952150?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry.",
+    href: "https://wa.me/9199210 08807?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry.",
     iconName: "MessageSquare",
     accentBg: "bg-emerald-50 text-emerald-600 border-emerald-100",
     accentText: "text-emerald-700",

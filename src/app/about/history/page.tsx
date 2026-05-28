@@ -5,6 +5,7 @@ import Link from "next/link";
 import { History, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { historyDetails, milestones } from "@/lib/data/about";
+import AboutNavigation from "@/components/AboutNavigation";
 
 export default function HistoryPage() {
   const { language } = useLanguage();
@@ -71,9 +72,9 @@ export default function HistoryPage() {
                       {item.year}
                     </span>
                   </div>
-                  <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark mb-1.5">
+                  <h2 className="text-sm sm:text-base font-extrabold text-neutral-dark mb-1.5">
                     {item.title[language]}
-                  </h3>
+                  </h2>
                   <p className="text-xs sm:text-sm text-neutral-body leading-relaxed">
                     {item.desc[language]}
                   </p>
@@ -82,6 +83,7 @@ export default function HistoryPage() {
             ))}
           </div>
         </div>
+        <AboutNavigation />
       </div>
     </div>
   );

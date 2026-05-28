@@ -21,12 +21,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default:
-      "Nav Jeevan Public School – NJPS Khabharabhar | Best School in Kushinagar, UP",
+      "Nav Jeevan Public School – NJPS Khabharabhar, Kushinagar",
     template:
-      "%s | Nav Jeevan Public School – NJPS Khabharabhar",
+      "%s | Nav Jeevan Public School",
   },
   description:
-    "Nav Jeevan Public School (NJPS) Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh — co-educational CBSE-pattern school offering English & Hindi medium education with smart classrooms, computer labs, experienced faculty, and holistic child development from Nursery to Class 8.",
+    "NJPS Kushinagar: The best school in Kushinagar offering CBSE education. Experience smart classrooms, IT labs, and holistic learning. Apply now!",
   keywords: [
     "Nav Jeevan Public School",
     "Nav Jeevan Public School Khabharabhar",
@@ -98,7 +98,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} h-full overflow-x-hidden`}>
+    <html lang="en" className={`${outfit.variable} h-full overflow-x-hidden`} data-scroll-behavior="smooth">
       <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text overflow-x-hidden">
         <LanguageProvider>
           <ScrollRevealObserver />

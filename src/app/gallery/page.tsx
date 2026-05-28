@@ -40,6 +40,7 @@ export default function GalleryPage() {
             {language === "en" ? "Life & Events" : "जीवन और कार्यक्रम"}
           </span>
           <SectionHeading
+            as="h1"
             title={language === "en" ? "School Photo Gallery" : "स्कूल फोटो गैलरी"}
             subtitle={language === "en"
               ? "Glimpses of active student life, regional cultural festivals, competitive sports days, and computer lab practicals."

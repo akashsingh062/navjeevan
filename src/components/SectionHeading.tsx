@@ -5,9 +5,11 @@ interface SectionHeadingProps {
   subtitle?: string;
   centered?: boolean;
   accent?: string; 
+  as?: "h1" | "h2";
 }
 
-export default function SectionHeading({ title, subtitle, centered = false, accent }: SectionHeadingProps) {
+export default function SectionHeading({ title, subtitle, centered = false, accent, as = "h2" }: SectionHeadingProps) {
+  const HeadingTag = as;
   return (
     <div className={`flex flex-col gap-2 ${centered ? "items-center text-center" : "items-start text-left"}`}>
       {accent && (
@@ -15,9 +17,9 @@ export default function SectionHeading({ title, subtitle, centered = false, acce
           {accent}
         </span>
       )}
-      <h2 className="text-xl sm:text-2xl font-black text-neutral-dark leading-tight tracking-tight">
+      <HeadingTag className="text-xl sm:text-2xl font-black text-neutral-dark leading-tight tracking-tight">
         {title}
-      </h2>
+      </HeadingTag>
       {subtitle && (
         <p className="text-sm text-neutral-body leading-relaxed max-w-2xl font-medium">
           {subtitle}

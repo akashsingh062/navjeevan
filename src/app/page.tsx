@@ -31,11 +31,11 @@ const managementMembers = [
   {
     name: {
       en: "Shri Rajesh Kumar Mishra",
-      hi: "श्री राजेश कुमार मिश्रा"
+      hi: "श्री राजेश कुमार मिश्रा",
     },
     role: {
       en: "Principal",
-      hi: "प्रधानाचार्य"
+      hi: "प्रधानाचार्य",
     },
     photo:
       "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face&auto=format",
@@ -43,11 +43,11 @@ const managementMembers = [
   {
     name: {
       en: "Smt. Sushila Devi",
-      hi: "श्रीमती सुशीला देवी"
+      hi: "श्रीमती सुशीला देवी",
     },
     role: {
       en: "Vice Principal",
-      hi: "उप-प्रधानाचार्या"
+      hi: "उप-प्रधानाचार्या",
     },
     photo:
       "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=face&auto=format",
@@ -55,11 +55,11 @@ const managementMembers = [
   {
     name: {
       en: "Shri Anil Kumar Singh",
-      hi: "श्री अनिल कुमार सिंह"
+      hi: "श्री अनिल कुमार सिंह",
     },
     role: {
       en: "Managing Director",
-      hi: "प्रबंध निदेशक"
+      hi: "प्रबंध निदेशक",
     },
     photo:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face&auto=format",
@@ -67,11 +67,11 @@ const managementMembers = [
   {
     name: {
       en: "Smt. Priya Mishra",
-      hi: "श्रीमती प्रिया मिश्रा"
+      hi: "श्रीमती प्रिया मिश्रा",
     },
     role: {
       en: "Administrative Head",
-      hi: "प्रशासनिक प्रमुख"
+      hi: "प्रशासनिक प्रमुख",
     },
     photo:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face&auto=format",
@@ -87,14 +87,26 @@ export default function Home() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/notices").then((res) => res.json()).catch(() => null),
-      fetch("/api/gallery").then((res) => res.json()).catch(() => null)
+      fetch("/api/notices")
+        .then((res) => res.json())
+        .catch(() => null),
+      fetch("/api/gallery")
+        .then((res) => res.json())
+        .catch(() => null),
     ]).then(([noticesData, galleryData]) => {
       if (noticesData) {
-        setNotices(Array.isArray(noticesData) ? noticesData : (noticesData.notices ?? []));
+        setNotices(
+          Array.isArray(noticesData)
+            ? noticesData
+            : (noticesData.notices ?? []),
+        );
       }
       if (galleryData) {
-        setGalleryItems(Array.isArray(galleryData) ? galleryData : (galleryData.gallery ?? []));
+        setGalleryItems(
+          Array.isArray(galleryData)
+            ? galleryData
+            : (galleryData.gallery ?? []),
+        );
       }
       setLoading(false);
     });
@@ -110,7 +122,6 @@ export default function Home() {
       <section className="py-8 sm:py-10 bg-neutral-light border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-            
             <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden text-left reveal-on-scroll reveal-fade-right">
               <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 bg-primary text-white">
                 <div className="flex items-center gap-2">
@@ -131,18 +142,25 @@ export default function Home() {
               <div className="p-4">
                 {loading ? (
                   <p className="text-xs text-neutral-body italic py-4 text-center">
-                    {language === "en" ? "Loading notices..." : "सूचनाएँ लोड हो रही हैं..."}
+                    {language === "en"
+                      ? "Loading notices..."
+                      : "सूचनाएँ लोड हो रही हैं..."}
                   </p>
                 ) : previewNotices.length === 0 ? (
                   <p className="text-xs text-neutral-body italic py-4 text-center">
-                    {language === "en" ? "No notices posted yet." : "अभी तक कोई सूचना पोस्ट नहीं की गई है।"}
+                    {language === "en"
+                      ? "No notices posted yet."
+                      : "अभी तक कोई सूचना पोस्ट नहीं की गई है।"}
                   </p>
                 ) : (
                   <>
                     {/* Desktop View: Normal detailed notice cards */}
                     <div className="hidden md:flex flex-col gap-4">
                       {previewNotices.map((notice) => (
-                        <NoticeCard key={notice.id || notice._id} notice={notice} />
+                        <NoticeCard
+                          key={notice.id || notice._id}
+                          notice={notice}
+                        />
                       ))}
                     </div>
 
@@ -155,26 +173,34 @@ export default function Home() {
                           amber: "border-l-amber-500",
                           green: "border-l-emerald-500",
                           blue: "border-l-blue-500",
-                          purple: "border-l-purple-500"
+                          purple: "border-l-purple-500",
                         };
                         const categoryBorders = {
                           Admission: "border-l-blue-500",
                           Holiday: "border-l-emerald-500",
                           Exam: "border-l-red-500",
                           General: "border-l-amber-500",
-                          Others: "border-l-purple-500"
+                          Others: "border-l-purple-500",
                         };
                         const categoryBadges = {
-                          Admission: "bg-blue-55/10 text-blue-700 border border-blue-200/50",
-                          Holiday: "bg-emerald-55/10 text-emerald-700 border border-emerald-200/50",
+                          Admission:
+                            "bg-blue-55/10 text-blue-700 border border-blue-200/50",
+                          Holiday:
+                            "bg-emerald-55/10 text-emerald-700 border border-emerald-200/50",
                           Exam: "bg-red-55/10 text-red-700 border border-red-200/50",
-                          General: "bg-amber-55/10 text-amber-700 border border-amber-200/50",
-                          Others: "bg-purple-55/10 text-purple-700 border border-purple-200/50"
+                          General:
+                            "bg-amber-55/10 text-amber-700 border border-amber-200/50",
+                          Others:
+                            "bg-purple-55/10 text-purple-700 border border-purple-200/50",
                         };
                         const activeBorderColor = isImportant
-                          ? (borderColors[notice.importanceColor ?? "red"] ?? "border-l-red-500")
-                          : (categoryBorders[notice.category] ?? categoryBorders.General);
-                        const activeBadgeStyle = categoryBadges[notice.category] ?? categoryBadges.General;
+                          ? (borderColors[notice.importanceColor ?? "red"] ??
+                            "border-l-red-500")
+                          : (categoryBorders[notice.category] ??
+                            categoryBorders.General);
+                        const activeBadgeStyle =
+                          categoryBadges[notice.category] ??
+                          categoryBadges.General;
 
                         return (
                           <div
@@ -182,11 +208,16 @@ export default function Home() {
                             className={`p-3 bg-neutral-light border border-gray-200 border-l-4 ${activeBorderColor} rounded-xl shadow-3xs flex flex-col gap-2 text-left`}
                           >
                             <div className="flex items-center justify-between gap-2">
-                              <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider ${activeBadgeStyle}`}>
+                              <span
+                                className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider ${activeBadgeStyle}`}
+                              >
                                 {notice.category}
                               </span>
                               <span className="text-[9px] text-neutral-body font-bold">
-                                {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                                {new Date(notice.date).toLocaleDateString(
+                                  "en-IN",
+                                  { day: "numeric", month: "short" },
+                                )}
                               </span>
                             </div>
 
@@ -195,7 +226,9 @@ export default function Home() {
                                 {isImportant && (
                                   <span className="inline-block w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5 align-middle animate-pulse" />
                                 )}
-                                <span className="align-middle">{notice.title}</span>
+                                <span className="align-middle">
+                                  {notice.title}
+                                </span>
                               </h4>
                               {notice.attachmentUrl && (
                                 <a
@@ -232,11 +265,13 @@ export default function Home() {
                   </div>
                   <div className="text-center">
                     <p className="text-sm font-bold text-neutral-dark">
-                      {language === "en" ? "School Administration" : "विद्यालय प्रशासन"}
+                      {language === "en"
+                        ? "School Administration"
+                        : "विद्यालय प्रशासन"}
                     </p>
                     <p className="text-xs text-neutral-body mt-1">
-                      {language === "en" 
-                        ? "Manage notices, faculty, gallery and school records." 
+                      {language === "en"
+                        ? "Manage notices, faculty, gallery and school records."
                         : "सूचनाओं, शिक्षकों, गैलरी और विद्यालय के रिकॉर्ड का प्रबंधन करें।"}
                     </p>
                   </div>
@@ -245,14 +280,22 @@ export default function Home() {
                     className="flex items-center justify-center gap-2 w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm transition-all"
                   >
                     <Lock className="w-4 h-4" />
-                    <span>{language === "en" ? "Login to Admin Panel" : "एडमिन पैनल में लॉगिन करें"}</span>
+                    <span>
+                      {language === "en"
+                        ? "Login to Admin Panel"
+                        : "एडमिन पैनल में लॉगिन करें"}
+                    </span>
                   </Link>
                   <a
-                    href="tel:+917880952150"
+                    href="tel:+91 99210 08807"
                     className="flex items-center justify-center gap-2 w-full py-2.5 border border-border hover:bg-neutral-light text-neutral-dark rounded-xl font-semibold text-xs transition-all"
                   >
                     <Phone className="w-3.5 h-3.5 text-primary" />
-                    <span>{language === "en" ? "Call: +91 7880952150" : "कॉल करें: +91 7880952150"}</span>
+                    <span>
+                      {language === "en"
+                        ? "Call: +91 99210 08807"
+                        : "कॉल करें: +91 99210 08807"}
+                    </span>
                   </a>
                 </div>
               </div>
@@ -273,12 +316,15 @@ export default function Home() {
                   href="/admissions"
                   className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white text-accent rounded-xl font-bold text-xs transition-all hover:bg-neutral-light"
                 >
-                  <span>{language === "en" ? "Apply for Admission" : "प्रवेश के लिए आवेदन करें"}</span>
+                  <span>
+                    {language === "en"
+                      ? "Apply for Admission"
+                      : "प्रवेश के लिए आवेदन करें"}
+                  </span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -291,7 +337,9 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-8 text-left reveal-on-scroll reveal-fade-up">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
-              {language === "en" ? "About Nav Jeevan Public School" : "नव जीवन पब्लिक स्कूल के बारे में"}
+              {language === "en"
+                ? "About Nav Jeevan Public School"
+                : "नव जीवन पब्लिक स्कूल के बारे में"}
             </h2>
             <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
           </div>
@@ -308,10 +356,14 @@ export default function Home() {
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-neutral-dark/80 to-transparent px-4 py-4">
                   <p className="text-white text-xs font-bold">
-                    {language === "en" ? "Nav Jeevan Public School — Smart Classroom" : "नव जीवन पब्लिक स्कूल - स्मार्ट क्लासरूम"}
+                    {language === "en"
+                      ? "Nav Jeevan Public School — Smart Classroom"
+                      : "नव जीवन पब्लिक स्कूल - स्मार्ट क्लासरूम"}
                   </p>
                   <p className="text-white/70 text-[10px]">
-                    {language === "en" ? "Khabharabhar, Kaptanganj, Kushinagar" : "खबरभार, कप्तानगंज, कुशीनगर"}
+                    {language === "en"
+                      ? "Khabharabhar, Kaptanganj, Kushinagar"
+                      : "खबरभार, कप्तानगंज, कुशीनगर"}
                   </p>
                 </div>
               </div>
@@ -321,7 +373,9 @@ export default function Home() {
                   15+
                 </span>
                 <span className="block text-[10px] font-bold uppercase tracking-wide mt-0.5">
-                  {language === "en" ? "Years of\nExcellence" : "उत्कृष्टता के\nवर्ष"}
+                  {language === "en"
+                    ? "Years of\nExcellence"
+                    : "उत्कृष्टता के\nवर्ष"}
                 </span>
               </div>
             </div>
@@ -387,7 +441,11 @@ export default function Home() {
                 href="/about"
                 className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary-light hover:bg-primary/20 text-primary font-bold text-sm rounded-xl transition-all self-start"
               >
-                <span>{language === "en" ? "Read Our Full Story" : "हमारी पूरी कहानी पढ़ें"}</span>
+                <span>
+                  {language === "en"
+                    ? "Read Our Full Story"
+                    : "हमारी पूरी कहानी पढ़ें"}
+                </span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -414,7 +472,7 @@ export default function Home() {
                   className={`bg-white rounded-3xl border border-border p-6 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group reveal-on-scroll reveal-fade-up ${delays[i]}`}
                 >
                   <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-300" />
-                  
+
                   <div className="relative w-36 h-36 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl overflow-hidden border-4 border-neutral-light shadow-md group-hover:shadow-lg group-hover:border-primary/20 transition-all duration-300 shrink-0 bg-neutral-light">
                     <Image
                       src={member.photo}
@@ -422,6 +480,8 @@ export default function Home() {
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                       sizes="(max-w-640px) 144px, (max-w-768px) 160px, 176px"
+                      priority={i === 0}
+                      loading={i === 0 ? "eager" : "lazy"}
                     />
                   </div>
 
@@ -444,7 +504,11 @@ export default function Home() {
               className="flex items-center gap-2 px-5 py-2.5 border border-primary text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-sm transition-all"
             >
               <Users className="w-4 h-4" />
-              <span>{language === "en" ? "Meet Our Faculty" : "हमारे शिक्षकों से मिलें"}</span>
+              <span>
+                {language === "en"
+                  ? "Meet Our Faculty"
+                  : "हमारे शिक्षकों से मिलें"}
+              </span>
             </Link>
           </div>
         </div>
@@ -455,7 +519,9 @@ export default function Home() {
           <div className="flex items-center gap-3 mb-6 reveal-on-scroll reveal-fade-up">
             <div className="h-1 w-10 bg-primary rounded-full" />
             <h2 className="text-xl font-black text-neutral-dark">
-              {language === "en" ? "Why Choose Nav Jeevan?" : "नव जीवन को क्यों चुनें?"}
+              {language === "en"
+                ? "Why Choose Nav Jeevan?"
+                : "नव जीवन को क्यों चुनें?"}
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -463,26 +529,32 @@ export default function Home() {
               {
                 icon: Award,
                 color: "text-primary bg-primary-light",
-                title: language === "en" ? "Affordable Quality" : "किफायती गुणवत्ता",
-                desc: language === "en" 
-                  ? "CBSE-pattern learning with minimal fees for every child in Kushinagar."
-                  : "कुशीनगर में प्रत्येक बच्चे के लिए न्यूनतम शुल्क के साथ सीबीएसई-पैटर्न शिक्षा.",
+                title:
+                  language === "en" ? "Affordable Quality" : "किफायती गुणवत्ता",
+                desc:
+                  language === "en"
+                    ? "CBSE-pattern learning with minimal fees for every child in Kushinagar."
+                    : "कुशीनगर में प्रत्येक बच्चे के लिए न्यूनतम शुल्क के साथ सीबीएसई-पैटर्न शिक्षा.",
               },
               {
                 icon: HeartHandshake,
                 color: "text-accent bg-accent-light",
-                title: language === "en" ? "Bilingual Learning" : "द्विभाषी शिक्षा",
-                desc: language === "en"
-                  ? "Classes in both Hindi & English — no child is left behind due to language."
-                  : "हिन्दी और अंग्रेजी दोनों में कक्षाएं - भाषा के कारण कोई भी बच्चा पीछे न रहे.",
+                title:
+                  language === "en" ? "Bilingual Learning" : "द्विभाषी शिक्षा",
+                desc:
+                  language === "en"
+                    ? "Classes in both Hindi & English — no child is left behind due to language."
+                    : "हिन्दी और अंग्रेजी दोनों में कक्षाएं - भाषा के कारण कोई भी बच्चा पीछे न रहे.",
               },
               {
                 icon: ShieldCheck,
                 color: "text-amber-600 bg-amber-50",
-                title: language === "en" ? "Smart & Modern" : "स्मार्ट और आधुनिक",
-                desc: language === "en"
-                  ? "Smart classrooms, computer lab, and dedicated IT literacy from early grades."
-                  : "स्मार्ट कक्षाएं, कंप्यूटर लैब और शुरुआती कक्षाओं से समर्पित आईटी साक्षरता.",
+                title:
+                  language === "en" ? "Smart & Modern" : "स्मार्ट और आधुनिक",
+                desc:
+                  language === "en"
+                    ? "Smart classrooms, computer lab, and dedicated IT literacy from early grades."
+                    : "स्मार्ट कक्षाएं, कंप्यूटर लैब और शुरुआती कक्षाओं से समर्पित आईटी साक्षरता.",
               },
             ].map((p, i) => {
               const Icon = p.icon;
@@ -514,7 +586,9 @@ export default function Home() {
 
       {loading ? (
         <div className="py-10 text-center text-xs text-neutral-body italic">
-          {language === "en" ? "Loading campus life gallery..." : "गैलरी लोड हो रही है..."}
+          {language === "en"
+            ? "Loading campus life gallery..."
+            : "गैलरी लोड हो रही है..."}
         </div>
       ) : previewGallery.length > 0 ? (
         <section className="py-10 bg-white border-b border-border text-left">
@@ -523,7 +597,9 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <div className="h-1 w-10 bg-accent rounded-full" />
                 <h2 className="text-xl font-black text-neutral-dark">
-                  {language === "en" ? "Life at Nav Jeevan" : "नव जीवन में जीवन के रंग"}
+                  {language === "en"
+                    ? "Life at Nav Jeevan"
+                    : "नव जीवन में जीवन के रंग"}
                 </h2>
               </div>
               <Link
@@ -551,7 +627,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
             <a
-              href="tel:+917880952150"
+              href="tel:+91 99210 08807"
               className="flex items-center gap-3 flex-1 p-4 border border-border rounded-2xl hover:border-primary/30 hover:bg-neutral-light transition-all reveal-on-scroll reveal-fade-right delay-100"
             >
               <div className="p-2.5 bg-primary-light rounded-xl text-primary shrink-0">
@@ -562,7 +638,7 @@ export default function Home() {
                   {language === "en" ? "Call Office" : "कार्यालय में कॉल करें"}
                 </span>
                 <span className="block text-sm font-black text-neutral-dark">
-                  +91 7880952150
+                  +91 99210 08807
                 </span>
               </div>
             </a>
