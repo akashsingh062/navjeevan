@@ -105,6 +105,13 @@ export default function Navbar() {
   const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setIsVisible(true);
+    setAboutOpen(false);
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -122,12 +129,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Ensure navbar is visible on route transitions
-  useEffect(() => {
-    setIsVisible(true);
-  }, [pathname]);
-
-  
   useEffect(() => {
     if (!aboutOpen) return;
     const handleClick = (e: MouseEvent) => {
@@ -140,14 +141,6 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [aboutOpen]);
-
-  
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAboutOpen(prev => prev ? false : prev);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [pathname]);
 
   
   useLayoutEffect(() => {
