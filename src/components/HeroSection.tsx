@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 const slides = [
   {
     id: 1,
-    image: "/hero-banner.png",
+    image: "/hero-banner.jpg",
     title: "Nav Jeevan Public School",
     subtitle: "Empowering Rural Minds Through Quality Education",
     tag: "Session 2026–27 Admissions Open",
@@ -14,7 +14,7 @@ const slides = [
   },
   {
     id: 2,
-    image: "/hero-slide2.png",
+    image: "/national.jpg",
     title: "Morning Assembly & Values",
     subtitle: "Discipline, Devotion & Daily Learning — Nurturing Whole Persons",
     tag: "CBSE Pattern · Hindi & English Medium",
@@ -22,10 +22,10 @@ const slides = [
   },
   {
     id: 3,
-    image: "/hero-slide3.png",
-    title: "Annual Sports Day",
+    image: "/anual.jpg",
+    title: "Annual Day Celebrations",
     subtitle: "Building Character, Competence & Community Since 2011",
-    tag: "1,200+ Students · 35+ Dedicated Educators",
+    tag: "Cultural Events, Dances & Prize Distribution",
     cta: { label: "Know More About Us", href: "/about" },
   },
 ];
@@ -53,7 +53,7 @@ export default function HeroSection() {
   const slide = slides[current];
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: "clamp(380px, 50vh, 800px)" }}>
+    <section className="relative w-full overflow-hidden" style={{ height: "clamp(520px, 75vh, 900px)" }}>
 
       
       {slides.map((s, i) => (

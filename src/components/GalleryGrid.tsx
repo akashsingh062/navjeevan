@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { GalleryItem } from "@/types";
 import { 
   ZoomIn, 
@@ -111,9 +110,11 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   return (
     <div className="flex flex-col gap-10">
       
-      {}
       {limit ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        /* =========================================================
+            CASE A: LIMITED SHOWCASE PREVIEW GRID (HOMEPAGE)
+            ========================================================= */
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 [column-fill:balance] w-full">
           {displayedItems.slice(0, limit).map((item, idx) => {
             const hasError = imageErrors[item.id || ""] || false;
             const delays = ["", "delay-100", "delay-200", "delay-300"];
@@ -122,44 +123,49 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
               <button
                 key={item.id}
                 onClick={() => setSelectedItem(item)}
-                className={`bg-surface rounded-2xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col items-start focus:outline-none text-left w-full h-full cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
+                className={`break-inside-avoid mb-6 w-full rounded-3xl overflow-hidden border border-border/60 shadow-xs hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 group focus:outline-none text-left cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
                 aria-haspopup="dialog"
                 aria-label={`View photo of ${item.title}`}
               >
-                <div className="relative w-full aspect-4/3 bg-neutral-light overflow-hidden flex items-center justify-center border-b border-border">
-                  {item.imageUrl && !hasError ? (
-                    <>
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        fill
-                        sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, 300px"
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={() => handleImageError(item.id || "")}
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-neutral-dark/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white pointer-events-none">
-                        <ZoomIn className="w-8 h-8" />
-                      </div>
-                    </>
-                  ) : (
-                    <div className="absolute inset-0 bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-4 text-center">
-                      <Camera className="w-8 h-8 text-primary/40 mb-2" />
-                      <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2 rounded-full tracking-wider">
+                {item.imageUrl && !hasError ? (
+                  <div className="relative w-full h-auto">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
+                      onError={() => handleImageError(item.id || "")}
+                      loading="lazy"
+                    />
+                    
+                    {/* Modern Premium Overlay: Gradient with category and title */}
+                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end text-white text-left transition-all duration-300">
+                      <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block self-start mb-1.5 tracking-wider">
                         {item.category}
                       </span>
+                      <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors">
+                        {item.title}
+                      </h3>
                     </div>
-                  )}
-                </div>
-
-                <div className="p-4 w-full">
-                  <span className="text-[9px] uppercase font-black text-accent tracking-wider block">
-                    {item.category}
-                  </span>
-                  <h3 className="text-sm font-extrabold text-neutral-dark mt-1 leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                    {item.title}
-                  </h3>
-                </div>
+                    
+                    {/* Hover Zoom Icon */}
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                      <div className="bg-white/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                        <ZoomIn className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full aspect-video bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-6 text-center border border-border rounded-3xl">
+                    <Camera className="w-8 h-8 text-primary/40 mb-2" />
+                    <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2.5 py-0.5 rounded-full tracking-wider">
+                      {item.category}
+                    </span>
+                    <h3 className="text-xs font-bold text-neutral-dark mt-2 line-clamp-2">
+                      {item.title}
+                    </h3>
+                  </div>
+                )}
               </button>
             );
           })}
@@ -199,28 +205,27 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
               <div className="w-full flex justify-center">
                 <div 
                   onClick={() => setSelectedItem(currentHighlight)}
-                  className={`w-full max-w-2xl aspect-video rounded-2xl overflow-hidden border border-border shadow-sm bg-neutral-light cursor-pointer relative group transition-all duration-300 ${
+                  className={`w-full max-w-2xl rounded-2xl overflow-hidden border border-border shadow-sm bg-neutral-light cursor-pointer relative group transition-all duration-300 ${
                     isFading ? "opacity-0 scale-98" : "opacity-100 scale-100"
                   }`}
                   role="button"
                   aria-label={`View featured snapshot: ${currentHighlight.title}`}
                 >
                   {currentHighlight.imageUrl && !imageErrors[`rand-single-${currentHighlight.id}`] ? (
-                    <>
-                      <Image
+                    <div className="relative w-full h-auto">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src={currentHighlight.imageUrl}
                         alt={currentHighlight.title}
-                        fill
-                        priority
-                        className="object-cover group-hover:scale-103 transition-transform duration-500 ease-out"
+                        className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-103 rounded-2xl"
                         onError={() => handleImageError(`rand-single-${currentHighlight.id}`)}
                       />
-                      <div className="absolute inset-0 bg-neutral-dark/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white pointer-events-none">
+                      <div className="absolute inset-0 bg-neutral-dark/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white pointer-events-none rounded-2xl">
                         <ZoomIn className="w-8 h-8" />
                       </div>
-                    </>
+                    </div>
                   ) : (
-                    <div className="absolute inset-0 bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-6 text-center">
+                    <div className="w-full aspect-video bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-6 text-center rounded-2xl">
                       <Camera className="w-10 h-10 text-primary/40 mb-2" />
                       <span className="text-xs font-black uppercase text-accent bg-accent/10 px-3 py-1 rounded-full tracking-wider">
                         {currentHighlight.category}
@@ -229,8 +234,8 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                   )}
 
                   {/* Gradient Overlay Info Banner */}
-                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/85 via-black/30 to-transparent p-4 md:p-6 text-white flex flex-col justify-end text-left transition-opacity duration-300">
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-primary bg-primary-light border border-primary/20 px-2.5 py-0.5 rounded-md inline-block self-start mb-2 tracking-wider">
+                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-4 md:p-6 text-white flex flex-col justify-end text-left transition-opacity duration-300 rounded-b-2xl">
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-white bg-primary px-2.5 py-0.5 rounded-md inline-block self-start mb-2 tracking-wider">
                       {currentHighlight.category}
                     </span>
                     <h4 className="text-sm sm:text-base font-black leading-tight drop-shadow-xs truncate max-w-full">
@@ -295,7 +300,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
             </div>
           ) : (
             /* =========================================================
-                VIEW B: EXPANDED FOLDER PHOTOS GRID MODE
+                VIEW B: EXPANDED FOLDER PHOTOS GRID MODE (MASONRY!)
                 ========================================================= */
             <div className="flex flex-col gap-6 animate-fade-in-up">
               
@@ -345,7 +350,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 [column-fill:balance] w-full">
                   {displayedItems.map((item, idx) => {
                     const hasError = imageErrors[item.id || ""] || false;
                     const delays = ["", "delay-100", "delay-200", "delay-300"];
@@ -354,44 +359,49 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                       <button
                         key={item.id}
                         onClick={() => setSelectedItem(item)}
-                        className={`bg-surface rounded-3xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all group flex flex-col items-start focus:outline-none text-left w-full h-full cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
+                        className={`break-inside-avoid mb-6 w-full rounded-3xl overflow-hidden border border-border/60 shadow-xs hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 group focus:outline-none text-left cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
                         aria-haspopup="dialog"
                         aria-label={`View photo of ${item.title}`}
                       >
-                        <div className="relative w-full aspect-4/3 bg-neutral-light overflow-hidden flex items-center justify-center border-b border-border">
-                          {item.imageUrl && !hasError ? (
-                            <>
-                              <Image
-                                src={item.imageUrl}
-                                alt={item.title}
-                                fill
-                                sizes="(max-w-640px) 100vw, (max-w-768px) 50vw, 300px"
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                onError={() => handleImageError(item.id || "")}
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-neutral-dark/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white pointer-events-none">
-                                <ZoomIn className="w-8 h-8" />
-                              </div>
-                            </>
-                          ) : (
-                            <div className="absolute inset-0 bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-4 text-center">
-                              <Camera className="w-8 h-8 text-primary/40 mb-2" />
-                              <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2 rounded-full tracking-wider">
+                        {item.imageUrl && !hasError ? (
+                          <div className="relative w-full h-auto">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={item.imageUrl}
+                              alt={item.title}
+                              className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
+                              onError={() => handleImageError(item.id || "")}
+                              loading="lazy"
+                            />
+                            
+                            {/* Modern Premium Overlay: Gradient with category and title */}
+                            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end text-white text-left transition-all duration-300">
+                              <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block self-start mb-1.5 tracking-wider">
                                 {item.category}
                               </span>
+                              <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors">
+                                {item.title}
+                              </h3>
                             </div>
-                          )}
-                        </div>
-
-                        <div className="p-4 w-full">
-                          <span className="text-[9px] uppercase font-black text-accent tracking-wider block">
-                            {item.category}
-                          </span>
-                          <h3 className="text-sm font-extrabold text-neutral-dark mt-1 leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                            {item.title}
-                          </h3>
-                        </div>
+                            
+                            {/* Hover Zoom Icon */}
+                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                              <div className="bg-white/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
+                                <ZoomIn className="w-5 h-5" />
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-full aspect-video bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-6 text-center border border-border rounded-3xl">
+                            <Camera className="w-8 h-8 text-primary/40 mb-2" />
+                            <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2.5 py-0.5 rounded-full tracking-wider">
+                              {item.category}
+                            </span>
+                            <h3 className="text-xs font-bold text-neutral-dark mt-2 line-clamp-2">
+                              {item.title}
+                            </h3>
+                          </div>
+                        )}
                       </button>
                     );
                   })}

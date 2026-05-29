@@ -348,7 +348,7 @@ export default function Home() {
             <div className="relative reveal-on-scroll reveal-fade-right">
               <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-4/3">
                 <Image
-                  src="/about-students.png"
+                  src="/img-2.jpg"
                   alt="Students learning at Nav Jeevan Public School"
                   fill
                   className="object-cover"
