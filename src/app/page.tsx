@@ -470,42 +470,37 @@ export default function Home() {
               return (
                 <div
                   key={i}
-                  className={`relative p-6 flex flex-col items-center text-center gap-4 rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${
+                  className={`flex flex-col w-full h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${
                     isMd 
-                      ? "bg-linear-to-tr from-white to-primary-light/40 border-primary/20 shadow-md ring-1 ring-primary/10 hover:shadow-2xl hover:border-primary/45 hover:-translate-y-1.5" 
-                      : "bg-white border-border/80 shadow-xs hover:shadow-2xl hover:border-primary/30 hover:-translate-y-1.5"
+                      ? "bg-white border-2 border-primary/25 shadow-md hover:border-primary/55 hover:-translate-y-1.5" 
+                      : "bg-white border border-border shadow-xs hover:border-primary/20 hover:shadow-md hover:-translate-y-1.5"
                   }`}
                 >
-                  <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-300" />
-
-                  {/* Circular Executive double-ring layout */}
-                  <div className="relative w-36 h-36 rounded-full overflow-hidden p-1 bg-linear-to-tr from-border/50 to-primary/25 border border-border shadow-inner group-hover:from-primary/30 group-hover:to-accent/30 transition-all duration-500 shrink-0">
-                    <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white bg-neutral-light">
-                      <Image
-                        src={member.photo}
-                        alt={`Photo of ${member.name[language]}`}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                        sizes="(max-w-640px) 144px, 176px"
-                        priority={i === 0}
-                        loading={i === 0 ? "eager" : "lazy"}
-                      />
-                    </div>
+                  {/* Photo at the top filling the top portion */}
+                  <div className="relative w-full h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
+                    <Image
+                      src={member.photo}
+                      alt={`Photo of ${member.name[language]}`}
+                      fill
+                      className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
+                      sizes="(max-w-640px) 100vw, 25vw"
+                      priority={i === 0}
+                      loading={i === 0 ? "eager" : "lazy"}
+                    />
                   </div>
 
-                  <div className="flex flex-col items-center gap-2 mt-2 w-full">
-                    <span className={`text-[10px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full leading-none transition-all duration-300 border ${
+                  {/* Content at the bottom */}
+                  <div className="flex-1 p-5 flex flex-col justify-center items-center text-center gap-2 w-full bg-white rounded-b-3xl">
+                    <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug transition-colors duration-300 group-hover:text-primary">
+                      {member.name[language]}
+                    </h3>
+                    <span className={`text-[10px] font-bold uppercase tracking-wider px-3.5 py-0.5 rounded-md leading-none transition-all duration-300 border ${
                       isMd 
-                        ? "bg-primary text-white border-transparent shadow-sm" 
-                        : "bg-primary-light text-primary border-primary/10 group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
+                        ? "bg-primary/10 text-primary border-primary/20 group-hover:bg-primary group-hover:text-white group-hover:border-transparent" 
+                        : "bg-neutral-light text-neutral-body border-border group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
                     }`}>
                       {member.role[language]}
                     </span>
-                    <h3 className={`text-sm sm:text-base font-extrabold tracking-tight leading-snug transition-colors duration-300 ${
-                      isMd ? "text-primary-hover group-hover:text-primary" : "text-neutral-dark group-hover:text-primary"
-                    }`}>
-                      {member.name[language]}
-                    </h3>
                   </div>
                 </div>
               );

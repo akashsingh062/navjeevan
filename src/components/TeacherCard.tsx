@@ -21,47 +21,46 @@ export default function TeacherCard({ member }: TeacherCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-border/80 p-6 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-2xl hover:border-accent/30 hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group">
+    <div className="flex flex-col w-full h-[420px] rounded-3xl border border-border bg-white shadow-xs hover:shadow-md hover:border-accent/30 hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group">
       {/* Decorative backdrop glow */}
       <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors duration-300" />
       
-      {/* Circular profile frame layout */}
-      <div className="relative w-32 h-32 rounded-full overflow-hidden p-1 bg-linear-to-tr from-border/50 to-accent/25 border border-border shadow-inner group-hover:from-accent/30 group-hover:to-primary/30 transition-all duration-500 shrink-0 bg-neutral-light">
-        <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white flex items-center justify-center bg-neutral-light">
-          {member.imageUrl && !imageError ? (
-            <Image
-              src={member.imageUrl}
-              alt={`Photo of ${member.name}`}
-              fill
-              sizes="(max-w-640px) 128px, 144px"
-              className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-              onError={() => setImageError(true)}
-              loading="lazy"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-              <span className="text-2xl font-black text-accent select-none">
-                {getInitials(member.name)}
-              </span>
-            </div>
-          )}
-        </div>
+      {/* Photo container */}
+      <div className="relative w-full h-[230px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl flex items-center justify-center">
+        {member.imageUrl && !imageError ? (
+          <Image
+            src={member.imageUrl}
+            alt={`Photo of ${member.name}`}
+            fill
+            sizes="(max-w-640px) 100vw, 25vw"
+            className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
+            onError={() => setImageError(true)}
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-accent/5 flex items-center justify-center">
+            <span className="text-3xl font-black text-primary select-none">
+              {getInitials(member.name)}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col items-center gap-2 mt-1 w-full">
-        <span className="px-3.5 py-1 bg-accent-light text-accent text-[9px] font-black uppercase tracking-wider rounded-full border border-accent/10 group-hover:bg-accent group-hover:text-white transition-all duration-300">
-          {member.subject}
-        </span>
-        
-        <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug group-hover:text-accent transition-colors duration-300">
-          {member.name}
-        </h3>
+      {/* Content at the bottom */}
+      <div className="flex-1 p-5 flex flex-col justify-between gap-3 bg-white w-full rounded-b-3xl">
+        <div className="flex flex-col items-center text-center gap-1.5">
+          <h3 className="text-base sm:text-lg font-black text-neutral-dark tracking-tight leading-snug group-hover:text-accent transition-colors duration-300">
+            {member.name}
+          </h3>
+          <span className="px-3 py-0.5 bg-neutral-light text-neutral-body text-[9px] font-bold uppercase tracking-wider rounded-md border border-border group-hover:bg-accent group-hover:text-white group-hover:border-transparent transition-all duration-300">
+            {member.subject}
+          </span>
+        </div>
 
         {(member.qualification || member.experience) && (
-          <div className="w-full bg-neutral-light border border-border/40 rounded-2xl p-3 flex flex-col gap-2 mt-2 group-hover:bg-accent/5 group-hover:border-accent/10 transition-all duration-500 text-left">
+          <div className="w-full bg-neutral-light/50 border border-border/60 rounded-2xl p-3 flex flex-col gap-1.5 group-hover:bg-accent/5 group-hover:border-accent/15 transition-all duration-500 text-left">
             {member.qualification && (
-              <div className="flex items-center gap-2 text-neutral-body">
+              <div className="flex items-center gap-2 text-neutral-dark/80">
                 <GraduationCap className="w-3.5 h-3.5 text-primary shrink-0" />
                 <span className="text-[11px] font-semibold text-neutral-dark truncate" title={member.qualification}>
                   {member.qualification}
@@ -69,10 +68,15 @@ export default function TeacherCard({ member }: TeacherCardProps) {
               </div>
             )}
             {member.experience && (
-              <div className="flex items-center gap-2 text-neutral-body">
+              <div className="flex items-center gap-2 text-neutral-dark/80">
                 <Briefcase className="w-3.5 h-3.5 text-primary shrink-0" />
                 <span className="text-[11px] font-semibold text-neutral-dark truncate">
-                  {member.experience} {language === "en" ? "experience" : "अनुभव"}
+                  {member.experience.toLowerCase().includes("year") ||
+                  member.experience.toLowerCase().includes("experience") ||
+                  member.experience.includes("वर्ष") ||
+                  member.experience.includes("अनुभव")
+                    ? member.experience
+                    : `${member.experience} ${language === "en" ? "years experience" : "वर्षों का अनुभव"}`}
                 </span>
               </div>
             )}
