@@ -19,6 +19,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "No photograph file provided." }, { status: 400 });
     }
 
+    const categoryParam = (formData.get("category") as string || "general").trim();
+    const cleanCategory = categoryParam.replace(/[^a-zA-Z0-9_-]/g, "_") || "general";
+
     
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
@@ -35,21 +38,20 @@ export async function POST(request: Request) {
     if (!isCloudinaryConfigured) {
       console.warn("Cloudinary keys not set up. Saving file locally to public/uploads.");
       
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      const uploadDir = path.join(process.cwd(), "public", "uploads", cleanCategory);
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
 
-      
       const originalName = file.name || "upload";
       const ext = path.extname(originalName) || ".jpg";
       const baseName = path.basename(originalName, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
       const uniqueName = `${baseName}-${Date.now()}${ext}`;
       const filePath = path.join(uploadDir, uniqueName);
 
-      // Write the buffer to public/uploads
+      // Write the buffer to public/uploads/[category]
       await fs.promises.writeFile(filePath, buffer);
-      const localUrl = `/uploads/${uniqueName}`;
+      const localUrl = `/uploads/${cleanCategory}/${uniqueName}`;
 
       return NextResponse.json({ 
         success: true, 
@@ -70,11 +72,10 @@ export async function POST(request: Request) {
     // Raw assets require the extension in the public ID to download with it
     const publicId = resourceType === "raw" ? `${uniqueId}${ext}` : uniqueId;
 
-    // Upload binary stream directly to Cloudinary using a Promise wrapper
     const uploadResult = await new Promise<{ secure_url?: string } | undefined>((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
-          folder: "navjeevan_faculty",
+          folder: `navjeevan_${cleanCategory}`,
           resource_type: resourceType,
           public_id: publicId,
           // Only apply optimizations to images, raw PDFs/docs should remain untouched

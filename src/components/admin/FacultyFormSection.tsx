@@ -52,6 +52,7 @@ export default function FacultyFormSection({
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("category", "faculty");
 
     try {
       const res = await fetch("/api/upload", {

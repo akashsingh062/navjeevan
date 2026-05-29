@@ -12,7 +12,7 @@ interface DBNotice {
   title: string;
   description: string;
   date: string;
-  category: "General" | "Exam" | "Holiday" | "Admission" | "Others";
+  category: string;
   isImportant?: boolean;
   importanceColor?: "blue" | "red" | "amber" | "green" | "purple";
   attachmentUrl?: string;
@@ -31,7 +31,7 @@ interface DBFaculty {
 interface DBGalleryItem {
   _id: { toString(): string };
   imageUrl: string;
-  category: "Annual Function" | "Sports Day" | "Classroom Activities" | "Cultural Events" | "Independence Day" | "Prize Distribution" | "Others";
+  category: string;
   title: string;
   uploadedAt: string;
 }

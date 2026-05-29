@@ -115,6 +115,7 @@ export default function GalleryFormSection({
       try {
         const formData = new FormData();
         formData.append("file", item.file);
+        formData.append("category", finalCategory);
 
         const uploadRes = await fetch("/api/upload", {
           method: "POST",

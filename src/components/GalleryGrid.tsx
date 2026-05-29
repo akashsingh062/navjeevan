@@ -19,16 +19,6 @@ interface GalleryGridProps {
   limit?: number;
 }
 
-const CATEGORIES = [
-  "Annual Function",
-  "Sports Day",
-  "Classroom Activities",
-  "Cultural Events",
-  "Independence Day",
-  "Prize Distribution",
-  "Others"
-];
-
 export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
@@ -37,7 +27,34 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   const [isFading, setIsFading] = useState(false);
   const [isShuffling, setIsShuffling] = useState(false);
 
-  
+  // Dynamically build the categories list including any custom ones present in items
+  const dynamicCategories = React.useMemo(() => {
+    const standard = [
+      "Annual Function",
+      "Sports Day",
+      "Classroom Activities",
+      "Cultural Events",
+      "Independence Day",
+      "Prize Distribution",
+      "Others"
+    ];
+    const custom = Array.from(new Set(items.map(item => item.category)))
+      .filter((cat): cat is string => typeof cat === "string" && cat.trim() !== "" && !standard.includes(cat));
+    return [...standard, ...custom];
+  }, [items]);
+
+  const categoryCounts = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    dynamicCategories.forEach(cat => {
+      counts[cat] = items.filter(item => item.category === cat).length;
+    });
+    return counts;
+  }, [dynamicCategories, items]);
+
+  const populatedCategories = React.useMemo(() => {
+    return dynamicCategories.filter(cat => (categoryCounts[cat] || 0) > 0);
+  }, [dynamicCategories, categoryCounts]);
+
   const getRandomPhoto = useCallback((currentId?: string): GalleryItem | null => {
     if (!items || items.length === 0) return null;
     if (items.length === 1) return items[0];
@@ -46,7 +63,6 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
     return filtered[randomIndex];
   }, [items]);
 
-  
   useEffect(() => {
     if (items && items.length > 0) {
       const timer = setTimeout(() => {
@@ -56,7 +72,6 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
     }
   }, [items, getRandomPhoto]);
 
-  
   const swapHighlight = useCallback(() => {
     if (!items || items.length === 0) return;
     setIsFading(true);
@@ -71,7 +86,6 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
     }, 300); 
   }, [items, getRandomPhoto]);
 
-  
   useEffect(() => {
     if (!items || items.length === 0 || selectedCategory) return;
 
@@ -85,20 +99,6 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   const handleImageError = (id: string) => {
     setImageErrors(prev => ({ ...prev, [id]: true }));
   };
-
-  
-  const getCategoryCounts = () => {
-    const counts: Record<string, number> = {};
-    CATEGORIES.forEach(cat => {
-      counts[cat] = items.filter(item => item.category === cat).length;
-    });
-    return counts;
-  };
-
-  const categoryCounts = getCategoryCounts();
-
-  
-  const populatedCategories = CATEGORIES.filter(cat => categoryCounts[cat] > 0);
 
   
   const filteredItems = selectedCategory

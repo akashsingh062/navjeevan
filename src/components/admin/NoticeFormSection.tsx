@@ -55,6 +55,7 @@ export default function NoticeFormSection({
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("category", "notices");
 
     try {
       const res = await fetch("/api/upload", {
