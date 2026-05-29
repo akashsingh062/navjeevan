@@ -222,28 +222,28 @@ export default function Navbar() {
             isVisible ? "translate-y-0" : "-translate-y-full md:translate-y-0"
           }`}
         >
-          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
+          <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 sm:h-20 gap-1.5 sm:gap-3">
               {/* Brand */}
               <Link
                 href="/"
-                className="flex items-center gap-2.5 shrink-0 focus:outline-none group"
+                className="flex items-center gap-1.5 sm:gap-2.5 shrink min-w-0 focus:outline-none group"
                 aria-label="Nav Jeevan Public School Home"
               >
-                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-white flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
+                <div className="relative w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-white flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
                   <Image
                     src="/navjeevanLogo.jpeg"
                     alt="Nav Jeevan Public School Logo"
                     fill
                     className="object-cover"
-                    sizes="(max-width: 640px) 48px, 56px"
+                    sizes="(max-width: 640px) 40px, 56px"
                   />
                 </div>
-                <div className="flex flex-col leading-none">
-                  <span className="text-sm sm:text-base font-black text-neutral-dark tracking-tight leading-tight">
+                <div className="flex flex-col leading-none min-w-0">
+                  <span className="text-[12px] min-[360px]:text-xs sm:text-base font-black text-neutral-dark tracking-tight leading-tight truncate sm:whitespace-nowrap">
                     Nav Jeevan Public School
                   </span>
-                  <span className="text-[10px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5">
+                  <span className="text-[8px] min-[360px]:text-[9px] sm:text-[11px] text-neutral-body font-medium leading-tight mt-0.5 truncate">
                     <span className="inline sm:hidden">
                       Kaptanganj, Kushinagar
                     </span>
@@ -307,33 +307,33 @@ export default function Navbar() {
               </div>
 
               {/* Mobile Actions */}
-              <div className="flex md:hidden items-center gap-1.5 shrink-0">
+              <div className="flex md:hidden items-center gap-1 sm:gap-1.5 shrink-0">
                 {/* Dynamic lang toggle directly on header for smartphone visitors */}
                 <button
                   onClick={toggleLanguage}
-                  className="p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center font-black text-xs select-none gap-1 focus:outline-none shadow-3xs"
+                  className="px-2 py-1.5 sm:p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center font-black text-[10px] sm:text-xs select-none gap-0.5 sm:gap-1 focus:outline-none shadow-3xs cursor-pointer"
                   aria-label="Switch Language / भाषा बदलें"
                 >
-                  <Languages className="w-4 h-4 shrink-0" />
-                  <span className="text-[11px] font-black">
+                  <Languages className="w-3.5 h-3.5 shrink-0" />
+                  <span className="font-black">
                     {language === "en" ? "हिन्दी" : "EN"}
                   </span>
                 </button>
 
                 <a
                   href="tel:+919935661144"
-                  className="p-2.5 bg-primary-light text-primary rounded-xl"
+                  className="p-2 sm:p-2.5 bg-primary-light text-primary rounded-xl"
                   aria-label="Call"
                 >
-                  <Phone className="w-5 h-5" />
+                  <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
                 </a>
 
                 <button
                   onClick={() => setIsOpen(true)}
-                  className="p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
+                  className="p-2 sm:p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
                   aria-label="Open menu"
                 >
-                  <Menu className="w-5 h-5" />
+                  <Menu className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
