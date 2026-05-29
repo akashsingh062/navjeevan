@@ -476,7 +476,7 @@ export default function Home() {
                   }`}
                 >
 
-                  <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
+                  <div className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
                     <Image
                       src={member.photo}
                       alt={`Photo of ${member.name[language]}`}

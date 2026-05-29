@@ -25,7 +25,7 @@ export default function TeacherCard({ member }: TeacherCardProps) {
 
       <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors duration-300" />
 
-      <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[230px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl flex items-center justify-center">
+      <div className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[230px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl flex items-center justify-center">
         {member.imageUrl && !imageError ? (
           <Image
             src={member.imageUrl}
