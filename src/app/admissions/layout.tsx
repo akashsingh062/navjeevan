@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admissions Open – Apply Now for 2026-27",
+  title: "Admissions Open | Nav Jeevan Public School Khabharabhar",
   description:
-    "Admissions open at Nav Jeevan Public School (NJPS) Khabharabhar, Kaptanganj, Kushinagar. Apply now for Nursery to Class 8. Affordable fees, quality education, modern facilities. Contact us today.",
+    "Admissions are open at Nav Jeevan Public School Khabharabhar. Apply today at NJPS Kushinagar (Nursery to Class 8) for modern, affordable, and holistic CBSE education.",
   alternates: { canonical: "/admissions" },
   openGraph: {
-    title: "Admissions Open at NJPS Khabharabhar – Apply Now",
+    title: "Admissions Open at NJPS Kushinagar – Apply Now",
     description:
       "Enrol your child at Nav Jeevan Public School Khabharabhar. Admissions open for all classes. Quality CBSE-pattern education in Kushinagar.",
   },

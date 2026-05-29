@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Manager's Message",
+  title: "Manager's Message | Nav Jeevan Public School Khabharabhar",
   description:
-    "Read the Manager's message at Nav Jeevan Public School (NJPS) Khabharabhar — our management's vision for quality education, infrastructure, and community development in Kushinagar.",
+    "Read the Managing Director's note at Nav Jeevan Public School Khabharabhar. Discover management's vision for academic progress and community welfare at NJPS Kushinagar.",
   alternates: { canonical: "/about/message-manager" },
 };
 

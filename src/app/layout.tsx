@@ -21,12 +21,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default:
-      "Nav Jeevan Public School – NJPS Khabharabhar, Kushinagar",
+      "Nav Jeevan Public School Khabharabhar – NJPS Khabharabhar, Kushinagar",
     template:
       "%s | Nav Jeevan Public School",
   },
   description:
-    "NJPS Kushinagar: The best school in Kushinagar offering CBSE education. Experience smart classrooms, IT labs, and holistic learning. Apply now!",
+    "Welcome to Nav Jeevan Public School Khabharabhar, Kaptanganj. Experience premier CBSE education at NJPS Kushinagar with smart classrooms, advanced computer IT labs, and holistic student guidance. Apply now!",
   keywords: [
     "Nav Jeevan Public School",
     "Nav Jeevan Public School Khabharabhar",

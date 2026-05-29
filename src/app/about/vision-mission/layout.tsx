@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Vision & Mission – Shaping Future Leaders",
+  title: "Vision & Mission | NJPS Kushinagar Shaping Future Leaders",
   description:
-    "The vision and mission of Nav Jeevan Public School (NJPS) Khabharabhar — nurturing holistic development, academic excellence, and moral values in every child at Kaptanganj, Kushinagar.",
+    "Discover the vision, mission, and strategies of Nav Jeevan Public School Khabharabhar. Nurturing integrated development and academic excellence at NJPS Kushinagar.",
   alternates: { canonical: "/about/vision-mission" },
 };
 

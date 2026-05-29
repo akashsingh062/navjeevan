@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About Us – History, Vision & Values",
+  title: "About Us | Nav Jeevan Public School Khabharabhar",
   description:
-    "Learn about Nav Jeevan Public School (NJPS) Khabharabhar — our history, vision, mission, core values, achievements, and commitment to quality education in Kaptanganj, Kushinagar, Uttar Pradesh.",
+    "Learn about Nav Jeevan Public School Khabharabhar — our history, vision, and mission. Discover how NJPS Kushinagar delivers outstanding CBSE-pattern primary education to students.",
   alternates: { canonical: "/about" },
   openGraph: {
-    title: "About Nav Jeevan Public School – NJPS Khabharabhar",
+    title: "About Nav Jeevan Public School – NJPS Kushinagar",
     description:
-      "Discover our journey, vision and values. NJPS Khabharabhar is dedicated to nurturing excellence in education in rural Kushinagar.",
+      "Discover our journey, vision and values. NJPS Kushinagar is dedicated to nurturing excellence in education at Khabharabhar, Kaptanganj.",
   },
 };
 

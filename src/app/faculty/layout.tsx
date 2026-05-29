@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Our Faculty – Experienced & Qualified Teachers",
+  title: "Our Faculty | Nav Jeevan Public School Khabharabhar",
   description:
-    "Meet the experienced and qualified teaching staff at Nav Jeevan Public School (NJPS) Khabharabhar. Dedicated educators providing personalised attention and holistic learning in Kushinagar.",
+    "Meet the highly qualified teachers and staff members at Nav Jeevan Public School Khabharabhar. Dedicated educators shaping young minds at NJPS Kushinagar.",
   alternates: { canonical: "/faculty" },
   openGraph: {
-    title: "Faculty at NJPS Khabharabhar – Dedicated Teachers",
+    title: "Faculty at NJPS Kushinagar – Dedicated Teachers",
     description:
       "Qualified and caring teachers driving academic excellence at Nav Jeevan Public School Khabharabhar, Kushinagar.",
   },

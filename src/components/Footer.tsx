@@ -322,6 +322,8 @@ export default function Footer() {
             alternateName: [
               "NJPS",
               "NJPS Khabharabhar",
+              "NJPS Kushinagar",
+              "Nav Jeevan Public School",
               "Nav Jeevan Public School Khabharabhar",
               "नव जीवन पब्लिक स्कूल",
               "नव जीवन पब्लिक स्कूल खभरबहार",

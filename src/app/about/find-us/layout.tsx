@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Find Us – Location & Directions to NJPS",
+  title: "Find Us | Nav Jeevan Public School Khabharabhar Directions",
   description:
-    "Find Nav Jeevan Public School (NJPS) at Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh 274301. Get directions, map, and nearby landmarks.",
+    "Get full directions and map for Nav Jeevan Public School Khabharabhar. Contact NJPS Kushinagar at Khabharabhar, Kaptanganj, Uttar Pradesh 274301.",
   alternates: { canonical: "/about/find-us" },
 };
 
