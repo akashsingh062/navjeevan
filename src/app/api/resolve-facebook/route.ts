@@ -22,6 +22,27 @@ function transformFacebookUrl(urlStr: string): string {
   return urlStr;
 }
 
+interface FBGraphQLEdge {
+  node?: {
+    __typename?: string;
+    is_playable?: boolean;
+    image?: { uri?: string };
+  };
+}
+
+interface FBGraphQLPageInfo {
+  end_cursor?: string;
+  has_next_page?: boolean;
+}
+
+interface FBGraphQLMediaNode {
+  id?: string;
+  media?: {
+    edges?: FBGraphQLEdge[];
+    page_info?: FBGraphQLPageInfo;
+  };
+}
+
 async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
   const url = "https://www.facebook.com/api/graphql/";
   const images: string[] = [];
@@ -72,7 +93,7 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
     const text1 = await res1.text();
     const lines1 = text1.split("\n").filter(l => l.trim().length > 0);
 
-    let album: any = null;
+    let album: FBGraphQLMediaNode | null = null;
     for (const line of lines1) {
       try {
         const parsed = JSON.parse(line);
@@ -92,7 +113,7 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
     let pageInfo = album.media?.page_info;
     const edges1 = album.media?.edges || [];
 
-    const processEdges = (edges: any[]) => {
+    const processEdges = (edges: FBGraphQLEdge[]) => {
       for (const edge of edges) {
         const node = edge.node;
         if (!node) continue;
@@ -145,7 +166,7 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
       const text2 = await res2.text();
       const lines2 = text2.split("\n").filter(l => l.trim().length > 0);
 
-      let pageNode: any = null;
+      let pageNode: FBGraphQLMediaNode | null = null;
       for (const line of lines2) {
         try {
           const parsed = JSON.parse(line);
@@ -500,28 +521,136 @@ export async function POST(request: Request) {
 
     } else if (uLower.includes("instagram.com")) {
 
-      const ogImageRegex = /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/gi;
-      const ogVideoRegex = /<meta\s+property=["']og:video["']\s+content=["']([^"']+)["']/gi;
+      const shortcodeMatch = targetUrl.match(/\/(p|reel|tv)\/([a-zA-Z0-9_-]+)/);
 
-      let match;
-      while ((match = ogImageRegex.exec(html)) !== null) {
-        if (match[1]) {
-          const imgUrl = resolveUrl(match[1]);
-          if (!finalImages.includes(imgUrl)) finalImages.push(imgUrl);
+      try {
+        const oembedTarget = shortcodeMatch
+          ? `https://www.instagram.com/${shortcodeMatch[1]}/${shortcodeMatch[2]}/`
+          : targetUrl;
+        const oembedUrl = `https://api.instagram.com/oembed/?url=${encodeURIComponent(oembedTarget)}&maxwidth=1080`;
+        const oembedRes = await fetch(oembedUrl, {
+          headers: { "Accept": "application/json" },
+          next: { revalidate: 0 }
+        });
+
+        if (oembedRes.ok) {
+          const text = await oembedRes.text();
+          try {
+            const data = JSON.parse(text);
+            if (data.thumbnail_url) {
+              finalImages.push(data.thumbnail_url);
+            }
+          } catch {
+            console.error("Instagram oEmbed returned non-JSON response.");
+          }
+        }
+      } catch (err) {
+        console.error("Instagram oEmbed API failed:", err);
+      }
+
+      if (shortcodeMatch && finalImages.length === 0) {
+        try {
+          const embedUrl = `https://www.instagram.com/${shortcodeMatch[1]}/${shortcodeMatch[2]}/embed/captioned/`;
+          const embedRes = await fetch(embedUrl, {
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.5",
+              "Referer": "https://www.instagram.com/",
+            },
+            next: { revalidate: 0 }
+          });
+
+          if (embedRes.ok) {
+            const embedHtml = await embedRes.text();
+            const cleanEmbedHtml = embedHtml
+              .replace(/\\u0026/g, "&")
+              .replace(/&amp;/g, "&")
+              .replace(/\\\//g, "/");
+
+            const bgImageRegex = /background-image:\s*url\(["']?([^"')]+)["']?\)/gi;
+            let match;
+            while ((match = bgImageRegex.exec(cleanEmbedHtml)) !== null) {
+              if (match[1] && match[1].includes("cdninstagram.com") && !match[1].includes("s150x150") && !match[1].includes("profile_pic")) {
+                if (!finalImages.includes(match[1])) finalImages.push(match[1]);
+              }
+            }
+
+            const displayUrlRegex = /"display_url"\s*:\s*"([^"]+)"/gi;
+            while ((match = displayUrlRegex.exec(cleanEmbedHtml)) !== null) {
+              if (match[1]) {
+                const cleanUrl = match[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+                if (!finalImages.includes(cleanUrl)) finalImages.push(cleanUrl);
+              }
+            }
+
+            const embedImgRegex = /<img[^>]+src=["']([^"']*cdninstagram\.com[^"']+)["']/gi;
+            while ((match = embedImgRegex.exec(cleanEmbedHtml)) !== null) {
+              if (match[1] && !match[1].includes("profile_pic") && !match[1].includes("s150x150") && !match[1].includes("static.cdninstagram.com") && !match[1].includes("rsrc.php")) {
+                const cleanUrl = match[1].replace(/&amp;/g, "&");
+                if (!finalImages.includes(cleanUrl)) finalImages.push(cleanUrl);
+              }
+            }
+
+            const videoUrlRegex = /"video_url"\s*:\s*"([^"]+)"/gi;
+            while ((match = videoUrlRegex.exec(cleanEmbedHtml)) !== null) {
+              if (match[1]) {
+                const cleanUrl = match[1].replace(/\\u0026/g, "&").replace(/\\\//g, "/");
+                if (!finalImages.includes(cleanUrl)) finalImages.push(cleanUrl);
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Instagram embed page fetch failed:", err);
         }
       }
-      while ((match = ogVideoRegex.exec(html)) !== null) {
-        if (match[1]) {
-          const videoUrl = resolveUrl(match[1]);
-          if (!finalImages.includes(videoUrl)) finalImages.push(videoUrl);
-        }
-      }
 
-      const instaCdnRegex = /(https:\/\/[a-z0-9.-]+\.cdninstagram\.com\/[^"'\s>)}]+)/gi;
-      const instaMatches = html.match(instaCdnRegex) || [];
-      for (const link of instaMatches) {
-        if (!finalImages.includes(link) && !link.includes("logo") && !link.includes("avatar")) {
-          finalImages.push(link);
+      if (finalImages.length === 0) {
+        let instaHtml = html;
+
+        try {
+          const browserRes = await fetch(targetUrl, {
+            headers: {
+              "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.5",
+            },
+            redirect: "follow",
+            next: { revalidate: 0 }
+          });
+
+          if (browserRes.ok) {
+            const rawInstaHtml = await browserRes.text();
+            instaHtml = rawInstaHtml
+              .replace(/\\u0026/g, "&")
+              .replace(/&amp;/g, "&")
+              .replace(/\\\//g, "/");
+          }
+        } catch {}
+
+        const ogImageRegex = /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/gi;
+        const ogVideoRegex = /<meta\s+property=["']og:video["']\s+content=["']([^"']+)["']/gi;
+
+        let match;
+        while ((match = ogImageRegex.exec(instaHtml)) !== null) {
+          if (match[1]) {
+            const imgUrl = resolveUrl(match[1]);
+            if (!finalImages.includes(imgUrl)) finalImages.push(imgUrl);
+          }
+        }
+        while ((match = ogVideoRegex.exec(instaHtml)) !== null) {
+          if (match[1]) {
+            const videoUrl = resolveUrl(match[1]);
+            if (!finalImages.includes(videoUrl)) finalImages.push(videoUrl);
+          }
+        }
+
+        const instaCdnRegex = /(https:\/\/scontent[a-z0-9.-]*\.cdninstagram\.com\/[^"'\s>)}]+)/gi;
+        const instaMatches = instaHtml.match(instaCdnRegex) || [];
+        for (const link of instaMatches) {
+          if (!finalImages.includes(link) && !link.includes("logo") && !link.includes("avatar") && !link.includes("profile_pic") && !link.includes("s150x150") && !link.includes("rsrc.php")) {
+            finalImages.push(link);
+          }
         }
       }
 

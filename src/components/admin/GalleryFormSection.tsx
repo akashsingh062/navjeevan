@@ -90,6 +90,20 @@ export default function GalleryFormSection({
     const scontentRegex = /(https:\/\/[a-z0-9.-]+\.fbcdn\.net\/v\/[^"'\s>)}]+)/gi;
     const fbcdnMatches = htmlText.match(scontentRegex) || [];
 
+    const instaCdnRegex = /(https:\/\/[a-z0-9.-]+\.cdninstagram\.com\/[^"'\s>)}]+)/gi;
+    const instaCdnMatches = htmlText.match(instaCdnRegex) || [];
+
+    if (instaCdnMatches.length > 0) {
+      const instaImages: string[] = [];
+      for (let link of instaCdnMatches) {
+        link = link.replace(/\\/g, "").replace(/&amp;/g, "&");
+        const lower = link.toLowerCase();
+        if (lower.includes("profile_pic") || lower.includes("s150x150") || lower.includes("logo") || lower.includes("avatar")) continue;
+        if (!instaImages.includes(link)) instaImages.push(link);
+      }
+      if (instaImages.length > 0) return instaImages;
+    }
+
     const isExcludedMedia = (urlStr: string): boolean => {
       const lowerUrl = urlStr.toLowerCase();
       return (
@@ -278,7 +292,7 @@ export default function GalleryFormSection({
         toast.success(`Successfully extracted ${result.images.length} direct image(s) from ${platformName}!`, { id: loadingToast });
       } else {
         toast.error(result.message || `Failed to extract images from ${platformName}. Make sure it is public.`, { id: loadingToast });
-        if (isFB) {
+        if (isFB || isInsta) {
           setHtmlExtractorUrl(originalLink);
           setShowHtmlExtractor(true);
         }
