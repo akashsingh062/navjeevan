@@ -10,9 +10,41 @@ import {
   ArrowLeft, 
   Shuffle, 
   Image as ImageIcon,
-  Loader2
+  Loader2,
+  Play
 } from "lucide-react";
 import ImageModal from "./ImageModal";
+
+const isVideoUrl = (url: string): boolean => {
+  if (!url) return false;
+  const u = url.toLowerCase();
+  return (
+    u.includes(".mp4") || 
+    u.includes(".webm") || 
+    u.includes(".ogg") || 
+    u.includes("/video/") || 
+    u.includes("video.fna.fbcdn.net") ||
+    u.includes("video-") ||
+    u.includes("facebook.com/watch") ||
+    u.includes("facebook.com/video.php") ||
+    u.includes("fb.watch")
+  );
+};
+
+const isEmbedVideoUrl = (url: string): boolean => {
+  if (!url) return false;
+  const u = url.toLowerCase();
+  return u.includes("facebook.com/watch") || u.includes("facebook.com/video.php") || u.includes("fb.watch");
+};
+
+const getVideoPoster = (url: string): string => {
+  try {
+    const u = new URL(url);
+    const poster = u.searchParams.get("poster");
+    if (poster) return decodeURIComponent(poster);
+  } catch {}
+  return url;
+};
 
 interface GalleryGridProps {
   items: GalleryItem[];
@@ -151,7 +183,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
         /* =========================================================
             CASE A: LIMITED SHOWCASE PREVIEW GRID (HOMEPAGE)
             ========================================================= */
-        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 [column-fill:balance] w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           {displayedItems.slice(0, limit).map((item, idx) => {
             const hasError = imageErrors[item.id || ""] || false;
             const delays = ["", "delay-100", "delay-200", "delay-300"];
@@ -160,45 +192,65 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
               <button
                 key={item.id}
                 onClick={() => setSelectedItem(item)}
-                className={`break-inside-avoid mb-6 w-full rounded-3xl overflow-hidden border border-border/60 shadow-xs hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 group focus:outline-none text-left cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
+                className={`group relative w-full aspect-[4/5] sm:aspect-[3/4] rounded-3xl overflow-hidden border border-border/80 bg-white shadow-xs hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 ease-out focus:outline-none text-left cursor-pointer reveal-on-scroll reveal-fade-up ${delayClass}`}
                 aria-haspopup="dialog"
                 aria-label={`View photo of ${item.title}`}
               >
                 {item.imageUrl && !hasError ? (
-                  <div className="relative w-full h-auto">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
-                      onError={() => handleImageError(item.id || "")}
-                      loading="lazy"
-                    />
+                  <div className="relative w-full h-full overflow-hidden">
+                    {isVideoUrl(item.imageUrl) && !isEmbedVideoUrl(item.imageUrl) ? (
+                      <video
+                        src={item.imageUrl}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                    ) : (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={getVideoPoster(item.imageUrl)}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        onError={() => handleImageError(item.id || "")}
+                        loading="lazy"
+                      />
+                    )}
                     
-                    {/* Modern Premium Overlay: Gradient with category and title */}
-                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end items-center text-center text-white transition-all duration-300">
-                      <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block mb-1.5 tracking-wider">
+                    {/* Dark gradient base overlay to make text readable */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
+                    
+                    {/* Hover Zoom Icon top-right */}
+                    <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2.5 rounded-full text-white opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 pointer-events-none z-10">
+                      <ZoomIn className="w-4 h-4" />
+                    </div>
+
+                    {/* Video play overlay */}
+                    {isVideoUrl(item.imageUrl) && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                        <div className="bg-black/40 backdrop-blur-md border border-white/20 p-4.5 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <Play className="w-5 h-5 fill-white text-white translate-x-0.5" />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Modern Premium Overlay: Category tag and title in a card */}
+                    <div className="absolute inset-x-4 bottom-4 p-4.5 rounded-2xl bg-black/35 backdrop-blur-lg border border-white/10 flex flex-col justify-end text-white transition-all duration-300 group-hover:bg-black/45 group-hover:border-primary/20">
+                      <span className="self-start text-[9px] font-black uppercase text-white bg-accent/90 border border-accent-light/10 px-2.5 py-0.5 rounded-md tracking-wider leading-none shadow-2xs mb-2">
                         {item.category}
                       </span>
-                      <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors text-center w-full">
+                      <h3 className="text-xs sm:text-sm font-extrabold text-white leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors w-full">
                         {item.title}
                       </h3>
                     </div>
-                    
-                    {/* Hover Zoom Icon */}
-                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
-                      <div className="bg-white/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
-                        <ZoomIn className="w-5 h-5" />
-                      </div>
-                    </div>
                   </div>
                 ) : (
-                  <div className="w-full aspect-video bg-linear-to-tr from-blue-50 to-emerald-50/40 flex flex-col items-center justify-center p-6 text-center border border-border rounded-3xl">
+                  <div className="w-full h-full bg-gradient-to-tr from-neutral-light to-white flex flex-col items-center justify-center p-6 text-center border border-border">
                     <Camera className="w-8 h-8 text-primary/40 mb-2" />
                     <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2.5 py-0.5 rounded-full tracking-wider">
                       {item.category}
                     </span>
-                    <h3 className="text-xs font-bold text-neutral-dark mt-2 line-clamp-2">
+                    <h3 className="text-xs font-bold text-neutral-dark mt-2.5 line-clamp-2">
                       {item.title}
                     </h3>
                   </div>
@@ -250,13 +302,32 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                 >
                   {currentHighlight.imageUrl && !imageErrors[`rand-single-${currentHighlight.id}`] ? (
                     <div className="relative w-full h-auto">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={currentHighlight.imageUrl}
-                        alt={currentHighlight.title}
-                        className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-103 rounded-2xl"
-                        onError={() => handleImageError(`rand-single-${currentHighlight.id}`)}
-                      />
+                      {isVideoUrl(currentHighlight.imageUrl) && !isEmbedVideoUrl(currentHighlight.imageUrl) ? (
+                        <video
+                          src={currentHighlight.imageUrl}
+                          className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-103 rounded-2xl"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                      ) : (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={getVideoPoster(currentHighlight.imageUrl)}
+                          alt={currentHighlight.title}
+                          className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-103 rounded-2xl"
+                          onError={() => handleImageError(`rand-single-${currentHighlight.id}`)}
+                        />
+                      )}
+                      
+                      {isVideoUrl(currentHighlight.imageUrl) && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                          <div className="bg-black/40 backdrop-blur-md border border-white/20 p-5 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <Play className="w-8 h-8 fill-white text-white translate-x-0.5" />
+                          </div>
+                        </div>
+                      )}
+                      
                       <div className="absolute inset-0 bg-neutral-dark/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white pointer-events-none rounded-2xl">
                         <ZoomIn className="w-8 h-8" />
                       </div>
@@ -402,14 +473,32 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                       >
                         {item.imageUrl && !hasError ? (
                           <div className="relative w-full h-auto">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={item.imageUrl}
-                              alt={item.title}
-                              className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
-                              onError={() => handleImageError(item.id || "")}
-                              loading="lazy"
-                            />
+                            {isVideoUrl(item.imageUrl) && !isEmbedVideoUrl(item.imageUrl) ? (
+                              <video
+                                src={item.imageUrl}
+                                className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
+                                muted
+                                playsInline
+                                preload="metadata"
+                              />
+                            ) : (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img
+                                src={getVideoPoster(item.imageUrl)}
+                                alt={item.title}
+                                className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
+                                onError={() => handleImageError(item.id || "")}
+                                loading="lazy"
+                              />
+                            )}
+                            
+                            {isVideoUrl(item.imageUrl) && (
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                                <div className="bg-black/40 backdrop-blur-md border border-white/20 p-4 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                  <Play className="w-6 h-6 fill-white text-white translate-x-0.5" />
+                                </div>
+                              </div>
+                            )}
                             
                             {/* Modern Premium Overlay: Gradient with category and title */}
                             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end items-center text-center text-white transition-all duration-300">

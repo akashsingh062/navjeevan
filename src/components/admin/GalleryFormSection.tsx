@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
-import { PlusCircle, Camera, Trash2, Link as LinkIcon, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
+import { PlusCircle, Camera, Trash2, Link as LinkIcon, Sparkles, CheckCircle2, AlertCircle, Play } from "lucide-react";
 import { GalleryItem } from "@/types";
 
 interface GalleryFormInput {
@@ -12,6 +12,48 @@ interface GalleryFormInput {
   category: string;
   imageUrl: string;
 }
+
+const isVideoUrl = (url: string): boolean => {
+  if (!url) return false;
+  const u = url.toLowerCase();
+  return (
+    u.includes(".mp4") || 
+    u.includes(".webm") || 
+    u.includes(".ogg") || 
+    u.includes("/video/") || 
+    u.includes("video.fna.fbcdn.net") ||
+    u.includes("video-") ||
+    u.includes("facebook.com/watch") ||
+    u.includes("facebook.com/video.php") ||
+    u.includes("fb.watch")
+  );
+};
+
+const isEmbedVideoUrl = (url: string): boolean => {
+  if (!url) return false;
+  const u = url.toLowerCase();
+  return u.includes("facebook.com/watch") || u.includes("facebook.com/video.php") || u.includes("fb.watch");
+};
+
+const getVideoPoster = (url: string): string => {
+  try {
+    const u = new URL(url);
+    const poster = u.searchParams.get("poster");
+    if (poster) return decodeURIComponent(poster);
+  } catch {}
+  return url;
+};
+
+const isCdnFilename = (name: string): boolean => {
+  const clean = name.replace(/[-_\s]+/g, "");
+  if (clean.length > 15) {
+    const digits = clean.replace(/\D/g, "");
+    if (digits.length / clean.length > 0.8) {
+      return true;
+    }
+  }
+  return false;
+};
 
 interface GalleryFormSectionProps {
   galleryList: GalleryItem[];
@@ -314,7 +356,10 @@ export default function GalleryFormSection({
     const getFilenameFromUrl = (url: string) => {
       try {
         const u = new URL(url);
-        const pathname = u.pathname;
+        const poster = u.searchParams.get("poster");
+        const urlToParse = poster ? decodeURIComponent(poster) : url;
+        const u2 = new URL(urlToParse);
+        const pathname = u2.pathname;
         const lastSegment = pathname.substring(pathname.lastIndexOf("/") + 1);
         if (lastSegment && lastSegment.includes(".")) {
           return lastSegment.substring(0, lastSegment.lastIndexOf("."))
@@ -330,15 +375,21 @@ export default function GalleryFormSection({
       try {
         const resolvedLink = resolveExternalLink(link);
 
-        const cleanFileName = getFilenameFromUrl(resolvedLink) || `Web Photo ${i + 1}`;
-        const capitalizedFileName = cleanFileName
-          .split(" ")
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(" ");
+        const isVideo = isVideoUrl(resolvedLink);
+        const cleanFileName = getFilenameFromUrl(resolvedLink);
+        const isCdn = isCdnFilename(cleanFileName);
+        const displayName = (cleanFileName && !isCdn) ? cleanFileName : "";
+
+        const capitalizedFileName = displayName
+          ? displayName
+              .split(" ")
+              .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(" ")
+          : "";
 
         const finalTitle = baseTitle 
-          ? `${baseTitle} - ${capitalizedFileName}` 
-          : capitalizedFileName;
+          ? (capitalizedFileName ? `${baseTitle} - ${capitalizedFileName}` : baseTitle)
+          : (capitalizedFileName || (isVideo ? `Event Video ${i + 1}` : `Web Photo ${i + 1}`));
 
         const galleryRes = await fetch("/api/gallery", {
           method: "POST",
@@ -755,12 +806,19 @@ export default function GalleryFormSection({
                 </div>
                 <div className="relative aspect-video w-full bg-gray-200 shrink-0">
                   <Image
-                    src={photo.imageUrl}
+                    src={getVideoPoster(photo.imageUrl)}
                     alt={photo.title}
                     fill
                     unoptimized
                     className="object-cover"
                   />
+                  {isVideoUrl(photo.imageUrl) && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                      <div className="bg-black/50 border border-white/20 p-2 rounded-full text-white shadow-md">
+                        <Play className="w-4 h-4 fill-white text-white translate-x-0.5" />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="p-3 flex-1 flex flex-col justify-between gap-2.5">
                   <div>

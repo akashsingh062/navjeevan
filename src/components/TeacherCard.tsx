@@ -21,55 +21,57 @@ export default function TeacherCard({ member }: TeacherCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-border p-5 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+    <div className="bg-white rounded-3xl border border-border/80 p-6 flex flex-col items-center text-center gap-4 shadow-sm hover:shadow-2xl hover:border-accent/30 hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group">
       {/* Decorative backdrop glow */}
-      <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-300" />
+      <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors duration-300" />
       
-      {/* Image container */}
-      <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-4 border-neutral-light shadow-md group-hover:shadow-lg group-hover:border-primary/20 transition-all duration-300 shrink-0 bg-neutral-light flex items-center justify-center">
-        {member.imageUrl && !imageError ? (
-          <Image
-            src={member.imageUrl}
-            alt={`Photo of ${member.name}`}
-            fill
-            sizes="(max-w-640px) 128px, 144px"
-            className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-            onError={() => setImageError(true)}
-            loading="lazy"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <span className="text-3xl font-black text-primary select-none">
-              {getInitials(member.name)}
-            </span>
-          </div>
-        )}
+      {/* Circular profile frame layout */}
+      <div className="relative w-32 h-32 rounded-full overflow-hidden p-1 bg-gradient-to-tr from-border/50 to-accent/25 border border-border shadow-inner group-hover:from-accent/30 group-hover:to-primary/30 transition-all duration-500 shrink-0 bg-neutral-light">
+        <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white flex items-center justify-center bg-neutral-light">
+          {member.imageUrl && !imageError ? (
+            <Image
+              src={member.imageUrl}
+              alt={`Photo of ${member.name}`}
+              fill
+              sizes="(max-w-640px) 128px, 144px"
+              className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+              onError={() => setImageError(true)}
+              loading="lazy"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+              <span className="text-2xl font-black text-accent select-none">
+                {getInitials(member.name)}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center gap-2 mt-2 w-full">
-        <span className="px-3 py-1 bg-accent-light text-accent text-[10px] sm:text-xs font-bold uppercase tracking-wider rounded-full border border-accent/10 group-hover:bg-accent group-hover:text-white transition-all duration-300">
+      <div className="flex flex-col items-center gap-2 mt-1 w-full">
+        <span className="px-3.5 py-1 bg-accent-light text-accent text-[9px] font-black uppercase tracking-wider rounded-full border border-accent/10 group-hover:bg-accent group-hover:text-white transition-all duration-300">
           {member.subject}
         </span>
         
-        <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug group-hover:text-primary transition-colors duration-300">
+        <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug group-hover:text-accent transition-colors duration-300">
           {member.name}
         </h3>
 
         {(member.qualification || member.experience) && (
-          <div className="w-full border-t border-border mt-3 pt-3 flex flex-col gap-2 text-left">
+          <div className="w-full bg-neutral-light border border-border/40 rounded-2xl p-3 flex flex-col gap-2 mt-2 group-hover:bg-accent/5 group-hover:border-accent/10 transition-all duration-500 text-left">
             {member.qualification && (
               <div className="flex items-center gap-2 text-neutral-body">
-                <GraduationCap className="w-4 h-4 text-primary shrink-0" />
-                <span className="text-xs font-semibold text-neutral-dark truncate" title={member.qualification}>
+                <GraduationCap className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="text-[11px] font-semibold text-neutral-dark truncate" title={member.qualification}>
                   {member.qualification}
                 </span>
               </div>
             )}
             {member.experience && (
               <div className="flex items-center gap-2 text-neutral-body">
-                <Briefcase className="w-4 h-4 text-primary shrink-0" />
-                <span className="text-xs font-semibold text-neutral-dark truncate">
+                <Briefcase className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="text-[11px] font-semibold text-neutral-dark truncate">
                   {member.experience} {language === "en" ? "experience" : "अनुभव"}
                 </span>
               </div>

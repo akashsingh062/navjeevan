@@ -17,6 +17,55 @@ interface ImageModalProps {
   onNext?: () => void;
 }
 
+const isVideoUrl = (url: string): boolean => {
+  if (!url) return false;
+  const u = url.toLowerCase();
+  return (
+    u.includes(".mp4") || 
+    u.includes(".webm") || 
+    u.includes(".ogg") || 
+    u.includes("/video/") || 
+    u.includes("video.fna.fbcdn.net") ||
+    u.includes("video-") ||
+    u.includes("facebook.com/watch") ||
+    u.includes("facebook.com/video.php") ||
+    u.includes("fb.watch")
+  );
+};
+
+const isEmbedVideoUrl = (url: string): boolean => {
+  if (!url) return false;
+  const u = url.toLowerCase();
+  return u.includes("facebook.com/watch") || u.includes("facebook.com/video.php") || u.includes("fb.watch");
+};
+
+const getVideoPoster = (url: string): string => {
+  try {
+    const u = new URL(url);
+    const poster = u.searchParams.get("poster");
+    if (poster) return decodeURIComponent(poster);
+  } catch {}
+  return url;
+};
+
+const getFacebookEmbedUrl = (url: string): string => {
+  try {
+    const u = new URL(url);
+    let videoId = u.searchParams.get("v");
+    if (!videoId) {
+      const match = u.pathname.match(/\/(?:videos|watch|v)\/(\d+)/);
+      if (match && match[1]) {
+        videoId = match[1];
+      }
+    }
+    if (videoId) {
+      const canonicalUrl = `https://www.facebook.com/video.php?v=${videoId}`;
+      return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(canonicalUrl)}&show_text=false&autoplay=true&mute=false`;
+    }
+  } catch {}
+  return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=true&mute=false`;
+};
+
 export default function ImageModal({
   isOpen,
   imageUrl,
@@ -73,15 +122,17 @@ export default function ImageModal({
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(imageUrl);
+      const downloadUrl = isEmbedVideoUrl(imageUrl) ? getVideoPoster(imageUrl) : imageUrl;
+      const response = await fetch(downloadUrl);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
       
-      
-      const safeFilename = title.replace(/[^a-zA-Z0-9_-]/g, "_") || "school_photo";
-      link.download = `${safeFilename}.jpg`;
+      const isVideo = isVideoUrl(imageUrl);
+      const ext = isVideo && !isEmbedVideoUrl(imageUrl) ? "mp4" : "jpg";
+      const safeFilename = title.replace(/[^a-zA-Z0-9_-]/g, "_") || (isVideo ? "school_video" : "school_photo");
+      link.download = `${safeFilename}.${ext}`;
       
       document.body.appendChild(link);
       link.click();
@@ -90,11 +141,14 @@ export default function ImageModal({
     } catch (err) {
       console.error("Blob download failed, falling back to new tab:", err);
       // Fallback: Open in new tab if CORS or fetch blocks the download
-      window.open(imageUrl, "_blank", "noopener,noreferrer");
+      const fallbackUrl = isEmbedVideoUrl(imageUrl) ? getVideoPoster(imageUrl) : imageUrl;
+      window.open(fallbackUrl, "_blank", "noopener,noreferrer");
     }
   };
 
   if (!mounted) return null;
+
+  const isVideo = isVideoUrl(imageUrl);
 
   return createPortal(
     <AnimatePresence>
@@ -103,7 +157,7 @@ export default function ImageModal({
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
-          aria-label={`Image preview of ${title}`}
+          aria-label={`${isVideo ? "Video" : "Image"} preview of ${title}`}
         >
           {/* Backdrop overlay */}
           <motion.div
@@ -133,16 +187,35 @@ export default function ImageModal({
 
             {/* Photo preview container */}
             <div className="relative aspect-video w-full bg-neutral-light flex items-center justify-center">
-              {/* Uses fallback visual gradient in case source image fails */}
-              <Image
-                src={imageUrl}
-                alt={title}
-                fill
-                unoptimized
-                sizes="(max-w-1200px) 100vw, 900px"
-                className="object-contain"
-                priority
-              />
+              {isVideo ? (
+                isEmbedVideoUrl(imageUrl) ? (
+                  <iframe 
+                    src={getFacebookEmbedUrl(imageUrl)}
+                    className="w-full h-full max-h-[70vh] rounded-t-3xl border-0"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <video
+                    src={imageUrl}
+                    className="w-full h-full max-h-[70vh] object-contain rounded-t-3xl"
+                    controls
+                    autoPlay
+                    playsInline
+                  />
+                )
+              ) : (
+                /* Uses fallback visual gradient in case source image fails */
+                <Image
+                  src={getVideoPoster(imageUrl)}
+                  alt={title}
+                  fill
+                  unoptimized
+                  sizes="(max-w-1200px) 100vw, 900px"
+                  className="object-contain"
+                  priority
+                />
+              )}
 
               {/* Prev Button */}
               {onPrev && (
@@ -190,16 +263,37 @@ export default function ImageModal({
                 <h3 className="text-base sm:text-lg font-black text-neutral-dark mt-1 leading-snug">
                   {title}
                 </h3>
+                {isEmbedVideoUrl(imageUrl) && (
+                  <p className="text-[10px] sm:text-xs text-amber-600 font-semibold bg-amber-50 border border-amber-200/50 px-3 py-2 rounded-xl mt-1 leading-relaxed">
+                    ⚠️ If the player shows &quot;Video unavailable&quot;, it is due to Facebook privacy/embedding restrictions. Please use the **&quot;Watch on Facebook&quot;** button to watch it directly.
+                  </p>
+                )}
               </div>
 
-              {/* Download Action Button */}
-              <button
-                onClick={handleDownload}
-                className="flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-primary-hover text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors cursor-pointer select-none focus:outline-none shrink-0"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download Photo</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-3">
+                {isEmbedVideoUrl(imageUrl) && (
+                  <a
+                    href={imageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 px-5 py-3 bg-[#1877F2] hover:bg-[#166FE5] text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors cursor-pointer select-none focus:outline-none shrink-0"
+                  >
+                    <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Watch on Facebook</span>
+                  </a>
+                )}
+
+                {/* Download Action Button */}
+                <button
+                  onClick={handleDownload}
+                  className="flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-primary-hover text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors cursor-pointer select-none focus:outline-none shrink-0"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{isVideo ? "Download Video" : "Download Photo"}</span>
+                </button>
+              </div>
             </div>
           </motion.div>
         </div>
