@@ -60,9 +60,14 @@ body {
 /* ===========================
    TOUCH & ACCESSIBILITY
 =========================== */
-button, a {
+button {
   min-height: 44px;
   min-width: 44px;
+}
+
+/* Touch targets for links: only apply min-height, not min-width to avoid inline overflow */
+a {
+  min-height: 44px;
 }
 
 *:focus-visible {
@@ -130,22 +135,34 @@ button, a {
 
 /* Slide Up (default) */
 .reveal-fade-up {
-  transform: translateY(40px);
+  transform: translateY(30px);
 }
 
 /* Slide Down */
 .reveal-fade-down {
-  transform: translateY(-40px);
+  transform: translateY(-30px);
 }
 
-/* Slide Left */
+/* Slide Left — use Y axis on small screens to avoid horizontal overflow */
 .reveal-fade-left {
-  transform: translateX(40px);
+  transform: translateY(20px);
 }
 
-/* Slide Right */
+@media (min-width: 640px) {
+  .reveal-fade-left {
+    transform: translateX(30px);
+  }
+}
+
+/* Slide Right — use Y axis on small screens to avoid horizontal overflow */
 .reveal-fade-right {
-  transform: translateX(-40px);
+  transform: translateY(20px);
+}
+
+@media (min-width: 640px) {
+  .reveal-fade-right {
+    transform: translateX(-30px);
+  }
 }
 
 /* Zoom In */

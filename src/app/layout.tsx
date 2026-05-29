@@ -98,8 +98,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} h-full overflow-x-hidden`} data-scroll-behavior="smooth">
-      <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text overflow-x-hidden">
+    <html lang="en" className={`${outfit.variable} h-full`} style={{ overflowX: "clip" }} data-scroll-behavior="smooth">
+      <body className="min-h-full flex flex-col bg-[#FAFAF7] text-neutral-dark font-sans antialiased select-text" style={{ overflowX: "clip" }}>
         <LanguageProvider>
           <ScrollRevealObserver />
           <Toaster
