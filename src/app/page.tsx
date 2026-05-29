@@ -469,20 +469,20 @@ export default function Home() {
               return (
                 <div
                   key={i}
-                  className={`flex flex-col w-full h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${
+                  className={`flex flex-col w-full sm:h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${
                     isMd
                       ? "bg-white border-2 border-primary/25 shadow-md hover:border-primary/55 hover:-translate-y-1.5"
                       : "bg-white border border-border shadow-xs hover:border-primary/20 hover:shadow-md hover:-translate-y-1.5"
                   }`}
                 >
 
-                  <div className="relative w-full h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
+                  <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
                     <Image
                       src={member.photo}
                       alt={`Photo of ${member.name[language]}`}
                       fill
                       className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-                      sizes="(max-w-640px) 100vw, 25vw"
+                      sizes="(max-width: 640px) 100vw, 25vw"
                       priority={i === 0}
                       loading={i === 0 ? "eager" : "lazy"}
                     />

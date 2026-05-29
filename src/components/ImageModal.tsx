@@ -208,7 +208,7 @@ export default function ImageModal({
                   alt={title}
                   fill
                   unoptimized
-                  sizes="(max-w-1200px) 100vw, 900px"
+                  sizes="(max-width: 1200px) 100vw, 900px"
                   className="object-contain"
                   priority
                 />

@@ -21,17 +21,17 @@ export default function TeacherCard({ member }: TeacherCardProps) {
   };
 
   return (
-    <div className="flex flex-col w-full h-[420px] rounded-3xl border border-border bg-white shadow-xs hover:shadow-md hover:border-accent/30 hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group">
+    <div className="flex flex-col w-full sm:h-[420px] rounded-3xl border border-border bg-white shadow-xs hover:shadow-md hover:border-accent/30 hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group">
 
       <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors duration-300" />
 
-      <div className="relative w-full h-[230px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl flex items-center justify-center">
+      <div className="relative w-full aspect-[4/3] sm:aspect-auto sm:h-[230px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl flex items-center justify-center">
         {member.imageUrl && !imageError ? (
           <Image
             src={member.imageUrl}
             alt={`Photo of ${member.name}`}
             fill
-            sizes="(max-w-640px) 100vw, 25vw"
+            sizes="(max-width: 640px) 100vw, 25vw"
             className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
             onError={() => setImageError(true)}
             loading="lazy"
