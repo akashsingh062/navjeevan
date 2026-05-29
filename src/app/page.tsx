@@ -472,14 +472,14 @@ export default function Home() {
                   key={i}
                   className={`relative p-6 flex flex-col items-center text-center gap-4 rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${
                     isMd 
-                      ? "bg-gradient-to-tr from-white to-primary-light/40 border-primary/20 shadow-md ring-1 ring-primary/10 hover:shadow-2xl hover:border-primary/45 hover:-translate-y-1.5" 
+                      ? "bg-linear-to-tr from-white to-primary-light/40 border-primary/20 shadow-md ring-1 ring-primary/10 hover:shadow-2xl hover:border-primary/45 hover:-translate-y-1.5" 
                       : "bg-white border-border/80 shadow-xs hover:shadow-2xl hover:border-primary/30 hover:-translate-y-1.5"
                   }`}
                 >
                   <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-300" />
 
                   {/* Circular Executive double-ring layout */}
-                  <div className="relative w-36 h-36 rounded-full overflow-hidden p-1 bg-gradient-to-tr from-border/50 to-primary/25 border border-border shadow-inner group-hover:from-primary/30 group-hover:to-accent/30 transition-all duration-500 shrink-0">
+                  <div className="relative w-36 h-36 rounded-full overflow-hidden p-1 bg-linear-to-tr from-border/50 to-primary/25 border border-border shadow-inner group-hover:from-primary/30 group-hover:to-accent/30 transition-all duration-500 shrink-0">
                     <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white bg-neutral-light">
                       <Image
                         src={member.photo}

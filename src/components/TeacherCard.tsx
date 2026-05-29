@@ -26,7 +26,7 @@ export default function TeacherCard({ member }: TeacherCardProps) {
       <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors duration-300" />
       
       {/* Circular profile frame layout */}
-      <div className="relative w-32 h-32 rounded-full overflow-hidden p-1 bg-gradient-to-tr from-border/50 to-accent/25 border border-border shadow-inner group-hover:from-accent/30 group-hover:to-primary/30 transition-all duration-500 shrink-0 bg-neutral-light">
+      <div className="relative w-32 h-32 rounded-full overflow-hidden p-1 bg-linear-to-tr from-border/50 to-accent/25 border border-border shadow-inner group-hover:from-accent/30 group-hover:to-primary/30 transition-all duration-500 shrink-0 bg-neutral-light">
         <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white flex items-center justify-center bg-neutral-light">
           {member.imageUrl && !imageError ? (
             <Image

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { GalleryItem } from "@/types";
 import { 
   ZoomIn, 
@@ -51,8 +52,12 @@ interface GalleryGridProps {
   limit?: number;
 }
 
-export default function GalleryGrid({ items, limit }: GalleryGridProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+function GalleryGridContent({ items, limit }: GalleryGridProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const [localCategory, setLocalCategory] = useState<string | null>(null);
   const [prevCategory, setPrevCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
@@ -62,6 +67,55 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
 
   const [visibleCount, setVisibleCount] = useState(16);
   const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+  const isModalOpenRef = React.useRef(false);
+
+  const folderParam = limit ? null : searchParams.get("folder");
+  const selectedCategory = limit ? localCategory : folderParam;
+
+  useEffect(() => {
+    const hasItem = !!selectedItem;
+    
+    // If modal is opening
+    if (hasItem && !isModalOpenRef.current) {
+      isModalOpenRef.current = true;
+      window.history.pushState({ modalOpen: true }, "");
+    }
+    // If modal is closing
+    else if (!hasItem && isModalOpenRef.current) {
+      isModalOpenRef.current = false;
+      if (window.history.state?.modalOpen) {
+        window.history.back();
+      }
+    }
+
+    const handlePopState = () => {
+      isModalOpenRef.current = false;
+      setSelectedItem(null);
+    };
+
+    if (hasItem) {
+      window.addEventListener("popstate", handlePopState);
+    }
+    
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [selectedItem]);
+
+  const selectCategory = (category: string | null) => {
+    if (limit) {
+      setLocalCategory(category);
+      return;
+    }
+    const params = new URLSearchParams(window.location.search);
+    if (category) {
+      params.set("folder", category);
+    } else {
+      params.delete("folder");
+    }
+    const queryStr = params.toString() ? `?${params.toString()}` : "";
+    router.push(`${pathname}${queryStr}`, { scroll: false });
+  };
 
   // Synchronously adjust state during render to avoid cascading renders (React official pattern)
   if (selectedCategory !== prevCategory) {
@@ -192,7 +246,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
               <button
                 key={item.id}
                 onClick={() => setSelectedItem(item)}
-                className={`group relative w-full aspect-[4/5] sm:aspect-[3/4] rounded-3xl overflow-hidden border border-border/80 bg-white shadow-xs hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 ease-out focus:outline-none text-left cursor-pointer reveal-on-scroll reveal-fade-up ${delayClass}`}
+                className={`group relative w-full aspect-4/5 sm:aspect-3/4 rounded-3xl overflow-hidden border border-border/80 bg-white shadow-xs hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 ease-out focus:outline-none text-left cursor-pointer reveal-on-scroll reveal-fade-up ${delayClass}`}
                 aria-haspopup="dialog"
                 aria-label={`View photo of ${item.title}`}
               >
@@ -218,7 +272,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                     )}
                     
                     {/* Dark gradient base overlay to make text readable */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
                     
                     {/* Hover Zoom Icon top-right */}
                     <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2.5 rounded-full text-white opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 pointer-events-none z-10">
@@ -245,7 +299,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                     </div>
                   </div>
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-tr from-neutral-light to-white flex flex-col items-center justify-center p-6 text-center border border-border">
+                  <div className="w-full h-full bg-linear-to-tr from-neutral-light to-white flex flex-col items-center justify-center p-6 text-center border border-border">
                     <Camera className="w-8 h-8 text-primary/40 mb-2" />
                     <span className="text-[10px] uppercase font-extrabold text-accent bg-accent/10 px-2.5 py-0.5 rounded-full tracking-wider">
                       {item.category}
@@ -384,7 +438,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                     return (
                       <button
                         key={cat}
-                        onClick={() => setSelectedCategory(cat)}
+                        onClick={() => selectCategory(cat)}
                         className={`bg-surface border border-border rounded-3xl p-5 hover:border-primary/40 hover:shadow-md transition-all flex items-center gap-4 text-left group cursor-pointer focus:outline-none relative overflow-hidden reveal-on-scroll reveal-fade-up ${delayClass}`}
                       >
                         <div className="w-12 h-12 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-300">
@@ -415,7 +469,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => setSelectedCategory(null)}
+                    onClick={() => selectCategory(null)}
                     className="p-2.5 bg-neutral-light border border-border text-neutral-dark rounded-xl hover:bg-neutral-light/75 transition-colors cursor-pointer focus:outline-none flex items-center justify-center shrink-0"
                     aria-label="Back to folders"
                   >
@@ -424,7 +478,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                   <div>
                     <div className="flex items-center gap-1.5 text-xs text-neutral-body">
                       <span 
-                        onClick={() => setSelectedCategory(null)}
+                        onClick={() => selectCategory(null)}
                         className="hover:text-primary transition-colors cursor-pointer"
                       >
                         All Folders
@@ -442,7 +496,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                 </div>
 
                 <button
-                  onClick={() => setSelectedCategory(null)}
+                  onClick={() => selectCategory(null)}
                   className="text-xs font-bold text-primary hover:text-primary-hover flex items-center gap-1.5 self-start sm:self-center transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
@@ -576,5 +630,17 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
         );
       })()}
     </div>
+  );
+}
+
+export default function GalleryGrid(props: GalleryGridProps) {
+  return (
+    <Suspense fallback={
+      <div className="w-full flex items-center justify-center py-10">
+        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+      </div>
+    }>
+      <GalleryGridContent {...props} />
+    </Suspense>
   );
 }
