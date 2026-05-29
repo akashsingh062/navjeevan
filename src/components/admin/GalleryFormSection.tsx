@@ -82,6 +82,112 @@ export default function GalleryFormSection({
 
   const [uploadMode, setUploadMode] = useState<"file" | "links">("file");
   const [linksInput, setLinksInput] = useState("");
+  const [showHtmlExtractor, setShowHtmlExtractor] = useState(false);
+  const [htmlExtractorUrl, setHtmlExtractorUrl] = useState("");
+  const [htmlInput, setHtmlInput] = useState("");
+
+  const extractImagesFromHtml = (htmlText: string): string[] => {
+    const scontentRegex = /(https:\/\/[a-z0-9.-]+\.fbcdn\.net\/v\/[^"'\s>)}]+)/gi;
+    const fbcdnMatches = htmlText.match(scontentRegex) || [];
+
+    const isExcludedMedia = (urlStr: string): boolean => {
+      const lowerUrl = urlStr.toLowerCase();
+      return (
+        lowerUrl.includes("/t39.30808-1/") ||
+        lowerUrl.includes("/t1.30497-1/") ||
+        lowerUrl.includes("/emoji.php") ||
+        lowerUrl.includes("/rsrc.php") ||
+        lowerUrl.includes("cstp=mx") ||
+        lowerUrl.includes("fb50") ||
+        lowerUrl.includes("fb100") ||
+        lowerUrl.includes("fb200") ||
+        lowerUrl.includes("safe_image.php") ||
+        lowerUrl.includes("s24x24") ||
+        lowerUrl.includes("s32x32") ||
+        lowerUrl.includes("s40x40") ||
+        lowerUrl.includes("s72x72") ||
+        lowerUrl.includes("s100x100") ||
+        lowerUrl.includes("s160x160")
+      );
+    };
+
+    const isVideoMedia = (urlStr: string): boolean => {
+      const lower = urlStr.toLowerCase();
+      return (
+        lower.includes("/t15.") ||
+        lower.includes(".mp4") ||
+        lower.includes("/video/") ||
+        lower.includes("video.fna") ||
+        lower.includes("facebook.com/watch") ||
+        lower.includes("facebook.com/video.php") ||
+        lower.includes("fb.watch")
+      );
+    };
+
+    const idMap = new Map<string, { url: string; score: number }>();
+
+    for (let link of fbcdnMatches) {
+      link = link.replace(/\\/g, "").replace(/&amp;/g, "&");
+      if (isExcludedMedia(link) || isVideoMedia(link)) {
+        continue;
+      }
+
+      try {
+        const u = new URL(link);
+        const pathname = u.pathname;
+        const filename = pathname.substring(pathname.lastIndexOf("/") + 1);
+        if (filename) {
+          let score = 100;
+          if (link.includes("s590x590")) {
+            score = 80;
+          } else if (link.includes("s600x600") || link.includes("s640x640") || link.includes("s720x720")) {
+            score = 90;
+          } else if (link.includes("s960x960")) {
+            score = 110;
+          } else if (link.includes("mx2048x1536") || link.includes("p600x600")) {
+            score = 150;
+          } else if (!link.includes("_s")) {
+            score = 120;
+          }
+
+          const existing = idMap.get(filename);
+          if (!existing || existing.score < score) {
+            idMap.set(filename, { url: link, score });
+          }
+        }
+      } catch {}
+    }
+
+    return Array.from(idMap.values()).map(info => info.url);
+  };
+
+  const handleLocalHtmlExtract = () => {
+    if (!htmlInput.trim()) {
+      toast.error("Please paste the page source HTML code first.");
+      return;
+    }
+    const extracted = extractImagesFromHtml(htmlInput);
+    if (extracted.length === 0) {
+      toast.error("No image links found in the pasted page source. Make sure you copied the entire page source.");
+      return;
+    }
+
+    const resolvedUrls = extracted.join("\n");
+    setLinksInput(prev => {
+      const lines = prev.split("\n");
+      const index = lines.findIndex(l => l.trim() === htmlExtractorUrl);
+      if (index !== -1) {
+        lines[index] = resolvedUrls;
+      } else {
+        return prev ? `${prev}\n${resolvedUrls}` : resolvedUrls;
+      }
+      return lines.join("\n");
+    });
+
+    toast.success(`Successfully extracted ${extracted.length} image(s) locally!`);
+    setShowHtmlExtractor(false);
+    setHtmlInput("");
+  };
 
   const parsedLinks = React.useMemo(() => {
     if (!linksInput.trim()) return [];
@@ -172,6 +278,10 @@ export default function GalleryFormSection({
         toast.success(`Successfully extracted ${result.images.length} direct image(s) from ${platformName}!`, { id: loadingToast });
       } else {
         toast.error(result.message || `Failed to extract images from ${platformName}. Make sure it is public.`, { id: loadingToast });
+        if (isFB) {
+          setHtmlExtractorUrl(originalLink);
+          setShowHtmlExtractor(true);
+        }
       }
     } catch (err) {
       toast.error(`Failed to connect to ${platformName} resolution API.`, { id: loadingToast });
@@ -575,10 +685,98 @@ export default function GalleryFormSection({
               value={linksInput}
               onChange={(e) => setLinksInput(e.target.value)}
             />
-            <span className="text-[10px] text-neutral-body leading-relaxed mt-0.5">
-              Enter one or multiple links. External links will be saved directly and **never uploaded to Cloudinary**, rendering fully from their source host.
-            </span>
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-1.5 mt-1">
+              <span className="text-[10px] text-neutral-body leading-relaxed">
+                Enter one or multiple links. External links will be saved directly and **never uploaded to Cloudinary**, rendering fully from their source host.
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const firstFbLink = parsedLinks.find(l => l.includes("facebook.com")) || "";
+                  setHtmlExtractorUrl(firstFbLink);
+                  setShowHtmlExtractor(true);
+                }}
+                className="text-[10px] font-black text-primary hover:underline cursor-pointer focus:outline-none shrink-0 self-start sm:self-center"
+              >
+                Resolve Facebook Locally
+              </button>
+            </div>
           </div>
+
+          {showHtmlExtractor && (
+            <div className="bg-amber-50 border border-amber-250 rounded-2xl p-4.5 flex flex-col gap-3 text-xs text-amber-900 leading-relaxed font-semibold">
+              <div className="flex items-center justify-between border-b border-amber-200 pb-2">
+                <span className="font-extrabold text-amber-950">Local Facebook Link Resolver (Server Bypassed)</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowHtmlExtractor(false);
+                    setHtmlInput("");
+                  }}
+                  className="text-[10px] text-amber-700 hover:text-amber-950 font-bold"
+                >
+                  Close
+                </button>
+              </div>
+              <p className="font-medium text-[11px] text-amber-800">
+                Facebook blocks cloud servers in production. You can resolve this link locally in your browser by pasting the post&apos;s page source:
+              </p>
+              <ol className="list-decimal list-inside font-medium text-[11px] text-amber-800 flex flex-col gap-1">
+                <li>
+                  Open the Facebook post:{" "}
+                  {htmlExtractorUrl ? (
+                    <a
+                      href={htmlExtractorUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-primary hover:text-primary-hover font-extrabold"
+                    >
+                      {htmlExtractorUrl}
+                    </a>
+                  ) : (
+                    <span className="text-neutral-500 font-bold">(No URL selected. Paste the link in the textarea above first)</span>
+                  )}
+                </li>
+                <li>
+                  Press{" "}
+                  <kbd className="bg-amber-100/80 px-1 py-0.5 rounded border border-amber-200 font-mono text-[10px]">
+                    Ctrl+U
+                  </kbd>{" "}
+                  (Windows) or{" "}
+                  <kbd className="bg-amber-100/80 px-1 py-0.5 rounded border border-amber-200 font-mono text-[10px]">
+                    Cmd+Option+U
+                  </kbd>{" "}
+                  (Mac) to view page source.
+                </li>
+                <li>
+                  Select all and copy (
+                  <kbd className="bg-amber-100/80 px-1 py-0.5 rounded border border-amber-200 font-mono text-[10px]">
+                    Ctrl+A
+                  </kbd>{" "}
+                  /{" "}
+                  <kbd className="bg-amber-100/80 px-1 py-0.5 rounded border border-amber-200 font-mono text-[10px]">
+                    Ctrl+C
+                  </kbd>
+                  ).
+                </li>
+                <li>Paste the copied source HTML code below:</li>
+              </ol>
+              <textarea
+                rows={3}
+                placeholder="Paste Facebook page source (HTML) code here..."
+                className="w-full px-3 py-2 bg-white border border-amber-250 rounded-xl text-xs font-mono font-medium text-neutral-dark focus:outline-none focus:border-amber-500"
+                value={htmlInput}
+                onChange={(e) => setHtmlInput(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={handleLocalHtmlExtract}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-black text-xs uppercase self-end focus:outline-none cursor-pointer"
+              >
+                Extract Images Locally
+              </button>
+            </div>
+          )}
 
           {parsedLinks.length > 0 && (
             <div className="flex flex-col gap-3 border border-gray-200 rounded-2xl p-4 bg-white mt-1">
