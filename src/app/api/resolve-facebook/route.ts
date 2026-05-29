@@ -184,22 +184,83 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "Missing URL parameter." }, { status: 400 });
     }
 
-    const targetUrl = url.trim();
+    let targetUrl = url.trim();
 
-    const response = await fetch(targetUrl, {
+    if (targetUrl.includes("story.php") || targetUrl.includes("permalink.php")) {
+      try {
+        const parsedUrl = new URL(targetUrl);
+        const storyFbid = parsedUrl.searchParams.get("story_fbid");
+        const id = parsedUrl.searchParams.get("id");
+        if (storyFbid && id) {
+          targetUrl = `https://www.facebook.com/${id}/posts/${storyFbid}`;
+        }
+      } catch (err) {
+        console.error("Error parsing direct story/permalink URL:", err);
+      }
+    }
+
+    let response = await fetch(targetUrl, {
       headers: {
         "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_patched.html)",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
       },
+      redirect: "manual",
       next: { revalidate: 0 }
     });
+
+    let finalUrl = targetUrl;
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      if (location) {
+        if (location.includes("story.php") || location.includes("permalink.php")) {
+          try {
+            const redirectUrl = new URL(location);
+            const storyFbid = redirectUrl.searchParams.get("story_fbid");
+            const id = redirectUrl.searchParams.get("id");
+            if (storyFbid && id) {
+              const desktopUrl = `https://www.facebook.com/${id}/posts/${storyFbid}`;
+              response = await fetch(desktopUrl, {
+                headers: {
+                  "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_patched.html)",
+                  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                  "Accept-Language": "en-US,en;q=0.5",
+                },
+                next: { revalidate: 0 }
+              });
+              finalUrl = response.url || desktopUrl;
+            } else {
+              response = await fetch(location, {
+                headers: {
+                  "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_patched.html)",
+                  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                  "Accept-Language": "en-US,en;q=0.5",
+                },
+                next: { revalidate: 0 }
+              });
+              finalUrl = response.url || location;
+            }
+          } catch (err) {
+            console.error("Error parsing redirect URL:", err);
+          }
+        } else {
+          response = await fetch(location, {
+            headers: {
+              "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_patched.html)",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "en-US,en;q=0.5",
+            },
+            next: { revalidate: 0 }
+          });
+          finalUrl = response.url || location;
+        }
+      }
+    }
 
     if (!response.ok) {
       throw new Error(`Server responded with status ${response.status}`);
     }
 
-    const finalUrl = response.url || targetUrl;
     const rawHtml = await response.text();
 
     const html = rawHtml
