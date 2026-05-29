@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import toast from "react-hot-toast";
 import SectionHeading from "@/components/SectionHeading";
 import { Download, FileCheck, AlertTriangle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -14,6 +16,81 @@ import {
 export default function Admissions() {
   const { language } = useLanguage();
   const t = translations[language];
+
+  const [formData, setFormData] = useState({
+    studentName: "",
+    fatherName: "",
+    contactNumber: "",
+    whatsappNumber: "",
+    desiredClass: "Nursery",
+    medium: "English Medium",
+    comments: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (
+      !formData.studentName ||
+      !formData.fatherName ||
+      !formData.contactNumber ||
+      !formData.desiredClass
+    ) {
+      toast.error(
+        language === "en"
+          ? "Please fill out all required fields."
+          : "कृपया सभी आवश्यक फ़ील्ड भरें।"
+      );
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/admissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        toast.success(
+          language === "en"
+            ? "Your inquiry was submitted successfully!"
+            : "आपकी पूछताछ सफलतापूर्वक सबमिट हो गई है!"
+        );
+        setFormData({
+          studentName: "",
+          fatherName: "",
+          contactNumber: "",
+          whatsappNumber: "",
+          desiredClass: "Nursery",
+          medium: "English Medium",
+          comments: "",
+        });
+      } else {
+        throw new Error(data.error || "Submission failed");
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : (language === "en"
+              ? "Failed to submit inquiry. Please try again."
+              : "पूछताछ सबमिट करने में विफल। कृपया पुन: प्रयास करें।");
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="py-12 bg-white flex-1 animate-fade-in-up">
@@ -212,6 +289,238 @@ export default function Admissions() {
                 </li>
               </ul>
             </div>
+          </div>
+        </section>
+
+        <section className="py-12 border-t border-gray-100 mb-16 text-left">
+          <SectionHeading
+            title={
+              language === "en"
+                ? "Online Admission Form"
+                : "ऑनलाइन प्रवेश फॉर्म"
+            }
+            subtitle={
+              language === "en"
+                ? "Fill out the form below to register your child's admission request, and our office staff will review and contact you."
+                : "अपने बच्चे के प्रवेश अनुरोध को दर्ज करने के लिए नीचे दिया गया फॉर्म भरें, और हमारे कार्यालय कर्मचारी इसकी समीक्षा कर आपसे संपर्क करेंगे।"
+            }
+          />
+
+          <div className="max-w-3xl mx-auto bg-neutral-light border border-gray-200 rounded-3xl p-6 md:p-10 shadow-sm mt-8">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="studentName"
+                    className="text-xs font-bold text-neutral-dark"
+                  >
+                    {language === "en"
+                      ? "Student's Full Name *"
+                      : "छात्र का पूरा नाम *"}
+                  </label>
+                  <input
+                    type="text"
+                    id="studentName"
+                    name="studentName"
+                    required
+                    value={formData.studentName}
+                    onChange={handleChange}
+                    placeholder={
+                      language === "en" ? "e.g., Rajesh Kumar" : "उदा. राजेश कुमार"
+                    }
+                    className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="fatherName"
+                    className="text-xs font-bold text-neutral-dark"
+                  >
+                    {language === "en"
+                      ? "Father's / Guardian's Name *"
+                      : "पिता / संरक्षक का नाम *"}
+                  </label>
+                  <input
+                    type="text"
+                    id="fatherName"
+                    name="fatherName"
+                    required
+                    value={formData.fatherName}
+                    onChange={handleChange}
+                    placeholder={
+                      language === "en"
+                        ? "e.g., Shri Anil Kumar"
+                        : "उदा. श्री अनिल कुमार"
+                    }
+                    className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="contactNumber"
+                    className="text-xs font-bold text-neutral-dark"
+                  >
+                    {language === "en"
+                      ? "Contact Phone Number *"
+                      : "संपर्क फोन नंबर *"}
+                  </label>
+                  <input
+                    type="tel"
+                    id="contactNumber"
+                    name="contactNumber"
+                    required
+                    pattern="[0-9]{10}"
+                    value={formData.contactNumber}
+                    onChange={handleChange}
+                    placeholder={
+                      language === "en" ? "e.g., 9889897057" : "उदा. 9889897057"
+                    }
+                    className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="whatsappNumber"
+                    className="text-xs font-bold text-neutral-dark"
+                  >
+                    {language === "en"
+                      ? "WhatsApp Number (Optional)"
+                      : "व्हाट्सएप नंबर (वैकल्पिक)"}
+                  </label>
+                  <input
+                    type="tel"
+                    id="whatsappNumber"
+                    name="whatsappNumber"
+                    pattern="[0-9]{10}"
+                    value={formData.whatsappNumber}
+                    onChange={handleChange}
+                    placeholder={
+                      language === "en" ? "e.g., 9956526062" : "उदा. 9956526062"
+                    }
+                    className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="desiredClass"
+                    className="text-xs font-bold text-neutral-dark"
+                  >
+                    {language === "en"
+                      ? "Desired Class for Admission *"
+                      : "प्रवेश के लिए वांछित कक्षा *"}
+                  </label>
+                  <select
+                    id="desiredClass"
+                    name="desiredClass"
+                    required
+                    value={formData.desiredClass}
+                    onChange={handleChange}
+                    className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
+                  >
+                    {[
+                      "Nursery",
+                      "LKG",
+                      "UKG",
+                      "Class 1",
+                      "Class 2",
+                      "Class 3",
+                      "Class 4",
+                      "Class 5",
+                      "Class 6",
+                      "Class 7",
+                      "Class 8",
+                    ].map((cls) => (
+                      <option key={cls} value={cls}>
+                        {cls}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="medium"
+                    className="text-xs font-bold text-neutral-dark"
+                  >
+                    {language === "en" ? "Preferred Medium *" : "पसंदीदा माध्यम *"}
+                  </label>
+                  <select
+                    id="medium"
+                    name="medium"
+                    required
+                    value={formData.medium}
+                    onChange={handleChange}
+                    className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
+                  >
+                    {[
+                      {
+                        val: "English Medium",
+                        label:
+                          language === "en" ? "English Medium" : "अंग्रेजी माध्यम",
+                      },
+                    ].map((med) => (
+                      <option key={med.val} value={med.val}>
+                        {med.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="comments"
+                  className="text-xs font-bold text-neutral-dark"
+                >
+                  {language === "en"
+                    ? "Additional Inquiries / Comments"
+                    : "अतिरिक्त पूछताछ / टिप्पणियाँ"}
+                </label>
+                <textarea
+                  id="comments"
+                  name="comments"
+                  rows={4}
+                  value={formData.comments}
+                  onChange={handleChange}
+                  placeholder={
+                    language === "en"
+                      ? "Enter any specific queries regarding fee concessions, documents, or syllabus here..."
+                      : "शुल्क रियायत, दस्तावेज, या पाठ्यक्रम के बारे में कोई विशेष प्रश्न यहां दर्ज करें..."
+                  }
+                  className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white rounded-2xl font-black text-sm transition-all shadow-md select-none mt-2 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {submitting ? (
+                  <span>
+                    {language === "en"
+                      ? "Submitting Inquiry..."
+                      : "पूछताछ सबमिट हो रही है..."}
+                  </span>
+                ) : (
+                  <>
+                    <span>
+                      {language === "en"
+                        ? "Submit Admission Inquiry"
+                        : "प्रवेश पूछताछ सबमिट करें"}
+                    </span>
+                  </>
+                )}
+              </button>
+            </form>
           </div>
         </section>
 
