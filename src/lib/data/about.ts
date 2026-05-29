@@ -158,16 +158,16 @@ export const historyDetails = {
     hi: "नव जीवन पब्लिक स्कूल की स्थापना 2011 में एक सरल लेकिन महत्वाकांक्षी लक्ष्य के साथ की गई थी: कप्तानगंज, कुशीनगर, उत्तर प्रदेश के ग्रामीण क्षेत्रों में बच्चों के लिए उत्कृष्ट, आधुनिक और मूल्य-आधारित शिक्षा प्रदान करना। यह पहचानते हुए कि भाषा प्रवाह और कंप्यूटर साक्षरता ग्रामीण प्रगति के लिए मुख्य बाधाएं हैं, हमने द्विभाषी शिक्षण दिशानिर्देशों के तहत अपने पाठ्यक्रमों को संरचित किया।"
   },
   p2: {
-    en: "Over the last decade and a half, our institution has grown from a local primary class center into a reputable CBSE-pattern co-educational school. Today, we cater to hundreds of boys and girls from Khabharabhar and nearby villages, ensuring they secure high scores in higher education exams and clear entrance competitions successfully.",
-    hi: "पिछले डेढ़ दशक में, हमारी संस्था एक स्थानीय प्राथमिक कक्षा केंद्र से एक प्रतिष्ठित CBSE-पैटर्न सह-शैक्षणिक विद्यालय के रूप में विकसित हुई है। आज, हम खबरभार और आसपास के गांवों के सैकड़ों लड़कों और लड़कियों की शैक्षणिक आवश्यकताओं को पूरा करते हैं, यह सुनिश्चित करते हुए कि वे उच्च शिक्षा परीक्षाओं में उच्च अंक प्राप्त करें और प्रवेश प्रतियोगिताओं को सफलतापूर्वक पास करें।"
+    en: "Over the last decade and a half, our institution has grown from a local primary class center into a reputable UP-pattern co-educational school. Today, we cater to hundreds of boys and girls from Khabharabhar and nearby villages, ensuring they secure high scores in higher education exams and clear entrance competitions successfully.",
+    hi: "पिछले डेढ़ दशक में, हमारी संस्था एक स्थानीय प्राथमिक कक्षा केंद्र से एक प्रतिष्ठित UP-पैटर्न सह-शैक्षणिक विद्यालय के रूप में विकसित हुई है। आज, हम खबरभार और आसपास के गांवों के सैकड़ों लड़कों और लड़कियों की शैक्षणिक आवश्यकताओं को पूरा करते हैं, यह सुनिश्चित करते हुए कि वे उच्च शिक्षा परीक्षाओं में उच्च अंक प्राप्त करें और प्रवेश प्रतियोगिताओं को सफलतापूर्वक पास करें।"
   },
   recognitionTitle: {
     en: "Recognition & Affiliation",
     hi: "मान्यता और संबद्धता"
   },
   recognitionDesc: {
-    en: "Nav Jeevan is recognized under the educational standards of Uttar Pradesh. The school operates on strict CBSE pattern methodologies, preparing children for modern competitive challenges. Both English and Hindi instruction formats are actively sustained.",
-    hi: "नव जीवन उत्तर प्रदेश के शैक्षिक मानकों के तहत मान्यता प्राप्त है। स्कूल सख्त CBSE पैटर्न पद्धतियों पर काम करता है, बच्चों को आधुनिक प्रतिस्पर्धी चुनौतियों के लिए तैयार करता है। अंग्रेजी और हिन्दी दोनों निर्देश स्वरूप सक्रिय रूप से बनाए रखे गए हैं।"
+    en: "Nav Jeevan is recognized under the educational standards of Uttar Pradesh. The school operates on strict UP pattern methodologies, preparing children for modern competitive challenges. Both English and Hindi instruction formats are actively sustained.",
+    hi: "नव जीवन उत्तर प्रदेश के शैक्षिक मानकों के तहत मान्यता प्राप्त है। स्कूल सख्त UP पैटर्न पद्धतियों पर काम करता है, बच्चों को आधुनिक प्रतिस्पर्धी चुनौतियों के लिए तैयार करता है। अंग्रेजी और हिन्दी दोनों निर्देश स्वरूप सक्रिय रूप से बनाए रखे गए हैं।"
   },
   journeyTitle: {
     en: "Our Journey (Milestones)",

@@ -12,9 +12,10 @@ export default function NoticesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = language === "en"
-      ? "Notice Board | Nav Jeevan Public School"
-      : "सूचना पट्ट | नव जीवन पब्लिक स्कूल";
+    document.title =
+      language === "en"
+        ? "Notice Board | Nav Jeevan Public School"
+        : "सूचना पट्ट | नव जीवन पब्लिक स्कूल";
   }, [language]);
 
   useEffect(() => {
@@ -41,17 +42,25 @@ export default function NoticesPage() {
           </span>
           <SectionHeading
             as="h1"
-            title={language === "en" ? "Official School Notice Board" : "आधिकारिक स्कूल सूचना पट्ट"}
-            subtitle={language === "en"
-              ? "Stay updated with CBSE announcements, exam calendars, summer/winter holiday notices, and parents directives."
-              : "CBSE घोषणाओं, परीक्षा कैलेंडर, ग्रीष्मकालीन/शीतकालीन अवकाश सूचनाओं और अभिभावकों के निर्देशों के साथ अपडेट रहें।"}
+            title={
+              language === "en"
+                ? "Official School Notice Board"
+                : "आधिकारिक स्कूल सूचना पट्ट"
+            }
+            subtitle={
+              language === "en"
+                ? "Stay updated with UP announcements, exam calendars, summer/winter holiday notices, and parents directives."
+                : "UP घोषणाओं, परीक्षा कैलेंडर, ग्रीष्मकालीन/शीतकालीन अवकाश सूचनाओं और अभिभावकों के निर्देशों के साथ अपडेट रहें।"
+            }
           />
         </div>
 
         {loading ? (
           <div className="text-center py-16">
             <p className="text-sm font-semibold text-neutral-body animate-pulse">
-              {language === "en" ? "Loading notices..." : "सूचनाएं लोड हो रही हैं..."}
+              {language === "en"
+                ? "Loading notices..."
+                : "सूचनाएं लोड हो रही हैं..."}
             </p>
           </div>
         ) : (

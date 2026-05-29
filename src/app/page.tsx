@@ -30,15 +30,14 @@ import { Notice, GalleryItem } from "@/types";
 const managementMembers = [
   {
     name: {
-      en: "Shri Rajesh Kumar Mishra",
-      hi: "श्री राजेश कुमार मिश्रा",
+      en: "Shri Satyndra Pratap Singh",
+      hi: "श्री सत्येंद्र प्रताप सिंह",
     },
     role: {
       en: "Principal",
       hi: "प्रधानाचार्य",
     },
-    photo:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face&auto=format",
+    photo: '/un.jpeg',
   },
   {
     name: {
@@ -154,7 +153,6 @@ export default function Home() {
                   </p>
                 ) : (
                   <>
-
                     <div className="hidden md:flex flex-col gap-4">
                       {previewNotices.map((notice) => (
                         <NoticeCard
@@ -195,11 +193,13 @@ export default function Home() {
                         const activeBorderColor = isImportant
                           ? (borderColors[notice.importanceColor ?? "red"] ??
                             "border-l-red-500")
-                          : (categoryBorders[notice.category as keyof typeof categoryBorders] ??
-                            categoryBorders.Others);
+                          : (categoryBorders[
+                              notice.category as keyof typeof categoryBorders
+                            ] ?? categoryBorders.Others);
                         const activeBadgeStyle =
-                          categoryBadges[notice.category as keyof typeof categoryBadges] ??
-                          categoryBadges.Others;
+                          categoryBadges[
+                            notice.category as keyof typeof categoryBadges
+                          ] ?? categoryBadges.Others;
 
                         return (
                           <div
@@ -382,7 +382,7 @@ export default function Home() {
             <div className="flex flex-col gap-6 reveal-on-scroll reveal-fade-left">
               <p className="text-sm sm:text-base text-neutral-body leading-relaxed">
                 {language === "en"
-                  ? "Established in 2011 with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with CBSE curriculum standards. We combine rigorous academics with digital computer exposure, cultural celebrations, and physical drills to construct all-round capabilities in our students."
+                  ? "Established in 2011 with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with UP curriculum standards. We combine rigorous academics with digital computer exposure, cultural celebrations, and physical drills to construct all-round capabilities in our students."
                   : "ग्रामीण उत्तर प्रदेश में प्राथमिक और माध्यमिक शिक्षा में क्रांति लाने के दृष्टिकोण से 2011 में स्थापित, नव जीवन पब्लिक स्कूल सीबीएसई पाठ्यक्रम मानकों से संबद्ध है। हम अपने छात्रों में सर्वांगीण क्षमताओं के निर्माण के लिए कठोर शिक्षा के साथ डिजिटल कंप्यूटर एक्सपोज़र, सांस्कृतिक उत्सवों और शारीरिक अभ्यासों का संयोजन करते हैं।"}
               </p>
 
@@ -475,7 +475,6 @@ export default function Home() {
                       : "bg-white border border-border shadow-xs hover:border-primary/20 hover:shadow-md hover:-translate-y-1.5"
                   }`}
                 >
-
                   <div className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
                     <Image
                       src={member.photo}
@@ -492,11 +491,13 @@ export default function Home() {
                     <h3 className="text-sm sm:text-base font-extrabold text-neutral-dark tracking-tight leading-snug transition-colors duration-300 group-hover:text-primary">
                       {member.name[language]}
                     </h3>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-3.5 py-0.5 rounded-md leading-none transition-all duration-300 border ${
-                      isMd
-                        ? "bg-primary/10 text-primary border-primary/20 group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
-                        : "bg-neutral-light text-neutral-body border-border group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
-                    }`}>
+                    <span
+                      className={`text-[10px] font-bold uppercase tracking-wider px-3.5 py-0.5 rounded-md leading-none transition-all duration-300 border ${
+                        isMd
+                          ? "bg-primary/10 text-primary border-primary/20 group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
+                          : "bg-neutral-light text-neutral-body border-border group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
+                      }`}
+                    >
                       {member.role[language]}
                     </span>
                   </div>
@@ -540,7 +541,7 @@ export default function Home() {
                   language === "en" ? "Affordable Quality" : "किफायती गुणवत्ता",
                 desc:
                   language === "en"
-                    ? "CBSE-pattern learning with minimal fees for every child in Kushinagar."
+                    ? "UP-pattern learning with minimal fees for every child in Kushinagar."
                     : "कुशीनगर में प्रत्येक बच्चे के लिए न्यूनतम शुल्क के साथ सीबीएसई-पैटर्न शिक्षा.",
               },
               {

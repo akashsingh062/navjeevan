@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Us | Nav Jeevan Public School Khabharabhar",
   description:
-    "Learn about Nav Jeevan Public School Khabharabhar — our history, vision, and mission. Discover how NJPS Kushinagar delivers outstanding CBSE-pattern primary education to students.",
+    "Learn about Nav Jeevan Public School Khabharabhar — our history, vision, and mission. Discover how NJPS Kushinagar delivers outstanding UP-pattern primary education to students.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About Nav Jeevan Public School – NJPS Kushinagar",

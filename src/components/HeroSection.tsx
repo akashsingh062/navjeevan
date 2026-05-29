@@ -8,7 +8,8 @@ const slides = [
     id: 1,
     image: "/hero-banner.jpg",
     title: "Nav Jeevan Public School Khabharabhar",
-    subtitle: "NJPS Kushinagar: Empowering rural minds through top-tier CBSE-pattern education since 2011.",
+    subtitle:
+      "NJPS Kushinagar: Empowering rural minds through top-tier UP-pattern education since 2011.",
     tag: "Session 2026–27 Admissions Open",
     cta: { label: "Apply for Admission", href: "/admissions" },
   },
@@ -16,15 +17,17 @@ const slides = [
     id: 2,
     image: "/national.jpg",
     title: "Nav Jeevan Public School",
-    subtitle: "Discipline, devotion, and academic excellence at NJPS Kushinagar — CBSE pattern learning.",
-    tag: "CBSE Pattern · Hindi & English Medium",
+    subtitle:
+      "Discipline, devotion, and academic excellence at NJPS Kushinagar — UP pattern learning.",
+    tag: "UP Pattern · Hindi & English Medium",
     cta: { label: "Explore Facilities", href: "/facilities" },
   },
   {
     id: 3,
     image: "/anual.jpg",
     title: "Annual Day Celebrations at NJPS",
-    subtitle: "Building strong character, digital competence, and active community at Nav Jeevan School Khabharabhar.",
+    subtitle:
+      "Building strong character, digital competence, and active community at Nav Jeevan School Khabharabhar.",
     tag: "Cultural Events, Dances & Prize Distribution",
     cta: { label: "Know More About Us", href: "/about" },
   },
@@ -34,13 +37,20 @@ export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
 
-  const goTo = useCallback((indexOrUpdater: number | ((prev: number) => number)) => {
-    setTransitioning(true);
-    setTimeout(() => {
-      setCurrent(prev => typeof indexOrUpdater === "function" ? indexOrUpdater(prev) : indexOrUpdater);
-      setTransitioning(false);
-    }, 350);
-  }, []);
+  const goTo = useCallback(
+    (indexOrUpdater: number | ((prev: number) => number)) => {
+      setTransitioning(true);
+      setTimeout(() => {
+        setCurrent((prev) =>
+          typeof indexOrUpdater === "function"
+            ? indexOrUpdater(prev)
+            : indexOrUpdater,
+        );
+        setTransitioning(false);
+      }, 350);
+    },
+    [],
+  );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -52,13 +62,18 @@ export default function HeroSection() {
   const slide = slides[current];
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ height: "clamp(520px, 75vh, 900px)" }}>
-
+    <section
+      className="relative w-full overflow-hidden"
+      style={{ height: "clamp(520px, 75vh, 900px)" }}
+    >
       {slides.map((s, i) => (
         <div
           key={s.id}
           className="absolute inset-0 transition-opacity duration-700"
-          style={{ opacity: i === current && !transitioning ? 1 : 0, zIndex: i === current ? 1 : 0 }}
+          style={{
+            opacity: i === current && !transitioning ? 1 : 0,
+            zIndex: i === current ? 1 : 0,
+          }}
           aria-hidden={i !== current}
         >
           <Image
@@ -72,15 +87,20 @@ export default function HeroSection() {
         </div>
       ))}
 
-      <div className="absolute inset-0 bg-linear-to-r from-neutral-dark/85 via-neutral-dark/50 to-transparent" style={{ zIndex: 2 }} />
-      <div className="absolute inset-0 bg-linear-to-t from-neutral-dark/55 via-transparent to-transparent" style={{ zIndex: 2 }} />
+      <div
+        className="absolute inset-0 bg-linear-to-r from-neutral-dark/85 via-neutral-dark/50 to-transparent"
+        style={{ zIndex: 2 }}
+      />
+      <div
+        className="absolute inset-0 bg-linear-to-t from-neutral-dark/55 via-transparent to-transparent"
+        style={{ zIndex: 2 }}
+      />
 
       <div
         className="relative h-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col justify-center transition-opacity duration-300"
         style={{ zIndex: 3, opacity: transitioning ? 0 : 1 }}
       >
         <div className="max-w-xl">
-
           <span className="inline-block bg-primary text-white text-[10px] sm:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3 sm:mb-4">
             {slide.tag}
           </span>

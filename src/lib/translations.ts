@@ -26,8 +26,8 @@ export const translations = {
       visitCampus: "Visit Campus",
       messageDesk: "Message Desk",
       bilingualSupport: "Bilingual Support (हिन्दी / English)",
-      cbsePattern: "CBSE Pattern • NCERT Aligned",
-      cbsePatternShort: "CBSE Pattern",
+      UPPattern: "UP Pattern • NCERT Aligned",
+      UPPatternShort: "UP Pattern",
       ncertAligned: "NCERT Aligned",
       rightsReserved: "All rights reserved.",
       madeInKushinagar: "Made with pride in Kushinagar, UP",
@@ -49,7 +49,7 @@ export const translations = {
     academics: {
       bannerTag: "Curriculum Frame",
       bannerTitle: "Academic Curriculum & Stages",
-      bannerDesc: "Specially tailored academic stage structures from LKG to Class VIII. Deeply integrated with modern computer literacy, environmental consciousness, and CBSE pattern guidelines.",
+      bannerDesc: "Specially tailored academic stage structures from LKG to Class VIII. Deeply integrated with modern computer literacy, environmental consciousness, and UP pattern guidelines.",
       stageTitle: "Academic Stage Framework",
       stageSubtitle: "Structured developmental phases designed to nourish analytical thinking, scientific curiosity, and values from pre-school through middle school.",
 
@@ -209,8 +209,8 @@ export const translations = {
       visitCampus: "परिसर में आएं",
       messageDesk: "व्हाट्सएप चैट",
       bilingualSupport: "द्विभाषी सहायता (हिन्दी / English)",
-      cbsePattern: "CBSE पैटर्न • NCERT संरेखित",
-      cbsePatternShort: "CBSE पैटर्न",
+      UPPattern: "UP पैटर्न • NCERT संरेखित",
+      UPPatternShort: "UP पैटर्न",
       ncertAligned: "NCERT संरेखित",
       rightsReserved: "सर्वाधिकार सुरक्षित।",
       madeInKushinagar: "कुशीनगर, यूपी में गर्व के साथ निर्मित",
@@ -232,7 +232,7 @@ export const translations = {
     academics: {
       bannerTag: "पाठ्यक्रम का ढांचा",
       bannerTitle: "शैक्षणिक पाठ्यक्रम और चरण",
-      bannerDesc: "LKG से कक्षा VIII तक के लिए विशेष रूप से तैयार शैक्षणिक चरण। आधुनिक कंप्यूटर साक्षरता, पर्यावरण जागरूकता और CBSE पैटर्न दिशानिर्देशों के साथ गहराई से एकीकृत।",
+      bannerDesc: "LKG से कक्षा VIII तक के लिए विशेष रूप से तैयार शैक्षणिक चरण। आधुनिक कंप्यूटर साक्षरता, पर्यावरण जागरूकता और UP पैटर्न दिशानिर्देशों के साथ गहराई से एकीकृत।",
       stageTitle: "शैक्षणिक चरण रूपरेखा",
       stageSubtitle: "पूर्व-प्राथमिक से माध्यमिक स्तर तक बच्चों के विश्लेषणात्मक विचारों, वैज्ञानिक जिज्ञासाओं और मूल्यों को विकसित करने के चरणबद्ध शैक्षणिक प्रयास।",
 

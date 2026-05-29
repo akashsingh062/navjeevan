@@ -10,7 +10,7 @@ import {
   Smile,
   Sparkles,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
@@ -33,7 +33,6 @@ export default function Academics() {
   return (
     <div className="py-12 bg-background flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div className="relative overflow-hidden bg-linear-to-br from-primary to-neutral-dark text-white rounded-3xl p-8 md:p-12 mb-16 shadow-lg">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
@@ -67,11 +66,15 @@ export default function Academics() {
                   key={idx}
                   className={`bg-surface border ${stage.borderColor} rounded-3xl p-6 md:p-8 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-primary/30 transition-all duration-300 relative group overflow-hidden text-left`}
                 >
-                  <div className={`absolute top-0 left-0 right-0 h-1.5 ${stage.accentBg}`} />
+                  <div
+                    className={`absolute top-0 left-0 right-0 h-1.5 ${stage.accentBg}`}
+                  />
 
                   <div>
                     <div className="flex items-center gap-4 mb-5">
-                      <div className={`w-12 h-12 rounded-2xl ${stage.accentBg} ${stage.accentText} flex items-center justify-center shrink-0 shadow-sm`}>
+                      <div
+                        className={`w-12 h-12 rounded-2xl ${stage.accentBg} ${stage.accentText} flex items-center justify-center shrink-0 shadow-sm`}
+                      >
                         <StageIcon className="w-6 h-6" />
                       </div>
                       <div>
@@ -84,7 +87,9 @@ export default function Academics() {
                       </div>
                     </div>
 
-                    <div className={`text-xs font-extrabold ${stage.accentText} flex items-center gap-1.5 mb-4`}>
+                    <div
+                      className={`text-xs font-extrabold ${stage.accentText} flex items-center gap-1.5 mb-4`}
+                    >
                       <Sparkles className="w-3.5 h-3.5" />
                       <span>{stage.focus[language]}</span>
                     </div>
@@ -96,7 +101,9 @@ export default function Academics() {
 
                   <div className="pt-5 border-t border-border">
                     <span className="text-[10px] uppercase font-black text-accent tracking-wider block mb-3">
-                      {language === "en" ? "Prescribed Core Subjects" : "निर्धारित मुख्य विषय"}
+                      {language === "en"
+                        ? "Prescribed Core Subjects"
+                        : "निर्धारित मुख्य विषय"}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {stage.subjects[language].map((sub, sIdx) => (
@@ -116,7 +123,6 @@ export default function Academics() {
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-20 text-left">
-
           <div className="lg:col-span-7 bg-surface border border-border rounded-3xl p-6 md:p-8 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-3 mb-6 border-b border-border pb-4">
@@ -146,7 +152,8 @@ export default function Academics() {
                   </div>
                   <div>
                     <h4 className="text-xs font-black text-neutral-dark">
-                      {t.academics.foundationalTitle}: {language === "en" ? "Gentle Observations" : "सहज अवलोकन"}
+                      {t.academics.foundationalTitle}:{" "}
+                      {language === "en" ? "Gentle Observations" : "सहज अवलोकन"}
                     </h4>
                     <p className="text-xs text-neutral-body leading-relaxed mt-0.5 font-medium">
                       {language === "en"
@@ -187,8 +194,14 @@ export default function Academics() {
             </div>
 
             <div className="mt-8 pt-4 border-t border-border flex items-center justify-between text-[11px] text-accent font-bold">
-              <span>{language === "en" ? "* Standard Progress Cards issued twice a year." : "* मानक प्रगति पत्र वर्ष में दो बार जारी किए जाते हैं।"}</span>
-              <span className="flex items-center gap-1">{t.common.cbsePatternShort} <ArrowRight className="w-3 h-3" /></span>
+              <span>
+                {language === "en"
+                  ? "* Standard Progress Cards issued twice a year."
+                  : "* मानक प्रगति पत्र वर्ष में दो बार जारी किए जाते हैं।"}
+              </span>
+              <span className="flex items-center gap-1">
+                {t.common.UPPatternShort} <ArrowRight className="w-3 h-3" />
+              </span>
             </div>
           </div>
 
@@ -221,9 +234,15 @@ export default function Academics() {
                     >
                       <Clock className="w-6 h-6 shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="text-xs font-black uppercase tracking-wider">{time.season[language]}</h4>
-                        <p className="text-base sm:text-lg font-black mt-1">{time.duration}</p>
-                        <p className="text-[11px] font-bold opacity-80 mt-0.5">{time.break[language]}</p>
+                        <h4 className="text-xs font-black uppercase tracking-wider">
+                          {time.season[language]}
+                        </h4>
+                        <p className="text-base sm:text-lg font-black mt-1">
+                          {time.duration}
+                        </p>
+                        <p className="text-[11px] font-bold opacity-80 mt-0.5">
+                          {time.break[language]}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -231,11 +250,15 @@ export default function Academics() {
               </div>
 
               <div className="text-[10px] text-neutral-body font-medium mt-6 bg-neutral-light p-3 rounded-xl border border-border">
-                <strong>{language === "en" ? "Important:" : "महत्वपूर्ण सूचना:"}</strong> {language === "en" ? "Shift announcements are communicated to parents via SMS and notice board cards a week before implementation." : "समय सारणी में बदलाव की सूचना अभिभावकों को एक सप्ताह पूर्व SMS और सूचना पट्ट के माध्यम से दी जाती है।"}
+                <strong>
+                  {language === "en" ? "Important:" : "महत्वपूर्ण सूचना:"}
+                </strong>{" "}
+                {language === "en"
+                  ? "Shift announcements are communicated to parents via SMS and notice board cards a week before implementation."
+                  : "समय सारणी में बदलाव की सूचना अभिभावकों को एक सप्ताह पूर्व SMS और सूचना पट्ट के माध्यम से दी जाती है।"}
               </div>
             </div>
           </div>
-
         </div>
 
         <section className="mb-10 text-left">
@@ -253,9 +276,15 @@ export default function Academics() {
                 className="bg-surface border border-border rounded-3xl p-6 shadow-2xs hover:shadow-md hover:border-primary/20 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <span className={`inline-block px-2.5 py-1 rounded-lg text-[9px] uppercase font-black text-white ${
-                    event.type === "academic" ? "bg-primary" : event.type === "exam" ? "bg-brand-amber" : "bg-accent"
-                  }`}>
+                  <span
+                    className={`inline-block px-2.5 py-1 rounded-lg text-[9px] uppercase font-black text-white ${
+                      event.type === "academic"
+                        ? "bg-primary"
+                        : event.type === "exam"
+                          ? "bg-brand-amber"
+                          : "bg-accent"
+                    }`}
+                  >
                     {event.badgeText[language]}
                   </span>
 
@@ -275,7 +304,6 @@ export default function Academics() {
             ))}
           </div>
         </section>
-
       </div>
     </div>
   );

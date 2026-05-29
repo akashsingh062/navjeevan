@@ -95,7 +95,7 @@ export default function Footer() {
             {}
             <div className="flex items-center gap-2 px-3 py-1.5 bg-neutral-dark/80 border border-gray-800 rounded-xl self-start text-[10px] text-gray-300 font-bold select-none shadow-3xs">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-              <span>{t.common.cbsePattern}</span>
+              <span>{t.common.UPPattern}</span>
             </div>
 
             {}
@@ -134,7 +134,7 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="https://youtube.com"
+                  href="https://youtube.com/@navjeevanschoolkhabharabha1894?si=2HN9rK9w_PlD4gkr"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-400 flex items-center justify-center transition-all duration-300 hover:bg-red-500/10 hover:text-red-500 focus:outline-none"
@@ -329,23 +329,22 @@ export default function Footer() {
               "नव जीवन पब्लिक स्कूल खभरबहार",
             ],
             description:
-              "Nav Jeevan Public School (NJPS) is a co-educational CBSE-pattern school in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh, offering English and Hindi medium education from Nursery to Class 8 with smart classrooms, computer labs, and holistic development programs.",
+              "Nav Jeevan Public School (NJPS) is a co-educational UP-pattern school in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh, offering English and Hindi medium education from Nursery to Class 8 with smart classrooms, computer labs, and holistic development programs.",
             url: "https://njpskhabharabhar.vercel.app",
             logo: "https://njpskhabharabhar.vercel.app/logo.png",
             image: "https://njpskhabharabhar.vercel.app/about-students.png",
             telephone: "+919889897057",
             email: "navjeevanschool2011@gmail.com",
             foundingDate: "2011",
-            award: "Affiliated to CBSE Pattern",
+            award: "Affiliated to UP Pattern",
             knowsAbout: [
-              "CBSE Curriculum",
+              "UP Curriculum",
               "Primary Education",
               "IT Literacy",
               "Holistic Child Development",
             ],
             sameAs: [
-              "https://www.facebook.com/navjeevanschool2011/",
-              "https://youtube.com",
+              "https://youtube.com/@navjeevanschoolkhabharabha1894?si=2HN9rK9w_PlD4gkr",
             ],
             address: {
               "@type": "PostalAddress",
@@ -388,13 +387,13 @@ export default function Footer() {
                   "@type": "Course",
                   name: "Class 1 to Class 5 (Primary)",
                   description:
-                    "CBSE-pattern primary education in English and Hindi medium",
+                    "UP-pattern primary education in English and Hindi medium",
                 },
                 {
                   "@type": "Course",
                   name: "Class 6 to Class 8 (Middle School)",
                   description:
-                    "CBSE-pattern middle school education with science labs and computer training",
+                    "UP-pattern middle school education with science labs and computer training",
                 },
               ],
             },
