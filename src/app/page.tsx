@@ -30,7 +30,7 @@ import { Notice, GalleryItem } from "@/types";
 const managementMembers = [
   {
     name: {
-      en: "Shri Satyndra Pratap Singh",
+      en: "Shri Satyendra Pratap Singh",
       hi: "श्री सत्येंद्र प्रताप सिंह",
     },
     role: {

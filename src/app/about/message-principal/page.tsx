@@ -50,7 +50,7 @@ export default function PrincipalMessagePage() {
           <div className="flex flex-col items-center gap-3">
             <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden border-4 border-primary/20 shadow-md bg-neutral-light">
               <Image
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face&auto=format"
+                src="/un.jpeg"
                 alt={`Photo of ${principalNote.name[language]}`}
                 fill
                 className="object-cover"

@@ -205,8 +205,8 @@ export const principalNote = {
     hi: "हम इस खूबसूरत यात्रा में हमारे साथ भागीदार बनने के लिए आपका स्वागत करते हैं। आइए अपने बच्चों के लिए सर्वोत्तम विकासात्मक मार्ग सुरक्षित करने के लिए हाथ मिलाएं।"
   },
   name: {
-    en: "Shri Rajesh Kumar Mishra",
-    hi: "श्री राजेश कुमार मिश्रा"
+    en: "Shri Satyendra Pratap Singh ",
+    hi: "श्री सत्येंद्र प्रताप सिंह"
   },
   role: {
     en: "Principal, Nav Jeevan Public School",
