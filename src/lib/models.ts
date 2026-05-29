@@ -1,30 +1,27 @@
 import mongoose, { Schema } from "mongoose";
 
-
 const NoticeSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  date: { type: String, required: true }, 
-  category: { 
-    type: String, 
-    required: true 
+  date: { type: String, required: true },
+  category: {
+    type: String,
+    required: true
   },
   isImportant: { type: Boolean, default: false },
-  importanceColor: { type: String, default: "blue" }, 
+  importanceColor: { type: String, default: "blue" },
   attachmentUrl: { type: String, default: "" }
 }, { timestamps: true });
 
-
 const GallerySchema = new Schema({
   imageUrl: { type: String, required: true },
-  category: { 
-    type: String, 
-    required: true 
+  category: {
+    type: String,
+    required: true
   },
   title: { type: String, required: true },
-  uploadedAt: { type: String, required: true } 
+  uploadedAt: { type: String, required: true }
 }, { timestamps: true });
-
 
 const FacultySchema = new Schema({
   name: { type: String, required: true },
@@ -34,7 +31,6 @@ const FacultySchema = new Schema({
   imageUrl: { type: String, default: "" },
   order: { type: Number, default: 0 }
 }, { timestamps: true });
-
 
 const ContactInquirySchema = new Schema({
   name: { type: String, required: true },

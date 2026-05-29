@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Notice } from "@/types";
 import NoticeCard from "@/components/NoticeCard";
 import { Search, AlertCircle } from "lucide-react";
@@ -35,7 +35,7 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
     } else {
       matchesCategory = notice.category === activeCategory;
     }
-    const matchesSearch = 
+    const matchesSearch =
       notice.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       notice.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
@@ -56,7 +56,7 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
           />
         </div>
 
-        <div 
+        <div
           className="flex flex-wrap gap-2 w-full md:w-auto md:justify-end"
           role="tablist"
           aria-label="Notice Board Categories"
@@ -86,8 +86,8 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
             {language === "en" ? "No notices match your criteria." : "आपके मानदंडों से मेल खाती कोई सूचना नहीं है।"}
           </p>
           <p className="text-xs text-neutral-body -mt-1 font-normal leading-relaxed">
-            {language === "en" 
-              ? "Try checking another keyword or resetting the filter boards." 
+            {language === "en"
+              ? "Try checking another keyword or resetting the filter boards."
               : "कोई अन्य कीवर्ड आज़माएँ या फ़िल्टर रीसेट करें।"}
           </p>
         </div>

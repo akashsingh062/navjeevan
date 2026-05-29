@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import { Download, FileCheck, AlertTriangle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";

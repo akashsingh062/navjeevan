@@ -1,30 +1,26 @@
 @import "tailwindcss";
 
 @theme {
-  /* === Primary: Deep Saffron === */
+
   --color-primary: #D4621A;
   --color-primary-hover: #B8521A;
   --color-primary-light: #FEF0E6;
 
-  /* === Accent: Forest Green === */
   --color-accent: #1A6B45;
   --color-accent-hover: #155838;
   --color-accent-light: #E6F4ED;
 
-  /* === Neutrals === */
   --color-neutral-dark: #1A1A2E;
   --color-neutral-body: #4A5568;
   --color-neutral-light: #F7F5F2;
   --color-surface: #FFFFFF;
   --color-border: #E8E4DF;
 
-  /* === Status Colors === */
   --color-brand-red: #DC2626;
   --color-brand-amber: #D97706;
   --color-brand-blue: #2563EB;
   --color-brand-purple: #7C3AED;
 
-  /* === Spacing === */
   --bottom-nav-height: 64px;
 }
 
@@ -33,9 +29,6 @@
   --foreground: #1A1A2E;
 }
 
-/* ===========================
-   BASE
-=========================== */
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -47,7 +40,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* Bottom padding for sticky bottom nav on mobile */
+
   padding-bottom: var(--bottom-nav-height);
 }
 
@@ -57,15 +50,11 @@ body {
   }
 }
 
-/* ===========================
-   TOUCH & ACCESSIBILITY
-=========================== */
 button {
   min-height: 44px;
   min-width: 44px;
 }
 
-/* Touch targets for links: only apply min-height, not min-width to avoid inline overflow */
 a {
   min-height: 44px;
 }
@@ -76,9 +65,6 @@ a {
   border-radius: 4px;
 }
 
-/* ===========================
-   UTILITIES
-=========================== */
 @utility wrap-break-word {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -160,17 +146,14 @@ a {
   will-change: opacity, transform;
 }
 
-/* Slide Up (default) */
 .reveal-fade-up {
   transform: translateY(30px);
 }
 
-/* Slide Down */
 .reveal-fade-down {
   transform: translateY(-30px);
 }
 
-/* Slide Left — use Y axis on small screens to avoid horizontal overflow */
 .reveal-fade-left {
   transform: translateY(20px);
 }
@@ -181,7 +164,6 @@ a {
   }
 }
 
-/* Slide Right — use Y axis on small screens to avoid horizontal overflow */
 .reveal-fade-right {
   transform: translateY(20px);
 }
@@ -192,18 +174,15 @@ a {
   }
 }
 
-/* Zoom In */
 .reveal-zoom-in {
   transform: scale(0.94);
 }
 
-/* Revealed State */
 .reveal-on-scroll.revealed {
   opacity: 1;
   transform: translate(0) scale(1);
 }
 
-/* Custom Transition Delays */
 .delay-100 {
   transition-delay: 100ms;
 }
@@ -224,7 +203,6 @@ a {
   transition-delay: 500ms;
 }
 
-/* Reduced Motion preference */
 @media (prefers-reduced-motion: reduce) {
   .reveal-on-scroll {
     opacity: 1 !important;

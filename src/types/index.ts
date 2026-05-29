@@ -3,7 +3,7 @@ export interface Notice {
   id?: string;
   title: string;
   description: string;
-  date: string; 
+  date: string;
   category: string;
   isImportant?: boolean;
   importanceColor?: 'red' | 'amber' | 'green' | 'blue' | 'purple';
@@ -16,7 +16,7 @@ export interface Faculty {
   name: string;
   subject: string;
   qualification?: string;
-  experience?: string; 
+  experience?: string;
   imageUrl?: string;
   order?: number;
 }
@@ -27,15 +27,14 @@ export interface GalleryItem {
   imageUrl: string;
   category: string;
   title: string;
-  uploadedAt: string; 
+  uploadedAt: string;
 }
-
 
 export interface Facility {
   id: string;
   title: string | { en: string; hi: string };
   description: string | { en: string; hi: string };
-  iconName: string; 
+  iconName: string;
 }
 
 export interface ContactInquiry {

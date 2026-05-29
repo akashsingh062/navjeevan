@@ -3,7 +3,6 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import path from "path";
 
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -22,13 +21,11 @@ export async function POST(request: Request) {
     const categoryParam = (formData.get("category") as string || "general").trim();
     const cleanCategory = categoryParam.replace(/[^a-zA-Z0-9_-]/g, "_") || "general";
 
-    
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    
-    const isCloudinaryConfigured = 
-      process.env.CLOUDINARY_CLOUD_NAME && 
+    const isCloudinaryConfigured =
+      process.env.CLOUDINARY_CLOUD_NAME &&
       process.env.CLOUDINARY_CLOUD_NAME !== "your_cloud_name" &&
       process.env.CLOUDINARY_API_KEY &&
       process.env.CLOUDINARY_API_KEY !== "your_api_key" &&
@@ -37,7 +34,7 @@ export async function POST(request: Request) {
 
     if (!isCloudinaryConfigured) {
       console.warn("Cloudinary keys not set up. Saving file locally to public/uploads.");
-      
+
       const uploadDir = path.join(process.cwd(), "public", "uploads", cleanCategory);
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
@@ -49,19 +46,17 @@ export async function POST(request: Request) {
       const uniqueName = `${baseName}-${Date.now()}${ext}`;
       const filePath = path.join(uploadDir, uniqueName);
 
-      // Write the buffer to public/uploads/[category]
       await fs.promises.writeFile(filePath, buffer);
       const localUrl = `/uploads/${cleanCategory}/${uniqueName}`;
 
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         url: localUrl,
         isDemo: true,
         message: "Cloudinary keys are missing. Saved file to public local storage."
       });
     }
 
-    // Determine if the file is an image
     const isImage = file.type?.startsWith("image/") || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(file.name || "");
     const resourceType = isImage ? "image" : "raw";
 
@@ -69,7 +64,7 @@ export async function POST(request: Request) {
     const ext = path.extname(originalName) || "";
     const baseName = path.basename(originalName, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
     const uniqueId = `${baseName}-${Date.now()}`;
-    // Raw assets require the extension in the public ID to download with it
+
     const publicId = resourceType === "raw" ? `${uniqueId}${ext}` : uniqueId;
 
     const uploadResult = await new Promise<{ secure_url?: string } | undefined>((resolve, reject) => {
@@ -78,7 +73,7 @@ export async function POST(request: Request) {
           folder: `navjeevan_${cleanCategory}`,
           resource_type: resourceType,
           public_id: publicId,
-          // Only apply optimizations to images, raw PDFs/docs should remain untouched
+
           ...(isImage && {
             transformation: [
               { width: 1200, height: 1200, crop: "limit", quality: "auto", fetch_format: "auto" }

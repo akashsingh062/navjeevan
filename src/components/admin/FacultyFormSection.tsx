@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
@@ -150,8 +150,8 @@ export default function FacultyFormSection({
           {editingFacultyId ? "Edit Teacher Profile" : "Register New Teacher"}
         </h3>
         <p className="text-xs text-neutral-body">
-          {editingFacultyId 
-            ? "Modify an existing teacher's profile details." 
+          {editingFacultyId
+            ? "Modify an existing teacher's profile details."
             : "Adds a teacher profile card to the Faculty portal."}
         </p>
       </div>
@@ -203,13 +203,13 @@ export default function FacultyFormSection({
 
       <div className="flex flex-col gap-2.5">
         <label className="text-xs font-extrabold text-neutral-dark">Teacher Photograph</label>
-        
+
         <div className="flex flex-col sm:flex-row gap-4 items-center p-5 bg-neutral-light border border-gray-200 rounded-2xl">
           <div className="w-20 h-20 bg-gray-200 rounded-xl overflow-hidden shrink-0 border border-gray-300 relative flex items-center justify-center">
             {watchedFacultyImage ? (
-              <Image 
-                src={watchedFacultyImage} 
-                alt="Staff Preview" 
+              <Image
+                src={watchedFacultyImage}
+                alt="Staff Preview"
                 width={80}
                 height={80}
                 unoptimized
@@ -228,10 +228,10 @@ export default function FacultyFormSection({
               disabled={facultyImageUploading}
               className="text-xs text-neutral-body file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
             />
-            
+
             <p className="text-[10px] text-neutral-body leading-tight">
-              {facultyImageUploading 
-                ? "Uploading photograph, please wait..." 
+              {facultyImageUploading
+                ? "Uploading photograph, please wait..."
                 : "Select PNG or JPG photo. Maximum file size 5MB."
               }
             </p>
@@ -266,8 +266,8 @@ export default function FacultyFormSection({
             <PlusCircle className="w-4 h-4" />
           )}
           <span>
-            {editingFacultyId 
-              ? "Save Teacher Changes" 
+            {editingFacultyId
+              ? "Save Teacher Changes"
               : (status === "saving" ? "Adding Teacher..." : "Register Teacher Profile")}
           </span>
         </button>
@@ -286,7 +286,6 @@ export default function FacultyFormSection({
         )}
       </div>
 
-      {/* Live Faculty Profiles inside Admin Panel for deletion */}
       <div className="mt-10 border-t border-gray-100 pt-8 text-left">
         <h4 className="text-sm font-extrabold text-neutral-dark mb-4">Active Staff Profiles ({facultyList.length})</h4>
         {facultyList.length === 0 ? (

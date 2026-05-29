@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Lock, AlertCircle, LogIn } from "lucide-react";
 
 interface AdminLoginProps {
@@ -25,7 +24,7 @@ export default function AdminLogin({
   return (
     <div className="py-20 bg-neutral-light flex-1 flex items-center justify-center text-left">
       <div className="max-w-md w-full mx-4 bg-white border border-gray-200 p-8 rounded-3xl shadow-md">
-        
+
         <div className="flex flex-col items-center gap-3 text-center mb-8">
           <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center">
             <Lock className="w-6 h-6" />

@@ -32,4 +32,3 @@ export const defaultGallery: GalleryItem[] = [
     uploadedAt: new Date(2025, 8, 12).toISOString()
   }
 ];
-

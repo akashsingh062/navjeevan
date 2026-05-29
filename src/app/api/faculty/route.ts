@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       qualification: validatedData.qualification ? String(validatedData.qualification) : "",
       experience: validatedData.experience ? String(validatedData.experience) : "",
       imageUrl: validatedData.imageUrl ? String(validatedData.imageUrl) : "",
-      order: 99 
+      order: 99
     });
 
     return NextResponse.json({ success: true, member: newMember }, { status: 201 });

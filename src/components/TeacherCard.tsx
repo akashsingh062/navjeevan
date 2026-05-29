@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Faculty } from "@/types";
 import { GraduationCap, Briefcase } from "lucide-react";
@@ -22,10 +22,9 @@ export default function TeacherCard({ member }: TeacherCardProps) {
 
   return (
     <div className="flex flex-col w-full h-[420px] rounded-3xl border border-border bg-white shadow-xs hover:shadow-md hover:border-accent/30 hover:-translate-y-1.5 transition-all duration-500 ease-out relative overflow-hidden group">
-      {/* Decorative backdrop glow */}
+
       <div className="absolute -top-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-xl group-hover:bg-accent/10 transition-colors duration-300" />
-      
-      {/* Photo container */}
+
       <div className="relative w-full h-[230px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl flex items-center justify-center">
         {member.imageUrl && !imageError ? (
           <Image
@@ -46,7 +45,6 @@ export default function TeacherCard({ member }: TeacherCardProps) {
         )}
       </div>
 
-      {/* Content at the bottom */}
       <div className="flex-1 p-5 flex flex-col justify-between gap-3 bg-white w-full rounded-b-3xl">
         <div className="flex flex-col items-center text-center gap-1.5">
           <h3 className="text-base sm:text-lg font-black text-neutral-dark tracking-tight leading-snug group-hover:text-accent transition-colors duration-300">

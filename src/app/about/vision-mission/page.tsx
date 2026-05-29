@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { Target, Compass, Lightbulb, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -11,7 +11,7 @@ export default function VisionMissionPage() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    document.title = language === "en" 
+    document.title = language === "en"
       ? "Vision & Mission | Nav Jeevan Public School"
       : "विजन और मिशन | नव जीवन पब्लिक स्कूल";
   }, [language]);

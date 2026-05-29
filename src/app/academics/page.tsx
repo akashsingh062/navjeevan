@@ -1,14 +1,13 @@
 "use client";
 
-import React from "react";
 import SectionHeading from "@/components/SectionHeading";
-import { 
-  Clock, 
-  BookOpen, 
-  CheckCircle2, 
-  ClipboardCheck, 
-  GraduationCap, 
-  Smile, 
+import {
+  Clock,
+  BookOpen,
+  CheckCircle2,
+  ClipboardCheck,
+  GraduationCap,
+  Smile,
   Sparkles,
   ArrowRight,
   ShieldCheck
@@ -34,11 +33,11 @@ export default function Academics() {
   return (
     <div className="py-12 bg-background flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className="relative overflow-hidden bg-linear-to-br from-primary to-neutral-dark text-white rounded-3xl p-8 md:p-12 mb-16 shadow-lg">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
-          
+
           <div className="relative z-10 max-w-3xl text-left">
             <span className="text-[10px] uppercase font-black text-white/90 bg-white/15 border border-white/20 px-3 py-1 rounded-full tracking-widest inline-block mb-4 select-none">
               {t.academics.timingsLKGtoVIII}
@@ -59,17 +58,17 @@ export default function Academics() {
             subtitle={t.academics.stageSubtitle}
             centered
           />
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
             {academicsStages.map((stage, idx) => {
               const StageIcon = iconMap[stage.iconName];
               return (
-                <div 
+                <div
                   key={idx}
                   className={`bg-surface border ${stage.borderColor} rounded-3xl p-6 md:p-8 shadow-sm flex flex-col justify-between hover:shadow-md hover:border-primary/30 transition-all duration-300 relative group overflow-hidden text-left`}
                 >
                   <div className={`absolute top-0 left-0 right-0 h-1.5 ${stage.accentBg}`} />
-                  
+
                   <div>
                     <div className="flex items-center gap-4 mb-5">
                       <div className={`w-12 h-12 rounded-2xl ${stage.accentBg} ${stage.accentText} flex items-center justify-center shrink-0 shadow-sm`}>
@@ -101,7 +100,7 @@ export default function Academics() {
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {stage.subjects[language].map((sub, sIdx) => (
-                        <span 
+                        <span
                           key={sIdx}
                           className="text-[11px] font-semibold text-neutral-dark bg-neutral-light px-2.5 py-1 rounded-lg border border-border"
                         >
@@ -117,7 +116,7 @@ export default function Academics() {
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-20 text-left">
-          
+
           <div className="lg:col-span-7 bg-surface border border-border rounded-3xl p-6 md:p-8 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-3 mb-6 border-b border-border pb-4">
@@ -216,8 +215,8 @@ export default function Academics() {
 
                 <div className="flex flex-col gap-4">
                   {seasonalTimings.map((time, idx) => (
-                    <div 
-                      key={idx} 
+                    <div
+                      key={idx}
                       className={`p-4 rounded-2xl border ${time.bg} flex gap-4 items-start shadow-xs`}
                     >
                       <Clock className="w-6 h-6 shrink-0 mt-0.5" />
@@ -246,10 +245,10 @@ export default function Academics() {
             subtitle={t.academics.calendarSubtitle}
             centered
           />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
             {calendarMilestones.map((event, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="bg-surface border border-border rounded-3xl p-6 shadow-2xs hover:shadow-md hover:border-primary/20 transition-all duration-300 flex flex-col justify-between"
               >
@@ -259,15 +258,15 @@ export default function Academics() {
                   }`}>
                     {event.badgeText[language]}
                   </span>
-                  
+
                   <span className="block text-base sm:text-lg font-black text-neutral-dark mt-3 leading-tight">
                     {event.date[language]}
                   </span>
-                  
+
                   <h4 className="text-xs font-black text-neutral-dark mt-2 leading-snug">
                     {event.title[language]}
                   </h4>
-                  
+
                   <p className="text-xs text-neutral-body leading-relaxed mt-2.5 font-medium">
                     {event.desc[language]}
                   </p>

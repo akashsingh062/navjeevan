@@ -3,13 +3,13 @@
 import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { GalleryItem } from "@/types";
-import { 
-  ZoomIn, 
-  Camera, 
-  FolderClosed, 
-  FolderOpen, 
-  ArrowLeft, 
-  Shuffle, 
+import {
+  ZoomIn,
+  Camera,
+  FolderClosed,
+  FolderOpen,
+  ArrowLeft,
+  Shuffle,
   Image as ImageIcon,
   Loader2,
   Play
@@ -20,10 +20,10 @@ const isVideoUrl = (url: string): boolean => {
   if (!url) return false;
   const u = url.toLowerCase();
   return (
-    u.includes(".mp4") || 
-    u.includes(".webm") || 
-    u.includes(".ogg") || 
-    u.includes("/video/") || 
+    u.includes(".mp4") ||
+    u.includes(".webm") ||
+    u.includes(".ogg") ||
+    u.includes("/video/") ||
     u.includes("video.fna.fbcdn.net") ||
     u.includes("video-") ||
     u.includes("facebook.com/watch") ||
@@ -74,13 +74,12 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
 
   useEffect(() => {
     const hasItem = !!selectedItem;
-    
-    // If modal is opening
+
     if (hasItem && !isModalOpenRef.current) {
       isModalOpenRef.current = true;
       window.history.pushState({ modalOpen: true }, "");
     }
-    // If modal is closing
+
     else if (!hasItem && isModalOpenRef.current) {
       isModalOpenRef.current = false;
       if (window.history.state?.modalOpen) {
@@ -96,7 +95,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
     if (hasItem) {
       window.addEventListener("popstate", handlePopState);
     }
-    
+
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
@@ -117,15 +116,11 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
     router.push(`${pathname}${queryStr}`, { scroll: false });
   };
 
-  // Synchronously adjust state during render to avoid cascading renders (React official pattern)
   if (selectedCategory !== prevCategory) {
     setPrevCategory(selectedCategory);
     setVisibleCount(16);
   }
 
-
-
-  // Dynamically build the categories list including any custom ones present in items
   const dynamicCategories = React.useMemo(() => {
     const standard = [
       "Annual Function",
@@ -181,7 +176,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
       setTimeout(() => {
         setIsShuffling(false);
       }, 500);
-    }, 300); 
+    }, 300);
   }, [items, getRandomPhoto]);
 
   useEffect(() => {
@@ -189,7 +184,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
 
     const interval = setInterval(() => {
       swapHighlight();
-    }, 5000); 
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [items, selectedCategory, swapHighlight]);
@@ -198,17 +193,15 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
     setImageErrors(prev => ({ ...prev, [id]: true }));
   };
 
-  
   const filteredItems = selectedCategory
     ? items.filter(item => item.category === selectedCategory)
     : items;
 
-  
   const displayedItems = limit ? filteredItems.slice(0, limit) : filteredItems;
 
   useEffect(() => {
     if (limit || !selectedCategory) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -232,11 +225,9 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
 
   return (
     <div className="flex flex-col gap-10">
-      
+
       {limit ? (
-        /* =========================================================
-            CASE A: LIMITED SHOWCASE PREVIEW GRID (HOMEPAGE)
-            ========================================================= */
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
           {displayedItems.slice(0, limit).map((item, idx) => {
             const hasError = imageErrors[item.id || ""] || false;
@@ -261,7 +252,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                         preload="metadata"
                       />
                     ) : (
-                      /* eslint-disable-next-line @next/next/no-img-element */
+
                       <img
                         src={getVideoPoster(item.imageUrl)}
                         alt={item.title}
@@ -270,16 +261,13 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                         loading="lazy"
                       />
                     )}
-                    
-                    {/* Dark gradient base overlay to make text readable */}
+
                     <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/30 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
-                    
-                    {/* Hover Zoom Icon top-right */}
+
                     <div className="absolute top-4 right-4 bg-black/40 backdrop-blur-md border border-white/10 p-2.5 rounded-full text-white opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 pointer-events-none z-10">
                       <ZoomIn className="w-4 h-4" />
                     </div>
 
-                    {/* Video play overlay */}
                     {isVideoUrl(item.imageUrl) && (
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                         <div className="bg-black/40 backdrop-blur-md border border-white/20 p-4.5 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -287,8 +275,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                         </div>
                       </div>
                     )}
-                    
-                    {/* Modern Premium Overlay: Category tag and title in a card */}
+
                     <div className="absolute inset-x-4 bottom-4 p-4.5 rounded-2xl bg-black/35 backdrop-blur-lg border border-white/10 flex flex-col justify-end text-white transition-all duration-300 group-hover:bg-black/45 group-hover:border-primary/20">
                       <span className="self-start text-[9px] font-black uppercase text-white bg-accent/90 border border-accent-light/10 px-2.5 py-0.5 rounded-md tracking-wider leading-none shadow-2xs mb-2">
                         {item.category}
@@ -314,16 +301,14 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
           })}
         </div>
       ) : (
-        /* =========================================================
-            CASE B: MAIN PHOTO GALLERY PAGE (WITH FOLDERS OVERHAUL)
-            ========================================================= */
+
         <>
-          {/* 1. AUTO-SWAPPING RANDOM PHOTO HIGHLIGHTS SHOWCASE */}
+
           {!selectedCategory && items.length > 0 && currentHighlight && (
             <div className="bg-surface border border-border rounded-3xl p-6 shadow-xs relative overflow-hidden animate-fade-in-up">
-              {/* Saffron side border decoration */}
+
               <div className="absolute top-0 bottom-0 left-0 w-1.5 bg-primary" />
-              
+
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border pb-4 mb-6">
                 <div>
                   <h3 className="text-base font-black text-neutral-dark flex items-center gap-2">
@@ -344,9 +329,8 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                 </button>
               </div>
 
-              {/* Swapping Active Hero Container */}
               <div className="w-full flex justify-center">
-                <div 
+                <div
                   onClick={() => setSelectedItem(currentHighlight)}
                   className={`w-full max-w-2xl rounded-2xl overflow-hidden border border-border shadow-sm bg-neutral-light cursor-pointer relative group transition-all duration-300 ${
                     isFading ? "opacity-0 scale-98" : "opacity-100 scale-100"
@@ -365,7 +349,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                           preload="metadata"
                         />
                       ) : (
-                        /* eslint-disable-next-line @next/next/no-img-element */
+
                         <img
                           src={getVideoPoster(currentHighlight.imageUrl)}
                           alt={currentHighlight.title}
@@ -373,7 +357,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                           onError={() => handleImageError(`rand-single-${currentHighlight.id}`)}
                         />
                       )}
-                      
+
                       {isVideoUrl(currentHighlight.imageUrl) && (
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                           <div className="bg-black/40 backdrop-blur-md border border-white/20 p-5 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -381,7 +365,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="absolute inset-0 bg-neutral-dark/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white pointer-events-none rounded-2xl">
                         <ZoomIn className="w-8 h-8" />
                       </div>
@@ -395,7 +379,6 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                     </div>
                   )}
 
-                  {/* Gradient Overlay Info Banner */}
                   <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-4 md:p-6 text-white flex flex-col justify-end items-center text-center transition-opacity duration-300 rounded-b-2xl">
                     <span className="text-[9px] sm:text-[10px] font-black uppercase text-white bg-primary px-2.5 py-0.5 rounded-md inline-block mb-2 tracking-wider">
                       {currentHighlight.category}
@@ -409,11 +392,8 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
             </div>
           )}
 
-          {/* 2. MAIN GRID CONDITIONAL RENDERING */}
           {!selectedCategory ? (
-            /* =========================================================
-                VIEW A: FOLDERS LIST GRID MODE
-                ========================================================= */
+
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-2 mb-2">
                 <div className="h-1.5 w-6 bg-accent rounded-full" />
@@ -445,7 +425,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                           <FolderClosed className="w-6 h-6 group-hover:hidden" />
                           <FolderOpen className="w-6 h-6 hidden group-hover:block" />
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
                           <h4 className="text-sm font-extrabold text-neutral-dark truncate leading-tight group-hover:text-primary transition-colors">
                             {cat}
@@ -461,11 +441,9 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
               )}
             </div>
           ) : (
-            /* =========================================================
-                VIEW B: EXPANDED FOLDER PHOTOS GRID MODE (MASONRY!)
-                ========================================================= */
+
             <div className="flex flex-col gap-6 animate-fade-in-up">
-              
+
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
                 <div className="flex items-center gap-3">
                   <button
@@ -477,7 +455,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                   </button>
                   <div>
                     <div className="flex items-center gap-1.5 text-xs text-neutral-body">
-                      <span 
+                      <span
                         onClick={() => selectCategory(null)}
                         className="hover:text-primary transition-colors cursor-pointer"
                       >
@@ -536,7 +514,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                                 preload="metadata"
                               />
                             ) : (
-                              /* eslint-disable-next-line @next/next/no-img-element */
+
                               <img
                                 src={getVideoPoster(item.imageUrl)}
                                 alt={item.title}
@@ -545,7 +523,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                                 loading="lazy"
                               />
                             )}
-                            
+
                             {isVideoUrl(item.imageUrl) && (
                               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                                 <div className="bg-black/40 backdrop-blur-md border border-white/20 p-4 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -553,8 +531,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                                 </div>
                               </div>
                             )}
-                            
-                            {/* Modern Premium Overlay: Gradient with category and title */}
+
                             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end items-center text-center text-white transition-all duration-300">
                               <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block mb-1.5 tracking-wider">
                                 {item.category}
@@ -563,8 +540,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                                 {item.title}
                               </h3>
                             </div>
-                            
-                            {/* Hover Zoom Icon */}
+
                             <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
                               <div className="bg-white/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full text-white transform scale-90 group-hover:scale-100 transition-transform duration-300">
                                 <ZoomIn className="w-5 h-5" />
@@ -588,7 +564,6 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                 </div>
               )}
 
-              {/* Sentinel indicator loader for Infinite Scroll */}
               {!limit && selectedCategory && visibleCount < displayedItems.length && (
                 <div ref={sentinelRef} className="w-full flex items-center justify-center py-10 mt-4 animate-fade-in-up">
                   <div className="flex flex-col items-center gap-2">
@@ -604,7 +579,6 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
         </>
       )}
 
-      {/* Image Modal Lightbox Pop-up portal */}
       {selectedItem && (() => {
         const currentIndex = displayedItems.findIndex(x => (x.id || x._id) === (selectedItem.id || selectedItem._id));
         const handlePrev = displayedItems.length > 1 ? () => {

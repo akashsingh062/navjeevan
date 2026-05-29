@@ -1,10 +1,8 @@
-import React from "react";
-
 interface SectionHeadingProps {
   title: string;
   subtitle?: string;
   centered?: boolean;
-  accent?: string; 
+  accent?: string;
   as?: "h1" | "h2";
 }
 

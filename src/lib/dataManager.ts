@@ -36,7 +36,6 @@ interface DBGalleryItem {
   uploadedAt: string;
 }
 
-
 async function isDbConnected(): Promise<boolean> {
   try {
     const conn = await connectToDatabase();
@@ -46,7 +45,6 @@ async function isDbConnected(): Promise<boolean> {
     return false;
   }
 }
-
 
 async function ensureDbSeeded() {
   try {
@@ -71,7 +69,6 @@ async function ensureDbSeeded() {
     console.error("Error seeding database:", err);
   }
 }
-
 
 export async function getNotices(): Promise<Notice[]> {
   if (await isDbConnected()) {
@@ -140,10 +137,9 @@ export async function getGallery(): Promise<GalleryItem[]> {
 }
 
 export function getFacilities(): Facility[] {
-  
+
   return defaultFacilities;
 }
-
 
 export async function createNotice(notice: Omit<Notice, "id" | "_id">): Promise<Notice> {
   if (await isDbConnected()) {
@@ -153,7 +149,7 @@ export async function createNotice(notice: Omit<Notice, "id" | "_id">): Promise<
       ...notice
     };
   }
-  
+
   const newNotice = {
     id: `notice-local-${Date.now()}`,
     ...notice

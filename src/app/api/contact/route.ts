@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     });
 
     if (saved) {
-      
+
       console.log(`[EMAIL SEND SIMULATION] Sending notification email to navjeevanschool2011@gmail.com for new inquiry from ${validatedData.name}.`);
       return NextResponse.json({ success: true, message: "Inquiry saved and notification queued." });
     } else {

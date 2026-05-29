@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Bell, Image, Users, Phone } from "lucide-react";
@@ -20,7 +19,6 @@ export default function BottomNav() {
   const { language } = useLanguage();
   const t = translations[language];
 
-  
   if (pathname.startsWith("/admin")) return null;
 
   return (
@@ -32,8 +30,7 @@ export default function BottomNav() {
       <div className="flex items-stretch justify-around h-16">
         {bottomNavItems.map(({ href, labelKey, icon: Icon }) => {
           const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
-          
-          
+
           let label = "";
           if (labelKey === "home") label = t.nav.home;
           else if (labelKey === "notices") label = t.nav.notices;
@@ -51,7 +48,7 @@ export default function BottomNav() {
               aria-label={label}
               aria-current={isActive ? "page" : undefined}
             >
-              {/* Active indicator pill */}
+
               {isActive && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
               )}

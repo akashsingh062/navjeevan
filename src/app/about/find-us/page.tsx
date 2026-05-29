@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { ChevronRight, MapPin, Phone, Clock, Navigation } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";

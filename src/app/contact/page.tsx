@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import SectionHeading from "@/components/SectionHeading";
 import {
   Phone,
@@ -32,11 +31,11 @@ export default function ContactPage() {
   return (
     <div className="py-12 bg-background flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className="relative overflow-hidden bg-linear-to-br from-primary to-neutral-dark text-white rounded-3xl p-8 md:p-12 mb-16 shadow-lg text-left">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/20 rounded-full blur-2xl -ml-10 -mb-10 pointer-events-none" />
-          
+
           <div className="relative z-10 max-w-3xl">
             <span className="text-[10px] uppercase font-black text-white/90 bg-white/15 border border-white/20 px-3 py-1 rounded-full tracking-widest inline-block mb-4 select-none">
               {t.contact.bannerTag}
@@ -57,12 +56,12 @@ export default function ContactPage() {
             subtitle={t.contact.helplineSubtitle}
             centered
           />
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
             {contactDirectory.map((card, idx) => {
               const CardIcon = iconMap[card.iconName];
               return (
-                <div 
+                <div
                   key={idx}
                   className={`bg-surface border ${card.borderColor} rounded-3xl p-6 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-primary/30 transition-all duration-300 relative group overflow-hidden text-left`}
                 >
@@ -104,7 +103,7 @@ export default function ContactPage() {
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch mb-16 text-left">
-          
+
           <div className="lg:col-span-6 bg-surface border border-border rounded-3xl p-6 md:p-8 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-3 mb-6 border-b border-border pb-4">

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getNotices, createNotice, deleteNotice, updateNotice } from "@/lib/dataManager";
 import { z } from "zod";
 
-
 const noticeSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters long"),
   description: z.string().min(10, "Description must be at least 10 characters long"),

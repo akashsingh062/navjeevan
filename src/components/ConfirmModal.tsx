@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, X } from "lucide-react";
 
@@ -45,20 +45,19 @@ export default function ConfirmModal({
 
   return createPortal(
     <div className="fixed inset-0 z-99999 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-neutral-dark/40 backdrop-blur-xs transition-opacity duration-300" 
+
+      <div
+        className="fixed inset-0 bg-neutral-dark/40 backdrop-blur-xs transition-opacity duration-300"
         onClick={onClose}
       />
 
-      {/* Card */}
-      <div 
+      <div
         className="relative bg-white border border-gray-100 rounded-3xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-left z-10 transform scale-100 animate-in fade-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-modal-title"
       >
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1.5 hover:bg-neutral-light rounded-xl text-neutral-body hover:text-neutral-dark transition-colors focus:outline-none"
           aria-label="Close dialog"

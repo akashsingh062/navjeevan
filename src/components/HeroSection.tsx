@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -42,7 +42,6 @@ export default function HeroSection() {
     }, 350);
   }, []);
 
-  
   useEffect(() => {
     const timer = setInterval(() => {
       goTo((c: number) => (c + 1) % slides.length);
@@ -55,7 +54,6 @@ export default function HeroSection() {
   return (
     <section className="relative w-full overflow-hidden" style={{ height: "clamp(520px, 75vh, 900px)" }}>
 
-      
       {slides.map((s, i) => (
         <div
           key={s.id}
@@ -74,32 +72,27 @@ export default function HeroSection() {
         </div>
       ))}
 
-      
       <div className="absolute inset-0 bg-linear-to-r from-neutral-dark/85 via-neutral-dark/50 to-transparent" style={{ zIndex: 2 }} />
       <div className="absolute inset-0 bg-linear-to-t from-neutral-dark/55 via-transparent to-transparent" style={{ zIndex: 2 }} />
 
-      
       <div
         className="relative h-full max-w-7xl mx-auto px-4 sm:px-8 flex flex-col justify-center transition-opacity duration-300"
         style={{ zIndex: 3, opacity: transitioning ? 0 : 1 }}
       >
         <div className="max-w-xl">
-          
+
           <span className="inline-block bg-primary text-white text-[10px] sm:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3 sm:mb-4">
             {slide.tag}
           </span>
 
-          
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md mb-2 sm:mb-3">
             {slide.title}
           </h1>
 
-          
           <p className="text-xs sm:text-sm lg:text-base text-white/85 font-medium leading-relaxed mb-4 sm:mb-6 max-w-md drop-shadow">
             {slide.subtitle}
           </p>
 
-          
           <Link
             href={slide.cta.href}
             className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-xs sm:text-sm shadow-lg transition-all active:scale-95"

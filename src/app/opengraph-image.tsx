@@ -24,7 +24,7 @@ export default function OgImage() {
           overflow: "hidden",
         }}
       >
-        {/* Decorative circles */}
+
         <div
           style={{
             position: "absolute",
@@ -50,7 +50,6 @@ export default function OgImage() {
           }}
         />
 
-        {/* Top accent bar */}
         <div
           style={{
             position: "absolute",
@@ -63,7 +62,6 @@ export default function OgImage() {
           }}
         />
 
-        {/* NJPS Badge */}
         <div
           style={{
             display: "flex",
@@ -89,7 +87,6 @@ export default function OgImage() {
           </span>
         </div>
 
-        {/* School Name */}
         <div
           style={{
             display: "flex",
@@ -124,7 +121,6 @@ export default function OgImage() {
           </span>
         </div>
 
-        {/* Divider */}
         <div
           style={{
             width: 80,
@@ -137,7 +133,6 @@ export default function OgImage() {
           }}
         />
 
-        {/* Tagline */}
         <span
           style={{
             fontSize: 20,
@@ -151,7 +146,6 @@ export default function OgImage() {
           Best CBSE-Pattern School in Kaptanganj, Kushinagar, Uttar Pradesh
         </span>
 
-        {/* Location badge */}
         <div
           style={{
             display: "flex",
@@ -169,7 +163,6 @@ export default function OgImage() {
           </span>
         </div>
 
-        {/* Bottom accent */}
         <div
           style={{
             position: "absolute",

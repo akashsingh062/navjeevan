@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import TeacherCard from "@/components/TeacherCard";
 import { Faculty } from "@/types";
@@ -42,7 +42,7 @@ export default function FacultyPage() {
           <SectionHeading
             as="h1"
             title={language === "en" ? "Meet Our Dedicated Faculty" : "हमारे समर्पित शिक्षकों से मिलें"}
-            subtitle={language === "en" 
+            subtitle={language === "en"
               ? "The educators, subject experts, and administrative leaders who guide children in Khabharabhar, Kaptanganj."
               : "वे शिक्षक, विषय विशेषज्ञ और प्रशासनिक नेता जो खबरभार, कप्तानगंज में बच्चों का मार्गदर्शन करते हैं।"}
           />
@@ -57,7 +57,7 @@ export default function FacultyPage() {
         ) : teachers.length === 0 ? (
           <div className="text-center py-16 bg-neutral-light border border-gray-200 rounded-3xl p-6">
             <p className="text-sm font-semibold text-neutral-body">
-              {language === "en" 
+              {language === "en"
                 ? "Faculty profiles are currently being updated by the administrator."
                 : "शिक्षक प्रोफाइल वर्तमान में प्रशासक द्वारा अपडेट की जा रही हैं।"}
             </p>

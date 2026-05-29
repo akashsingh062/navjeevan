@@ -13,7 +13,7 @@ export default function FacilitiesPage() {
   return (
     <div className="py-12 bg-white flex-1 animate-fade-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <div className="mb-14 text-left">
           <span className="text-[10px] uppercase font-black text-accent bg-accent/15 px-3 py-1 rounded-full tracking-wider inline-block mb-3">
             {language === "en" ? "Our Infrastructure" : "हमारा बुनियादी ढांचा"}

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import path from "path";
 
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -18,7 +17,6 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: false, message: "Missing URL parameter." }, { status: 400 });
     }
 
-    
     if (!urlParam.startsWith("http://") && !urlParam.startsWith("https://")) {
       return NextResponse.redirect(new URL(urlParam, request.url));
     }
@@ -27,30 +25,26 @@ export async function GET(request: Request) {
       return NextResponse.redirect(urlParam);
     }
 
-    
-    
     const match = urlParam.match(/cloudinary\.com\/[^/]+\/([^/]+)\/upload\/(?:v\d+\/)?(.+)/);
     if (!match) {
-      return NextResponse.redirect(urlParam); 
+      return NextResponse.redirect(urlParam);
     }
 
     const resourceType = match[1];
     const publicId = match[2];
     const ext = path.extname(publicId) || "";
 
-    
     const format = ext.replace(".", "");
     const downloadUrl = cloudinary.utils.private_download_url(publicId, format, {
       resource_type: resourceType,
       type: "upload",
-      expires_at: Math.floor(Date.now() / 1000) + 600 
+      expires_at: Math.floor(Date.now() / 1000) + 600
     });
 
-    
     const cloudinaryResponse = await fetch(downloadUrl);
     if (!cloudinaryResponse.ok) {
       console.error(`Cloudinary API returned ${cloudinaryResponse.status} for ${downloadUrl}`);
-      // Fallback: if API download fails, redirect to the original URL
+
       return NextResponse.redirect(urlParam);
     }
 

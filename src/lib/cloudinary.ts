@@ -1,27 +1,23 @@
 import { v2 as cloudinary } from "cloudinary";
 import path from "path";
 
-
 export async function deleteCloudinaryAsset(url: string): Promise<boolean> {
   if (!url || !url.includes("cloudinary.com")) {
     return false;
   }
 
   try {
-    
-    
+
     const match = url.match(/cloudinary\.com\/[^/]+\/([^/]+)\/upload\/(?:v\d+\/)?(.+)/);
     if (!match) {
       return false;
     }
 
-    const resourceType = match[1]; 
+    const resourceType = match[1];
     const publicIdWithExt = match[2];
 
     let publicId = publicIdWithExt;
 
-    
-    
     if (resourceType === "image") {
       const ext = path.extname(publicIdWithExt);
       if (ext) {
@@ -29,7 +25,6 @@ export async function deleteCloudinaryAsset(url: string): Promise<boolean> {
       }
     }
 
-    
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Calendar, Download, ChevronLeft, ChevronRight } from "lucide-react";
@@ -21,10 +21,10 @@ const isVideoUrl = (url: string): boolean => {
   if (!url) return false;
   const u = url.toLowerCase();
   return (
-    u.includes(".mp4") || 
-    u.includes(".webm") || 
-    u.includes(".ogg") || 
-    u.includes("/video/") || 
+    u.includes(".mp4") ||
+    u.includes(".webm") ||
+    u.includes(".ogg") ||
+    u.includes("/video/") ||
     u.includes("video.fna.fbcdn.net") ||
     u.includes("video-") ||
     u.includes("facebook.com/watch") ||
@@ -84,7 +84,7 @@ export default function ImageModal({
     }, 0);
     return () => clearTimeout(timer);
   }, []);
-  
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -96,7 +96,6 @@ export default function ImageModal({
     };
   }, [isOpen]);
 
-  
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -128,19 +127,19 @@ export default function ImageModal({
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
-      
+
       const isVideo = isVideoUrl(imageUrl);
       const ext = isVideo && !isEmbedVideoUrl(imageUrl) ? "mp4" : "jpg";
       const safeFilename = title.replace(/[^a-zA-Z0-9_-]/g, "_") || (isVideo ? "school_video" : "school_photo");
       link.download = `${safeFilename}.${ext}`;
-      
+
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
     } catch (err) {
       console.error("Blob download failed, falling back to new tab:", err);
-      // Fallback: Open in new tab if CORS or fetch blocks the download
+
       const fallbackUrl = isEmbedVideoUrl(imageUrl) ? getVideoPoster(imageUrl) : imageUrl;
       window.open(fallbackUrl, "_blank", "noopener,noreferrer");
     }
@@ -153,13 +152,13 @@ export default function ImageModal({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
           role="dialog"
           aria-modal="true"
           aria-label={`${isVideo ? "Video" : "Image"} preview of ${title}`}
         >
-          {/* Backdrop overlay */}
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.85 }}
@@ -168,7 +167,6 @@ export default function ImageModal({
             className="absolute inset-0 bg-neutral-dark cursor-pointer pointer-events-auto"
           />
 
-          {/* Modal Content */}
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -176,7 +174,7 @@ export default function ImageModal({
             transition={{ duration: 0.2 }}
             className="relative bg-white rounded-3xl overflow-hidden max-w-4xl w-full shadow-2xl z-10 flex flex-col pointer-events-auto border border-gray-800"
           >
-            {/* Close Button */}
+
             <button
               onClick={onClose}
               className="absolute top-4 right-4 z-20 p-2.5 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors focus:outline-none"
@@ -185,11 +183,10 @@ export default function ImageModal({
               <X className="w-5 h-5" />
             </button>
 
-            {/* Photo preview container */}
             <div className="relative aspect-video w-full bg-neutral-light flex items-center justify-center">
               {isVideo ? (
                 isEmbedVideoUrl(imageUrl) ? (
-                  <iframe 
+                  <iframe
                     src={getFacebookEmbedUrl(imageUrl)}
                     className="w-full h-full max-h-[70vh] rounded-t-3xl border-0"
                     allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
@@ -205,7 +202,7 @@ export default function ImageModal({
                   />
                 )
               ) : (
-                /* Uses fallback visual gradient in case source image fails */
+
                 <Image
                   src={getVideoPoster(imageUrl)}
                   alt={title}
@@ -217,7 +214,6 @@ export default function ImageModal({
                 />
               )}
 
-              {/* Prev Button */}
               {onPrev && (
                 <button
                   onClick={(e) => {
@@ -231,7 +227,6 @@ export default function ImageModal({
                 </button>
               )}
 
-              {/* Next Button */}
               {onNext && (
                 <button
                   onClick={(e) => {
@@ -246,7 +241,6 @@ export default function ImageModal({
               )}
             </div>
 
-            {/* Description panel */}
             <div className="p-6 bg-white border-t border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex-1 flex flex-col gap-2">
                 <div className="flex items-center gap-3 flex-wrap">
@@ -285,7 +279,6 @@ export default function ImageModal({
                   </a>
                 )}
 
-                {/* Download Action Button */}
                 <button
                   onClick={handleDownload}
                   className="flex items-center justify-center gap-2 px-5 py-3 bg-primary hover:bg-primary-hover text-white font-extrabold text-xs rounded-xl shadow-xs transition-colors cursor-pointer select-none focus:outline-none shrink-0"

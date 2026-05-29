@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -117,7 +117,6 @@ export default function Navbar() {
       const currentScrollY = window.scrollY;
       setIsScrolled(currentScrollY > 4);
 
-      // Smart header scrolling reveal logic for mobile devices
       if (currentScrollY > lastScrollY.current + 10 && currentScrollY > 80) {
         setIsVisible(false);
       } else if (
@@ -213,7 +212,7 @@ export default function Navbar() {
   return (
     <>
       {}
-      {/* ===== TIER 1: Upper Header Wrapper ===== */}
+
       <div className="relative h-16 sm:h-20 md:h-auto z-40">
         <div
           className={`bg-white border-b border-border transition-all duration-300 ${
@@ -224,7 +223,7 @@ export default function Navbar() {
         >
           <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16 sm:h-20 gap-1.5 sm:gap-3">
-              {/* Brand */}
+
               <Link
                 href="/"
                 className="flex items-center gap-1.5 sm:gap-2.5 shrink min-w-0 focus:outline-none group"
@@ -254,9 +253,8 @@ export default function Navbar() {
                 </div>
               </Link>
 
-              {/* Quick Action Cards — desktop */}
               <div className="hidden md:flex items-center gap-2 shrink-0">
-                {/* Premium Language switch toggle */}
+
                 <button
                   onClick={toggleLanguage}
                   className="relative flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all cursor-pointer select-none group min-w-[90px] text-left focus:outline-none shadow-3xs"
@@ -306,9 +304,8 @@ export default function Navbar() {
                 </Link>
               </div>
 
-              {/* Mobile Actions */}
               <div className="flex md:hidden items-center gap-1 sm:gap-1.5 shrink-0">
-                {/* Dynamic lang toggle directly on header for smartphone visitors */}
+
                 <button
                   onClick={toggleLanguage}
                   className="px-2 py-1.5 sm:p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center font-black text-[10px] sm:text-xs select-none gap-0.5 sm:gap-1 focus:outline-none shadow-3xs cursor-pointer"
@@ -341,14 +338,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ===== TIER 2: Navigation Bar — desktop only ===== */}
       <nav
         className={`hidden md:flex sticky top-0 z-40 bg-primary transition-shadow ${isScrolled ? "shadow-sm" : ""}`}
         aria-label="Main Navigation"
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
           <div className="flex items-center h-11">
-            {/* Home icon */}
+
             <Link
               href="/"
               className="flex items-center justify-center w-10 h-full text-white hover:bg-white/15 transition-colors border-r border-white/20 shrink-0"
@@ -357,7 +353,6 @@ export default function Navbar() {
               <Home className="w-4 h-4" />
             </Link>
 
-            {/* All translated nav links */}
             {translatedNavLinks.map((link) => {
               const isActive =
                 pathname === link.href || pathname.startsWith(link.href + "/");
@@ -401,7 +396,6 @@ export default function Navbar() {
               );
             })}
 
-            {/* Phone */}
             <a
               href="tel:+919935661144"
               className="ml-auto flex items-center gap-1.5 px-3 h-full text-white/90 hover:bg-white/15 text-[11px] font-bold border-l border-white/20 shrink-0 transition-colors"
@@ -413,7 +407,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ===== ABOUT DROPDOWN — fixed position, escapes all overflow ===== */}
       {aboutOpen && (
         <div
           ref={dropdownRef}

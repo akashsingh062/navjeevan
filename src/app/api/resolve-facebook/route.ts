@@ -25,9 +25,8 @@ function transformFacebookUrl(urlStr: string): string {
 async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
   const url = "https://www.facebook.com/api/graphql/";
   const images: string[] = [];
-  const maxImages = 200; // Sanity limit
+  const maxImages = 200;
 
-  // 1. Initial page query
   const variables1 = {
     feedbackSource: 65,
     feedLocation: "PERMALINK",
@@ -72,7 +71,7 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
 
     const text1 = await res1.text();
     const lines1 = text1.split("\n").filter(l => l.trim().length > 0);
-    
+
     let album: any = null;
     for (const line of lines1) {
       try {
@@ -98,7 +97,7 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
         const node = edge.node;
         if (!node) continue;
         if (node.__typename === "Video" || node.is_playable) continue;
-        
+
         const uri = node.image?.uri;
         if (uri && typeof uri === "string") {
           images.push(uri);
@@ -108,7 +107,6 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
 
     processEdges(edges1);
 
-    // 2. Pagination Loop
     let cursor = pageInfo?.end_cursor;
     let hasNextPage = pageInfo?.has_next_page;
     let pagesFetched = 1;
@@ -146,7 +144,7 @@ async function fetchFacebookGraphQLAlbum(setToken: string): Promise<string[]> {
 
       const text2 = await res2.text();
       const lines2 = text2.split("\n").filter(l => l.trim().length > 0);
-      
+
       let pageNode: any = null;
       for (const line of lines2) {
         try {
@@ -188,14 +186,13 @@ export async function POST(request: Request) {
 
     const targetUrl = url.trim();
 
-    // Call the page with a social media bot user agent (guarantees OG meta headers!)
     const response = await fetch(targetUrl, {
       headers: {
         "User-Agent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_patched.html)",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
       },
-      next: { revalidate: 0 } // Bypass cache
+      next: { revalidate: 0 }
     });
 
     if (!response.ok) {
@@ -204,8 +201,7 @@ export async function POST(request: Request) {
 
     const finalUrl = response.url || targetUrl;
     const rawHtml = await response.text();
-    
-    // Unescape backslashes, HTML entities, and Unicode escapes
+
     const html = rawHtml
       .replace(/\\/g, "")
       .replace(/&amp;/g, "&")
@@ -214,7 +210,6 @@ export async function POST(request: Request) {
 
     const finalImages: string[] = [];
 
-    // Helper to resolve relative URLs
     const resolveUrl = (src: string) => {
       try {
         if (src.startsWith("http://") || src.startsWith("https://")) {
@@ -228,12 +223,10 @@ export async function POST(request: Request) {
 
     const uLower = finalUrl.toLowerCase();
 
-    // 1. DYNAMIC SCRAPING BASED ON DOMAIN
     if (uLower.includes("facebook.com")) {
-      // --- FACEBOOK SCRAPER ---
+
       let activeHtml = html;
-      
-      // 1. Detect if this post has a mediaset token, pcb ID, or album ID to fetch the full collection page
+
       let setToken: string | null = null;
       try {
         const urlObj = new URL(targetUrl);
@@ -247,7 +240,7 @@ export async function POST(request: Request) {
         const mediasetTokenMatch = html.match(/"mediaset_token":"([^"]+)"/);
         const pcbMatch = html.match(/set=pcb\.(\d+)/);
         const albumMatch = html.match(/set=a\.(\d+)/);
-        
+
         if (mediasetTokenMatch && mediasetTokenMatch[1]) {
           setToken = mediasetTokenMatch[1];
         } else if (pcbMatch && pcbMatch[1]) {
@@ -277,11 +270,10 @@ export async function POST(request: Request) {
       }
 
       const foundMedia: string[] = [];
-      
-      // Parse og:image tags from active HTML
+
       const ogImageRegex = /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/gi;
       const secureImageRegex = /<meta\s+property=["']og:image:secure_url["']\s+content=["']([^"']+)["']/gi;
-      
+
       let match;
       while ((match = ogImageRegex.exec(activeHtml)) !== null) {
         if (match[1]) foundMedia.push(resolveUrl(match[1]));
@@ -292,30 +284,28 @@ export async function POST(request: Request) {
         }
       }
 
-      // Scan all scontent/fbcdn direct URLs inside active HTML (allowing hyphens in subdomains)
       const scontentRegex = /(https:\/\/[a-z0-9.-]+\.fbcdn\.net\/v\/[^"'\s>)}]+)/gi;
       const fbcdnMatches = activeHtml.match(scontentRegex) || [];
 
-      // Group and score urls by their base filename to guarantee extraction of ALL unique images
       const idMap = new Map<string, { url: string; score: number }>();
 
       const isExcludedMedia = (urlStr: string): boolean => {
         const lowerUrl = urlStr.toLowerCase();
         return (
-          lowerUrl.includes("/t39.30808-1/") || 
-          lowerUrl.includes("/t1.30497-1/") || 
-          lowerUrl.includes("/emoji.php") || 
+          lowerUrl.includes("/t39.30808-1/") ||
+          lowerUrl.includes("/t1.30497-1/") ||
+          lowerUrl.includes("/emoji.php") ||
           lowerUrl.includes("/rsrc.php") ||
           lowerUrl.includes("cstp=mx") ||
           lowerUrl.includes("fb50") ||
           lowerUrl.includes("fb100") ||
           lowerUrl.includes("fb200") ||
           lowerUrl.includes("safe_image.php") ||
-          lowerUrl.includes("s24x24") || 
-          lowerUrl.includes("s32x32") || 
-          lowerUrl.includes("s40x40") || 
-          lowerUrl.includes("s72x72") || 
-          lowerUrl.includes("s100x100") || 
+          lowerUrl.includes("s24x24") ||
+          lowerUrl.includes("s32x32") ||
+          lowerUrl.includes("s40x40") ||
+          lowerUrl.includes("s72x72") ||
+          lowerUrl.includes("s100x100") ||
           lowerUrl.includes("s160x160")
         );
       };
@@ -333,7 +323,6 @@ export async function POST(request: Request) {
         );
       };
 
-      // Seed with GraphQL if setToken is found
       if (setToken) {
         try {
           console.log(`Fetching Facebook album photos using GraphQL for setToken: ${setToken}`);
@@ -357,7 +346,6 @@ export async function POST(request: Request) {
         }
       }
 
-      // Seed with og:media (filtering out excluded media and video URLs)
       for (const media of foundMedia) {
         if (isExcludedMedia(media) || isVideoMedia(media)) continue;
         try {
@@ -417,44 +405,43 @@ export async function POST(request: Request) {
       }
 
     } else if (uLower.includes("photos.google.com") || uLower.includes("photos.app.goo.gl") || uLower.includes("googleusercontent.com")) {
-      // --- GOOGLE PHOTOS SCRAPER ---
+
       const googleUserRegex = /(https:\/\/[a-z0-9.-]+\.googleusercontent\.com\/pw\/[a-zA-Z0-9_-]+)/gi;
       const googleUserRegexAlt = /(https:\/\/[a-z0-9.-]+\.googleusercontent\.com\/[a-zA-Z0-9_-]{50,})/gi;
-      
+
       const gMatches = html.match(googleUserRegex) || [];
       const gMatchesAlt = html.match(googleUserRegexAlt) || [];
-      
+
       const allGMatches = Array.from(new Set([...gMatches, ...gMatchesAlt]));
-      
+
       for (const link of allGMatches) {
-        // Exclude common google layout assets or small avatars
+
         if (
-          link.includes("placeholder") || 
-          link.includes("avatar") || 
+          link.includes("placeholder") ||
+          link.includes("avatar") ||
           link.includes("profile") ||
           link.match(/[=](?:s24|s32|s48|s64|s96|s128|s192|s256|s320)(?:$|\b)/)
         ) {
           continue;
         }
 
-        // Set max high-resolution parameter for Google Photos shared images
         let highResUrl = link;
         if (highResUrl.includes("=")) {
           highResUrl = highResUrl.substring(0, highResUrl.indexOf("=")) + "=w1920-h1080";
         } else {
           highResUrl = highResUrl + "=w1920-h1080";
         }
-        
+
         if (!finalImages.includes(highResUrl)) {
           finalImages.push(highResUrl);
         }
       }
 
     } else if (uLower.includes("instagram.com")) {
-      // --- INSTAGRAM SCRAPER ---
+
       const ogImageRegex = /<meta\s+property=["']og:image["']\s+content=["']([^"']+)["']/gi;
       const ogVideoRegex = /<meta\s+property=["']og:video["']\s+content=["']([^"']+)["']/gi;
-      
+
       let match;
       while ((match = ogImageRegex.exec(html)) !== null) {
         if (match[1]) {
@@ -469,7 +456,6 @@ export async function POST(request: Request) {
         }
       }
 
-      // Scan for any direct Instagram CDN image/video paths
       const instaCdnRegex = /(https:\/\/[a-z0-9.-]+\.cdninstagram\.com\/[^"'\s>)}]+)/gi;
       const instaMatches = html.match(instaCdnRegex) || [];
       for (const link of instaMatches) {
@@ -479,11 +465,10 @@ export async function POST(request: Request) {
       }
 
     } else {
-      // --- UNIVERSAL GENERIC WEB PAGE SCRAPER ---
-      // 1. Search meta og/twitter tags (for images and videos)
+
       const metaImageRegex = /<meta\s+[^>]*(?:property|name)=["'](?:og:image|og:image:secure_url|twitter:image)["']\s+content=["']([^"']+)["']/gi;
       const metaVideoRegex = /<meta\s+[^>]*(?:property|name)=["'](?:og:video|og:video:secure_url|twitter:player|twitter:player:stream)["']\s+content=["']([^"']+)["']/gi;
-      
+
       let match;
       const metaMedia: string[] = [];
       while ((match = metaImageRegex.exec(html)) !== null) {
@@ -498,13 +483,12 @@ export async function POST(request: Request) {
           if (!metaMedia.includes(videoUrl)) metaMedia.push(videoUrl);
         }
       }
-      
+
       finalImages.push(...metaMedia);
 
-      // 2. Search body video and source tags
       const videoTagRegex = /<video\s+[^>]*src=["']([^"']+)["']/gi;
       const sourceTagRegex = /<source\s+[^>]*src=["']([^"']+)["']/gi;
-      
+
       while ((match = videoTagRegex.exec(html)) !== null) {
         if (match[1]) {
           const videoUrl = resolveUrl(match[1]);
@@ -518,35 +502,31 @@ export async function POST(request: Request) {
         }
       }
 
-      // 3. Search body img tags
       const imgTagRegex = /<img\s+[^>]*src=["']([^"']+)["']/gi;
       const bodyImages: string[] = [];
       while ((match = imgTagRegex.exec(html)) !== null) {
         if (match[1]) {
           const imgUrl = resolveUrl(match[1]);
-          
-          // Exclude typical layout assets, small tracking pixels, UI icons, or layout SVGs
-          const isLayoutAsset = 
-            imgUrl.includes("logo") || 
-            imgUrl.includes("icon") || 
-            imgUrl.includes("header") || 
-            imgUrl.includes("footer") || 
-            imgUrl.includes("sprite") || 
+
+          const isLayoutAsset =
+            imgUrl.includes("logo") ||
+            imgUrl.includes("icon") ||
+            imgUrl.includes("header") ||
+            imgUrl.includes("footer") ||
+            imgUrl.includes("sprite") ||
             imgUrl.includes("tracker") ||
             imgUrl.includes("pixel") ||
             imgUrl.match(/\.(svg|ico|gif)($|\?)/i);
-            
+
           if (!isLayoutAsset && !bodyImages.includes(imgUrl) && !metaMedia.includes(imgUrl)) {
             bodyImages.push(imgUrl);
           }
         }
       }
 
-      // Append up to 30 body images to prevent spamming small layout items
       finalImages.push(...bodyImages.slice(0, 30));
     }
 
-    // Clean duplicate images/videos
     const uniqueImages = Array.from(new Set(finalImages));
 
     if (uniqueImages.length === 0) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SectionHeading from "@/components/SectionHeading";
 import ConfirmModal from "@/components/ConfirmModal";
 import { FileText, Camera, Users, LogOut } from "lucide-react";
@@ -145,8 +145,7 @@ export default function AdminDashboard() {
   return (
     <div className="py-12 bg-white flex-1 text-left">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        
-        {/* Header */}
+
         <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-6">
           <div className="flex flex-col items-start gap-1">
             <span className="text-[10px] uppercase font-black text-white bg-primary px-3 py-1 rounded-full tracking-wider shadow-sm">
@@ -166,7 +165,6 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* Tab Selection Row */}
         <div className="grid grid-cols-3 gap-3.5 mb-8 border-b border-gray-100 pb-5">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -191,7 +189,6 @@ export default function AdminDashboard() {
           })}
         </div>
 
-        {/* Active Tab Forms Container */}
         <div className="bg-white border border-gray-200 p-6 md:p-8 rounded-3xl shadow-sm">
           {activeTab === "notices" && (
             <NoticeFormSection

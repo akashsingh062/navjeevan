@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
@@ -65,7 +65,6 @@ export default function MobileMenu({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Reset aboutExpanded state during rendering when menu is closed to prevent cascading render effects
   if (!isOpen && aboutExpanded) {
     setAboutExpanded(false);
   }
@@ -76,7 +75,7 @@ export default function MobileMenu({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop Overlay */}
+
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.45 }}
@@ -86,7 +85,6 @@ export default function MobileMenu({
             aria-hidden="true"
           />
 
-          {/* Drawer Panel */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
@@ -97,7 +95,7 @@ export default function MobileMenu({
             aria-modal="true"
             aria-label="Navigation Menu"
           >
-            {/* Header (fixed, non-scrolling) */}
+
             <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
               <div>
                 <span className="text-base font-black text-neutral-dark block leading-tight">
@@ -116,7 +114,6 @@ export default function MobileMenu({
               </button>
             </div>
 
-            {/* Scrollable Navigation List (scrolling area) */}
             <div
               className="flex-1 overflow-y-auto min-h-0"
               style={{
@@ -125,7 +122,7 @@ export default function MobileMenu({
               }}
             >
               <nav className="py-3 px-3" aria-label="Mobile Navigation">
-                {/* Language Switcher */}
+
                 <div className="px-3 py-2.5 mb-4 bg-neutral-light rounded-2xl flex items-center justify-between shadow-3xs select-none">
                   <div className="flex items-center gap-2">
                     <Languages className="w-4 h-4 text-primary" />
@@ -149,7 +146,7 @@ export default function MobileMenu({
                   if (isAbout && aboutDropdown) {
                     return (
                       <div key={link.href}>
-                        {/* Toggle Button */}
+
                         <button
                           onClick={() => setAboutExpanded((v) => !v)}
                           className="flex items-center justify-between w-full px-3 py-3.5 text-sm font-semibold text-neutral-dark hover:text-primary hover:bg-primary-light rounded-xl transition-all mb-0.5"
@@ -161,7 +158,6 @@ export default function MobileMenu({
                           />
                         </button>
 
-                        {/* Sub-items */}
                         <AnimatePresence>
                           {aboutExpanded && (
                             <motion.div
@@ -208,7 +204,6 @@ export default function MobileMenu({
                   );
                 })}
 
-                {/* Staff Login menu item */}
                 <Link
                   href="/admin"
                   onClick={onClose}
@@ -225,7 +220,6 @@ export default function MobileMenu({
               </nav>
             </div>
 
-            {/* Quick Actions (fixed, sticky at bottom) */}
             <div
               className="px-4 py-4 border-t border-border flex flex-col gap-2.5 shrink-0 bg-white"
               style={{

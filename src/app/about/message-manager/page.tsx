@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight, Quote } from "lucide-react";
@@ -12,7 +12,7 @@ export default function ManagerMessagePage() {
   const { language } = useLanguage();
 
   useEffect(() => {
-    document.title = language === "en" 
+    document.title = language === "en"
       ? "Manager's Message | Nav Jeevan Public School"
       : "प्रबंधक का संदेश | नव जीवन पब्लिक स्कूल";
   }, [language]);

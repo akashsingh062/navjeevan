@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Save, Paperclip, Edit, Trash2 } from "lucide-react";
@@ -85,7 +85,7 @@ export default function NoticeFormSection({
     setStatus("saving");
     const isEdit = !!editingNoticeId;
     const loadingToast = toast.loading(isEdit ? "Saving notice changes..." : "Publishing notice bulletin...");
-    
+
     let finalCategory = data.category;
     if (data.category === "Others") {
       finalCategory = customCategory.trim() || "Others";
@@ -102,9 +102,9 @@ export default function NoticeFormSection({
       const result = await res.json();
       if (res.ok && result.success) {
         toast.success(
-          isEdit 
+          isEdit
             ? "Notice changes saved successfully!"
-            : `Notice "${data.title}" published successfully!`, 
+            : `Notice "${data.title}" published successfully!`,
           { id: loadingToast }
         );
         noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
@@ -129,7 +129,7 @@ export default function NoticeFormSection({
     if (!noticeId) return;
 
     setEditingNoticeId(noticeId);
-    
+
     const standardCategories = ["General", "Admission", "Exam", "Holiday"];
     if (standardCategories.includes(notice.category)) {
       noticeForm.reset({
@@ -152,7 +152,7 @@ export default function NoticeFormSection({
       });
       setCustomCategory(notice.category);
     }
-    
+
     setSelectedColor(notice.importanceColor || "blue");
     setNoticeAttachmentUrl(notice.attachmentUrl || "");
 
@@ -205,8 +205,8 @@ export default function NoticeFormSection({
           {editingNoticeId ? "Edit Notice Details" : "Post New Notice"}
         </h3>
         <p className="text-xs text-neutral-body">
-          {editingNoticeId 
-            ? "Modify notice parameters. Save changes to update the bulletin board instantly." 
+          {editingNoticeId
+            ? "Modify notice parameters. Save changes to update the bulletin board instantly."
             : "Fills the bulletin board instantly with high-priority warnings or exam records."}
         </p>
       </div>
@@ -223,7 +223,7 @@ export default function NoticeFormSection({
           <option value="Holiday">Holidays & Vacations</option>
           <option value="Others">Others</option>
         </select>
-        
+
         {watchedCategory === "Others" && (
           <div className="flex flex-col gap-1.5 mt-2 transition-all">
             <label className="text-xs font-bold text-neutral-dark">Specify Custom Category</label>
@@ -282,7 +282,7 @@ export default function NoticeFormSection({
                 noticeForm.setValue("isImportant", opt.isImportant);
               }}
               className={`flex items-center gap-1.5 px-3 py-2 border rounded-xl transition-all text-[11px] font-black uppercase tracking-wider cursor-pointer focus:outline-none ${
-                selectedColor === opt.color 
+                selectedColor === opt.color
                   ? `${opt.bg} border-current ring-1 ring-offset-1 ring-current`
                   : "border-gray-200 bg-white text-neutral-body hover:border-gray-300"
               }`}
@@ -311,8 +311,8 @@ export default function NoticeFormSection({
               className="text-xs text-neutral-body file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
             />
             <p className="text-[10px] text-neutral-body mt-1.5 leading-tight">
-              {isNoticeAttachmentUploading 
-                ? "Uploading attachment..." 
+              {isNoticeAttachmentUploading
+                ? "Uploading attachment..."
                 : "Upload a PDF document or image copy of the notice (Max 5MB)."
               }
             </p>
@@ -344,8 +344,8 @@ export default function NoticeFormSection({
         >
           <Save className="w-4 h-4" />
           <span>
-            {editingNoticeId 
-              ? "Save Notice Changes" 
+            {editingNoticeId
+              ? "Save Notice Changes"
               : (status === "saving" ? "Posting Notice..." : "Publish Notice")}
           </span>
         </button>
@@ -366,7 +366,6 @@ export default function NoticeFormSection({
         )}
       </div>
 
-      {/* Live Notices List inside Admin Panel for deletion */}
       <div className="mt-10 border-t border-gray-100 pt-8 text-left">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <h4 className="text-sm font-extrabold text-neutral-dark">Active Notices ({noticesList.length})</h4>

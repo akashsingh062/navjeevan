@@ -17,22 +17,16 @@ const isVideoUrl = (url: string): boolean => {
   if (!url) return false;
   const u = url.toLowerCase();
   return (
-    u.includes(".mp4") || 
-    u.includes(".webm") || 
-    u.includes(".ogg") || 
-    u.includes("/video/") || 
+    u.includes(".mp4") ||
+    u.includes(".webm") ||
+    u.includes(".ogg") ||
+    u.includes("/video/") ||
     u.includes("video.fna.fbcdn.net") ||
     u.includes("video-") ||
     u.includes("facebook.com/watch") ||
     u.includes("facebook.com/video.php") ||
     u.includes("fb.watch")
   );
-};
-
-const isEmbedVideoUrl = (url: string): boolean => {
-  if (!url) return false;
-  const u = url.toLowerCase();
-  return u.includes("facebook.com/watch") || u.includes("facebook.com/video.php") || u.includes("fb.watch");
 };
 
 const getVideoPoster = (url: string): string => {
@@ -115,25 +109,21 @@ export default function GalleryFormSection({
 
   const needsResolution = (url: string): boolean => {
     const u = url.trim().toLowerCase();
-    
-    // Direct image extensions
+
     if (u.match(/\.(jpeg|jpg|gif|png|webp|svg)($|\?)/)) {
       return false;
     }
-    
-    // Whitelisted direct CDNs
+
     if (u.includes("res.cloudinary.com") || u.includes("fbcdn.net") || u.includes("googleusercontent.com")) {
       return false;
     }
-    
-    // Webpage links require resolution
+
     return u.startsWith("http://") || u.startsWith("https://");
   };
 
   const handleResolveLink = async (originalLink: string) => {
     const u = originalLink.trim().toLowerCase();
-    
-    // Standard static conversions (Google Drive / Dropbox)
+
     if (u.includes("drive.google.com") || u.includes("dropbox.com")) {
       const resolved = resolveExternalLink(originalLink);
       if (resolved !== originalLink) {
@@ -150,11 +140,10 @@ export default function GalleryFormSection({
       }
     }
 
-    // Dynamic webpage scraping (Facebook, Instagram, Google Photos, any website)
     const isFB = u.includes("facebook.com");
     const isInsta = u.includes("instagram.com");
     const isGPhotos = u.includes("photos.google.com") || u.includes("photos.app.goo.gl");
-    
+
     let platformName = "webpage";
     if (isFB) platformName = "Facebook";
     else if (isInsta) platformName = "Instagram";
@@ -168,10 +157,10 @@ export default function GalleryFormSection({
         body: JSON.stringify({ url: originalLink })
       });
       const result = await res.json();
-      
+
       if (res.ok && result.success && Array.isArray(result.images) && result.images.length > 0) {
         const resolvedUrls = result.images.join("\n");
-        
+
         setLinksInput(prev => {
           const lines = prev.split("\n");
           const index = lines.findIndex(l => l.trim() === originalLink);
@@ -237,7 +226,7 @@ export default function GalleryFormSection({
 
     const baseTitle = galleryForm.getValues("title") || "";
     const category = galleryForm.getValues("category") || "Annual Function";
-    
+
     let finalCategory = category;
     if (category === "Others") {
       finalCategory = customCategory.trim() || "Others";
@@ -273,14 +262,14 @@ export default function GalleryFormSection({
           .substring(0, item.file.name.lastIndexOf("."))
           .replace(/[-_]+/g, " ")
           .trim();
-        
+
         const capitalizedFileName = cleanFileName
           .split(" ")
           .map(w => w.charAt(0).toUpperCase() + w.slice(1))
           .join(" ");
 
-        const finalTitle = baseTitle 
-          ? `${baseTitle} - ${capitalizedFileName}` 
+        const finalTitle = baseTitle
+          ? `${baseTitle} - ${capitalizedFileName}`
           : capitalizedFileName || "Gallery Image";
 
         const galleryRes = await fetch("/api/gallery", {
@@ -347,7 +336,7 @@ export default function GalleryFormSection({
 
     const baseTitle = galleryForm.getValues("title") || "";
     const category = galleryForm.getValues("category") || "Annual Function";
-    
+
     let finalCategory = category;
     if (category === "Others") {
       finalCategory = customCategory.trim() || "Others";
@@ -387,7 +376,7 @@ export default function GalleryFormSection({
               .join(" ")
           : "";
 
-        const finalTitle = baseTitle 
+        const finalTitle = baseTitle
           ? (capitalizedFileName ? `${baseTitle} - ${capitalizedFileName}` : baseTitle)
           : (capitalizedFileName || (isVideo ? `Event Video ${i + 1}` : `Web Photo ${i + 1}`));
 
@@ -479,7 +468,6 @@ export default function GalleryFormSection({
         </span>
       </div>
 
-      {/* Dynamic Mode Switcher: Local Files vs Web Links */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-extrabold text-neutral-dark">Photo Upload Method</label>
         <div className="flex bg-neutral-light/75 border border-gray-150 p-1.5 rounded-2xl gap-1.5">
@@ -487,8 +475,8 @@ export default function GalleryFormSection({
             type="button"
             onClick={() => setUploadMode("file")}
             className={`grow py-3 px-4 text-xs font-black rounded-xl transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center gap-1.5 select-none ${
-              uploadMode === "file" 
-                ? "bg-white text-primary shadow-xs border border-gray-250" 
+              uploadMode === "file"
+                ? "bg-white text-primary shadow-xs border border-gray-250"
                 : "text-neutral-body hover:text-neutral-dark"
             }`}
           >
@@ -499,8 +487,8 @@ export default function GalleryFormSection({
             type="button"
             onClick={() => setUploadMode("links")}
             className={`grow py-3 px-4 text-xs font-black rounded-xl transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center gap-1.5 select-none ${
-              uploadMode === "links" 
-                ? "bg-white text-primary shadow-xs border border-gray-255" 
+              uploadMode === "links"
+                ? "bg-white text-primary shadow-xs border border-gray-255"
                 : "text-neutral-body hover:text-neutral-dark"
             }`}
           >
@@ -511,15 +499,13 @@ export default function GalleryFormSection({
       </div>
 
       {uploadMode === "file" ? (
-        /* =========================================================
-            PANEL A: STANDARD FILE MULTI-UPLOAD
-            ========================================================= */
+
         <div className="flex flex-col gap-2.5">
           <label className="text-xs font-extrabold text-neutral-dark">Select Photos or Folder</label>
-          
+
           <div className="flex flex-col gap-4 p-6 bg-neutral-light border border-dashed border-gray-300 rounded-2xl text-center items-center justify-center">
             <Camera className="w-10 h-10 text-primary/40 mb-1" />
-            
+
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-center w-full">
               <label className="px-5 py-2.5 bg-primary text-white text-xs font-extrabold rounded-xl hover:bg-primary-hover transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
                 <PlusCircle className="w-4 h-4" />
@@ -571,16 +557,14 @@ export default function GalleryFormSection({
                 />
               </label>
             </div>
-            
+
             <p className="text-[10px] text-neutral-body leading-tight">
               Upload multiple JPEGs, PNGs. All folders are automatically filtered to process images only.
             </p>
           </div>
         </div>
       ) : (
-        /* =========================================================
-            PANEL B: EXTERNAL PHOTO LINKS DIRECT REGISTRATION
-            ========================================================= */
+
         <div className="flex flex-col gap-4 text-left">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-extrabold text-neutral-dark">Image URL links (One URL per line)</label>
@@ -596,7 +580,6 @@ export default function GalleryFormSection({
             </span>
           </div>
 
-          {/* Links Queue & Live Link Resolution Display */}
           {parsedLinks.length > 0 && (
             <div className="flex flex-col gap-3 border border-gray-200 rounded-2xl p-4 bg-white mt-1">
               <div className="flex items-center justify-between border-b border-gray-100 pb-2">
@@ -621,7 +604,7 @@ export default function GalleryFormSection({
                       <span className="text-neutral-dark truncate max-w-sm sm:max-w-md font-mono text-[11px]" title={link}>
                         {link}
                       </span>
-                      
+
                       <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-center">
                         {needsResolve ? (
                           <>
@@ -676,7 +659,7 @@ export default function GalleryFormSection({
                 <span className="text-neutral-dark truncate max-w-xs" title={item.file.name}>
                   {item.file.name}
                 </span>
-                
+
                 <div className="flex items-center gap-2.5 shrink-0">
                   {item.status === "idle" && (
                     <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 bg-gray-100 text-neutral-body rounded">
@@ -718,7 +701,7 @@ export default function GalleryFormSection({
       <button
         type="submit"
         disabled={
-          isGalleryUploading || 
+          isGalleryUploading ||
           (uploadMode === "file" ? galleryQueue.length === 0 : parsedLinks.length === 0)
         }
         className="w-full mt-4 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
@@ -727,7 +710,7 @@ export default function GalleryFormSection({
           <>
             <PlusCircle className="w-4 h-4" />
             <span>
-              {isGalleryUploading 
+              {isGalleryUploading
                 ? `Uploading Photos (${galleryQueue.filter(q => q.status === "success").length}/${galleryQueue.length})...`
                 : `Start Upload & Save (${galleryQueue.length} Photos)`
               }
@@ -737,7 +720,7 @@ export default function GalleryFormSection({
           <>
             <PlusCircle className="w-4 h-4" />
             <span>
-              {isGalleryUploading 
+              {isGalleryUploading
                 ? `Saving External Links...`
                 : `Save Direct Links (${parsedLinks.length} Photos)`
               }
@@ -746,7 +729,6 @@ export default function GalleryFormSection({
         )}
       </button>
 
-      {/* Live Event Photos inside Admin Panel for deletion */}
       <div className="mt-10 border-t border-gray-100 pt-8 text-left">
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <h4 className="text-sm font-extrabold text-neutral-dark">Uploaded Gallery Photos ({galleryList.length})</h4>
