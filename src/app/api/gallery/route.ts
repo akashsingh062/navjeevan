@@ -4,15 +4,7 @@ import { z } from "zod";
 
 const gallerySchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters long"),
-  category: z.enum([
-    "Annual Function",
-    "Sports Day",
-    "Classroom Activities",
-    "Cultural Events",
-    "Independence Day",
-    "Prize Distribution",
-    "Others"
-  ]),
+  category: z.string().min(1, "Category is required"),
   imageUrl: z.string().url("Please provide a valid image URL link")
 });
 
@@ -20,9 +12,10 @@ export async function GET() {
   try {
     const list = await getGallery();
     return NextResponse.json({ success: true, gallery: list });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "Failed to fetch gallery.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to fetch gallery." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }
@@ -41,15 +34,16 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, item: newItem }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: error.issues[0]?.message || "Invalid input data." },
         { status: 400 }
       );
     }
+    const errMsg = error instanceof Error ? error.message : "Failed to create gallery item.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to create gallery item." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }
@@ -68,9 +62,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: true, message: "Gallery photo deleted successfully." });
     }
     return NextResponse.json({ success: false, message: "Gallery item not found or failed to delete." }, { status: 404 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "Failed to delete gallery item.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to delete gallery item." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }

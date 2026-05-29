@@ -7,7 +7,6 @@ const NoticeSchema = new Schema({
   date: { type: String, required: true }, 
   category: { 
     type: String, 
-    enum: ["General", "Exam", "Holiday", "Admission", "Others"], 
     required: true 
   },
   isImportant: { type: Boolean, default: false },
@@ -20,15 +19,6 @@ const GallerySchema = new Schema({
   imageUrl: { type: String, required: true },
   category: { 
     type: String, 
-    enum: [
-      "Annual Function", 
-      "Sports Day", 
-      "Classroom Activities", 
-      "Cultural Events", 
-      "Independence Day", 
-      "Prize Distribution",
-      "Others"
-    ], 
     required: true 
   },
   title: { type: String, required: true },

@@ -24,7 +24,7 @@ const slides = [
     id: 3,
     image: "/hero-slide3.png",
     title: "Annual Sports Day",
-    subtitle: "Building Character, Competence & Community Since 2008",
+    subtitle: "Building Character, Competence & Community Since 2011",
     tag: "1,200+ Students · 35+ Dedicated Educators",
     cta: { label: "Know More About Us", href: "/about" },
   },

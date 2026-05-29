@@ -64,7 +64,7 @@ export const coreValues: ValueItem[] = [
 
 export const milestones: MilestoneItem[] = [
   {
-    year: "2008",
+    year: "2011",
     title: {
       en: "Founding Year",
       hi: "स्थापना वर्ष"
@@ -154,8 +154,8 @@ export const historyDetails = {
     hi: "हमारा इतिहास"
   },
   p1: {
-    en: "Nav Jeevan Public School was established in 2008 with a simple yet ambitious goal: to bring premium, modern, and value-based education to children in the rural pockets of Kaptanganj, Kushinagar, Uttar Pradesh. Recognizing that language fluency and computer literacy are key barriers for rural progress, we structured our curricula around bilingual teaching guidelines.",
-    hi: "नव जीवन पब्लिक स्कूल की स्थापना 2008 में एक सरल लेकिन महत्वाकांक्षी लक्ष्य के साथ की गई थी: कप्तानगंज, कुशीनगर, उत्तर प्रदेश के ग्रामीण क्षेत्रों में बच्चों के लिए उत्कृष्ट, आधुनिक और मूल्य-आधारित शिक्षा प्रदान करना। यह पहचानते हुए कि भाषा प्रवाह और कंप्यूटर साक्षरता ग्रामीण प्रगति के लिए मुख्य बाधाएं हैं, हमने द्विभाषी शिक्षण दिशानिर्देशों के तहत अपने पाठ्यक्रमों को संरचित किया।"
+    en: "Nav Jeevan Public School was established in 2011 with a simple yet ambitious goal: to bring premium, modern, and value-based education to children in the rural pockets of Kaptanganj, Kushinagar, Uttar Pradesh. Recognizing that language fluency and computer literacy are key barriers for rural progress, we structured our curricula around bilingual teaching guidelines.",
+    hi: "नव जीवन पब्लिक स्कूल की स्थापना 2011 में एक सरल लेकिन महत्वाकांक्षी लक्ष्य के साथ की गई थी: कप्तानगंज, कुशीनगर, उत्तर प्रदेश के ग्रामीण क्षेत्रों में बच्चों के लिए उत्कृष्ट, आधुनिक और मूल्य-आधारित शिक्षा प्रदान करना। यह पहचानते हुए कि भाषा प्रवाह और कंप्यूटर साक्षरता ग्रामीण प्रगति के लिए मुख्य बाधाएं हैं, हमने द्विभाषी शिक्षण दिशानिर्देशों के तहत अपने पाठ्यक्रमों को संरचित किया।"
   },
   p2: {
     en: "Over the last decade and a half, our institution has grown from a local primary class center into a reputable CBSE-pattern co-educational school. Today, we cater to hundreds of boys and girls from Khabharabhar and nearby villages, ensuring they secure high scores in higher education exams and clear entrance competitions successfully.",
@@ -285,8 +285,8 @@ export const managerNote = {
     hi: "प्रिय छात्रों, अभिभावकों और शुभचिंतकों,"
   },
   p1: {
-    en: "It is with immense pride and deep humility that I welcome you to Nav Jeevan Public School. When we founded this institution in 2008, our singular goal was simple yet profound — to ensure that no child in Khabharabhar and the surrounding villages of Kaptanganj would have to travel far for quality education.",
-    hi: "मुझे नव जीवन पब्लिक स्कूल में स्वागत करते हुए अत्यधिक गर्व और गहरी विनम्रता की अनुभूति हो रही है। जब हमने 2008 में इस संस्थान की स्थापना की थी, तो हमारा एकमात्र उद्देश्य सरल लेकिन गहरा था - यह सुनिश्चित करना कि खबरभार और कप्तानगंज के आसपास के गाँवों के किसी भी बच्चे को गुणवत्तापूर्ण शिक्षा के लिए दूर न जाना पड़े।"
+    en: "It is with immense pride and deep humility that I welcome you to Nav Jeevan Public School. When we founded this institution in 2011, our singular goal was simple yet profound — to ensure that no child in Khabharabhar and the surrounding villages of Kaptanganj would have to travel far for quality education.",
+    hi: "मुझे नव जीवन पब्लिक स्कूल में स्वागत करते हुए अत्यधिक गर्व और गहरी विनम्रता की अनुभूति हो रही है। जब हमने 2011 में इस संस्थान की स्थापना की थी, तो हमारा एकमात्र उद्देश्य सरल लेकिन गहरा था - यह सुनिश्चित करना कि खबरभार और कप्तानगंज के आसपास के गाँवों के किसी भी बच्चे को गुणवत्तापूर्ण शिक्षा के लिए दूर न जाना पड़े।"
   },
   p2: {
     en: "Education is not merely the transfer of knowledge. It is the awakening of a young mind to its own potential. At Nav Jeevan, we strive every day to create an environment where children feel safe, celebrated, and inspired to grow — academically, morally, and socially.",

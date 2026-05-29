@@ -2,9 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   MessageSquare,
-  BookOpen,
   ArrowUp,
   Compass,
   ExternalLink,
@@ -66,8 +66,14 @@ export default function Footer() {
           {}
           <div className="md:col-span-4 flex flex-col gap-5 text-left">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-primary to-amber-600 flex items-center justify-center shrink-0 shadow-md">
-                <BookOpen className="w-5.5 h-5.5 text-white" />
+              <div className="relative w-10 h-10 rounded-2xl overflow-hidden bg-white flex items-center justify-center shrink-0 shadow-md">
+                <Image
+                  src="/navjeevanLogo.jpeg"
+                  alt="Nav Jeevan Public School Logo"
+                  fill
+                  className="object-cover"
+                  sizes="40px"
+                />
               </div>
               <div>
                 <span className="text-lg font-black text-white block leading-tight tracking-tight">
@@ -83,8 +89,8 @@ export default function Footer() {
 
             <p className="text-xs sm:text-sm text-gray-400 leading-relaxed font-medium">
               {language === "en"
-                ? "Established in 2008, empowering rural students in Kaptanganj block through quality, modern co-education. Specially tailored class curriculum for developmental stages LKG to VIII."
-                : "2008 में स्थापित, कप्तानगंज ब्लॉक में गुणवत्तापूर्ण, आधुनिक सह-शिक्षा के माध्यम से ग्रामीण छात्रों को सशक्त बनाना। LKG से कक्षा VIII तक के लिए विशेष रूप से तैयार पाठ्यक्रम।"}
+                ? "Established in 2011, empowering rural students in Kaptanganj block through quality, modern co-education. Specially tailored class curriculum for developmental stages LKG to VIII."
+                : "2011 में स्थापित, कप्तानगंज ब्लॉक में गुणवत्तापूर्ण, आधुनिक सह-शिक्षा के माध्यम से ग्रामीण छात्रों को सशक्त बनाना। LKG से कक्षा VIII तक के लिए विशेष रूप से तैयार पाठ्यक्रम।"}
             </p>
 
             {}
@@ -113,7 +119,7 @@ export default function Footer() {
 
                 {}
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/navjeevanschool2011/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-gray-400 flex items-center justify-center transition-all duration-300 hover:bg-primary/10 hover:text-primary focus:outline-none"
@@ -325,11 +331,11 @@ export default function Footer() {
             description:
               "Nav Jeevan Public School (NJPS) is a co-educational CBSE-pattern school in Khabharabhar, Kaptanganj, Kushinagar, Uttar Pradesh, offering English and Hindi medium education from Nursery to Class 8 with smart classrooms, computer labs, and holistic development programs.",
             url: "https://njpskhabharabhar.vercel.app",
-            logo: "https://njpskhabharabhar.vercel.app/opengraph-image",
+            logo: "https://njpskhabharabhar.vercel.app/logo.png",
             image: "https://njpskhabharabhar.vercel.app/about-students.png",
             telephone: "+919935661144",
-            email: "info@navjeevanschool.org",
-            foundingDate: "2008",
+            email: "navjeevanschool2011@gmail.com",
+            foundingDate: "2011",
             award: "Affiliated to CBSE Pattern",
             knowsAbout: [
               "CBSE Curriculum",
@@ -337,7 +343,10 @@ export default function Footer() {
               "IT Literacy",
               "Holistic Child Development",
             ],
-            sameAs: ["https://facebook.com", "https://youtube.com"],
+            sameAs: [
+              "https://www.facebook.com/navjeevanschool2011/",
+              "https://youtube.com",
+            ],
             address: {
               "@type": "PostalAddress",
               streetAddress: "Khabharabhar, Kaptanganj",

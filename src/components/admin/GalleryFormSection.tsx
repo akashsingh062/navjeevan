@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { PlusCircle, Camera, Trash2 } from "lucide-react";
@@ -26,6 +26,13 @@ export default function GalleryFormSection({
 }: GalleryFormSectionProps) {
   const galleryForm = useForm<GalleryFormInput>({
     defaultValues: { title: "", category: "Annual Function", imageUrl: "" }
+  });
+
+  const [customCategory, setCustomCategory] = useState("");
+  const watchedCategory = useWatch({
+    control: galleryForm.control,
+    name: "category",
+    defaultValue: "Annual Function"
   });
 
   const [galleryQueue, setGalleryQueue] = useState<{
@@ -90,6 +97,11 @@ export default function GalleryFormSection({
 
     const baseTitle = galleryForm.getValues("title") || "";
     const category = galleryForm.getValues("category") || "Annual Function";
+    
+    let finalCategory = category;
+    if (category === "Others") {
+      finalCategory = customCategory.trim() || "Others";
+    }
 
     const updatedQueue = [...galleryQueue];
 
@@ -135,7 +147,7 @@ export default function GalleryFormSection({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             title: finalTitle,
-            category,
+            category: finalCategory,
             imageUrl
           })
         });
@@ -163,9 +175,11 @@ export default function GalleryFormSection({
       toast.success(`Successfully uploaded and saved all ${successCount} photos to the gallery!`, { id: mainLoadingToast });
       setGalleryQueue([]);
       galleryForm.reset({ title: "", category });
+      setCustomCategory("");
       refreshData();
     } else {
       toast.error(`Completed processing: ${successCount} succeeded, ${failCount} failed. Please review error items.`, { id: mainLoadingToast });
+      setCustomCategory("");
       refreshData();
     }
   };
@@ -191,6 +205,22 @@ export default function GalleryFormSection({
           <option value="Prize Distribution">Prize Distribution</option>
           <option value="Others">Others</option>
         </select>
+
+        {watchedCategory === "Others" && (
+          <div className="flex flex-col gap-1.5 mt-2 transition-all">
+            <label className="text-xs font-bold text-neutral-dark">Specify Custom Category</label>
+            <input
+              type="text"
+              placeholder="e.g. Science Exhibition, Field Trip"
+              className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+            />
+            <span className="text-[10px] text-neutral-body font-medium leading-relaxed">
+              If left blank, the category will default to &quot;Others&quot;.
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-1.5">

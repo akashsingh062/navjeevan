@@ -27,7 +27,14 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
   const [activeCategory, setActiveCategory] = useState<typeof CATEGORIES[number]>("All");
 
   const filteredNotices = initialNotices.filter((notice) => {
-    const matchesCategory = activeCategory === "All" || notice.category === activeCategory;
+    let matchesCategory = false;
+    if (activeCategory === "All") {
+      matchesCategory = true;
+    } else if (activeCategory === "Others") {
+      matchesCategory = !["General", "Admission", "Exam", "Holiday"].includes(notice.category);
+    } else {
+      matchesCategory = notice.category === activeCategory;
+    }
     const matchesSearch = 
       notice.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       notice.description.toLowerCase().includes(searchTerm.toLowerCase());

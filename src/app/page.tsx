@@ -196,11 +196,11 @@ export default function Home() {
                         const activeBorderColor = isImportant
                           ? (borderColors[notice.importanceColor ?? "red"] ??
                             "border-l-red-500")
-                          : (categoryBorders[notice.category] ??
-                            categoryBorders.General);
+                          : (categoryBorders[notice.category as keyof typeof categoryBorders] ??
+                            categoryBorders.Others);
                         const activeBadgeStyle =
-                          categoryBadges[notice.category] ??
-                          categoryBadges.General;
+                          categoryBadges[notice.category as keyof typeof categoryBadges] ??
+                          categoryBadges.Others;
 
                         return (
                           <div
@@ -383,8 +383,8 @@ export default function Home() {
             <div className="flex flex-col gap-6 reveal-on-scroll reveal-fade-left">
               <p className="text-sm sm:text-base text-neutral-body leading-relaxed">
                 {language === "en"
-                  ? "Established in 2008 with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with CBSE curriculum standards. We combine rigorous academics with digital computer exposure, cultural celebrations, and physical drills to construct all-round capabilities in our students."
-                  : "ग्रामीण उत्तर प्रदेश में प्राथमिक और माध्यमिक शिक्षा में क्रांति लाने के दृष्टिकोण से 2008 में स्थापित, नव जीवन पब्लिक स्कूल सीबीएसई पाठ्यक्रम मानकों से संबद्ध है। हम अपने छात्रों में सर्वांगीण क्षमताओं के निर्माण के लिए कठोर शिक्षा के साथ डिजिटल कंप्यूटर एक्सपोज़र, सांस्कृतिक उत्सवों और शारीरिक अभ्यासों का संयोजन करते हैं।"}
+                  ? "Established in 2011 with a vision to revolutionize primary and secondary education in rural Uttar Pradesh, Nav Jeevan Public School is affiliated with CBSE curriculum standards. We combine rigorous academics with digital computer exposure, cultural celebrations, and physical drills to construct all-round capabilities in our students."
+                  : "ग्रामीण उत्तर प्रदेश में प्राथमिक और माध्यमिक शिक्षा में क्रांति लाने के दृष्टिकोण से 2011 में स्थापित, नव जीवन पब्लिक स्कूल सीबीएसई पाठ्यक्रम मानकों से संबद्ध है। हम अपने छात्रों में सर्वांगीण क्षमताओं के निर्माण के लिए कठोर शिक्षा के साथ डिजिटल कंप्यूटर एक्सपोज़र, सांस्कृतिक उत्सवों और शारीरिक अभ्यासों का संयोजन करते हैं।"}
               </p>
 
               <div className="flex flex-col gap-3">

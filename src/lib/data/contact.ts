@@ -68,8 +68,8 @@ export const contactDirectory: ContactCard[] = [
       hi: "ईमेल सहायता डेस्क"
     },
     detail: {
-      en: "info@navjeevanschool.org",
-      hi: "info@navjeevanschool.org"
+      en: "navjeevanschool2011@gmail.com",
+      hi: "navjeevanschool2011@gmail.com"
     },
     desc: {
       en: "For transfer requests, complaints, official records, or feedback submissions.",
@@ -79,7 +79,7 @@ export const contactDirectory: ContactCard[] = [
       en: "Send Email",
       hi: "ईमेल भेजें"
     },
-    href: "mailto:info@navjeevanschool.org",
+    href: "mailto:navjeevanschool2011@gmail.com",
     iconName: "Mail",
     accentBg: "bg-accent-light",
     accentText: "text-accent",

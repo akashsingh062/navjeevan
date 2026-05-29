@@ -30,7 +30,7 @@ export default function About() {
         
         <div className="mb-14 text-left">
           <span className="text-[10px] uppercase font-black text-accent bg-accent/15 px-3 py-1 rounded-full tracking-wider inline-block mb-3">
-            {language === "en" ? "Since 2008" : "2008 से स्थापित"}
+            {language === "en" ? "Since 2011" : "2011 से स्थापित"}
           </span>
           <SectionHeading
             as="h1"

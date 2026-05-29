@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   Phone,
-  BookOpen,
   Lock,
   Menu,
   Bell,
@@ -31,7 +31,7 @@ const aboutDropdown = [
     label: "History",
     href: "/about/history",
     icon: History,
-    desc: "Our journey since 2008",
+    desc: "Our journey since 2011",
   },
   {
     label: "Vision & Mission",
@@ -157,7 +157,7 @@ export default function Navbar() {
     let desc = item.desc;
     if (item.label === "History") {
       label = language === "en" ? "History" : "इतिहास";
-      desc = language === "en" ? "Our journey since 2008" : "2008 से हमारा सफर";
+      desc = language === "en" ? "Our journey since 2011" : "2011 से हमारा सफर";
     } else if (item.label === "Vision & Mission") {
       label = language === "en" ? "Vision & Mission" : "दृष्टिकोण और लक्ष्य";
       desc = language === "en" ? "What we stand for" : "हमारे आदर्श और मूल्य";
@@ -230,8 +230,14 @@ export default function Navbar() {
                 className="flex items-center gap-2.5 shrink-0 focus:outline-none group"
                 aria-label="Nav Jeevan Public School Home"
               >
-                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-primary-light flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
-                  <BookOpen className="w-7 h-7 text-primary" />
+                <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-primary/30 overflow-hidden bg-white flex items-center justify-center shrink-0 group-hover:border-primary/60 transition-colors">
+                  <Image
+                    src="/navjeevanLogo.jpeg"
+                    alt="Nav Jeevan Public School Logo"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 48px, 56px"
+                  />
                 </div>
                 <div className="flex flex-col leading-none">
                   <span className="text-sm sm:text-base font-black text-neutral-dark tracking-tight leading-tight">

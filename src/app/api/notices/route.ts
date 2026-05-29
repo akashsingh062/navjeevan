@@ -6,7 +6,7 @@ import { z } from "zod";
 const noticeSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters long"),
   description: z.string().min(10, "Description must be at least 10 characters long"),
-  category: z.enum(["General", "Exam", "Holiday", "Admission", "Others"]),
+  category: z.string().min(1, "Category is required"),
   isImportant: z.boolean().optional(),
   importanceColor: z.enum(["red", "amber", "green", "blue", "purple"]).optional(),
   attachmentUrl: z.string().optional().or(z.literal(""))
@@ -16,9 +16,10 @@ export async function GET() {
   try {
     const list = await getNotices();
     return NextResponse.json({ success: true, notices: list });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "Failed to fetch notices.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to fetch notices." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }
@@ -40,15 +41,16 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, notice: newNotice }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: error.issues[0]?.message || "Invalid input data." },
         { status: 400 }
       );
     }
+    const errMsg = error instanceof Error ? error.message : "Failed to create notice.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to create notice." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }
@@ -67,9 +69,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: true, message: "Notice deleted successfully." });
     }
     return NextResponse.json({ success: false, message: "Notice item not found or failed to delete." }, { status: 404 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : "Failed to delete notice.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to delete notice." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }
@@ -100,15 +103,16 @@ export async function PUT(request: Request) {
       return NextResponse.json({ success: true, notice: updatedNotice });
     }
     return NextResponse.json({ success: false, message: "Notice item not found or failed to update." }, { status: 404 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: error.issues[0]?.message || "Invalid input data." },
         { status: 400 }
       );
     }
+    const errMsg = error instanceof Error ? error.message : "Failed to update notice.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to update notice." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }

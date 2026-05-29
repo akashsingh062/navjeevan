@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Save, Paperclip, Edit, Trash2 } from "lucide-react";
 import { Notice } from "@/types";
@@ -35,6 +35,12 @@ export default function NoticeFormSection({
   });
 
   const [selectedColor, setSelectedColor] = useState("blue");
+  const [customCategory, setCustomCategory] = useState("");
+  const watchedCategory = useWatch({
+    control: noticeForm.control,
+    name: "category",
+    defaultValue: "General"
+  });
   const [noticeAttachmentUrl, setNoticeAttachmentUrl] = useState("");
   const [isNoticeAttachmentUploading, setIsNoticeAttachmentUploading] = useState(false);
   const [editingNoticeId, setEditingNoticeId] = useState<string | null>(null);
@@ -78,13 +84,19 @@ export default function NoticeFormSection({
     setStatus("saving");
     const isEdit = !!editingNoticeId;
     const loadingToast = toast.loading(isEdit ? "Saving notice changes..." : "Publishing notice bulletin...");
+    
+    let finalCategory = data.category;
+    if (data.category === "Others") {
+      finalCategory = customCategory.trim() || "Others";
+    }
+
     try {
       const url = isEdit ? `/api/notices?id=${editingNoticeId}` : "/api/notices";
       const method = isEdit ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, attachmentUrl: noticeAttachmentUrl })
+        body: JSON.stringify({ ...data, category: finalCategory, attachmentUrl: noticeAttachmentUrl })
       });
       const result = await res.json();
       if (res.ok && result.success) {
@@ -96,6 +108,7 @@ export default function NoticeFormSection({
         );
         noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
         setSelectedColor("blue");
+        setCustomCategory("");
         setNoticeAttachmentUrl("");
         setEditingNoticeId(null);
         setStatus("success");
@@ -115,14 +128,30 @@ export default function NoticeFormSection({
     if (!noticeId) return;
 
     setEditingNoticeId(noticeId);
-    noticeForm.reset({
-      title: notice.title,
-      description: notice.description,
-      category: notice.category,
-      isImportant: !!notice.isImportant,
-      importanceColor: notice.importanceColor || "blue",
-      attachmentUrl: notice.attachmentUrl || ""
-    });
+    
+    const standardCategories = ["General", "Admission", "Exam", "Holiday"];
+    if (standardCategories.includes(notice.category)) {
+      noticeForm.reset({
+        title: notice.title,
+        description: notice.description,
+        category: notice.category,
+        isImportant: !!notice.isImportant,
+        importanceColor: notice.importanceColor || "blue",
+        attachmentUrl: notice.attachmentUrl || ""
+      });
+      setCustomCategory("");
+    } else {
+      noticeForm.reset({
+        title: notice.title,
+        description: notice.description,
+        category: "Others",
+        isImportant: !!notice.isImportant,
+        importanceColor: notice.importanceColor || "blue",
+        attachmentUrl: notice.attachmentUrl || ""
+      });
+      setCustomCategory(notice.category);
+    }
+    
     setSelectedColor(notice.importanceColor || "blue");
     setNoticeAttachmentUrl(notice.attachmentUrl || "");
 
@@ -193,6 +222,22 @@ export default function NoticeFormSection({
           <option value="Holiday">Holidays & Vacations</option>
           <option value="Others">Others</option>
         </select>
+        
+        {watchedCategory === "Others" && (
+          <div className="flex flex-col gap-1.5 mt-2 transition-all">
+            <label className="text-xs font-bold text-neutral-dark">Specify Custom Category</label>
+            <input
+              type="text"
+              placeholder="e.g. Science Exhibition, Sports Meet"
+              className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+            />
+            <span className="text-[10px] text-neutral-body font-medium leading-relaxed">
+              If left blank, the category will default to &quot;Others&quot;.
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-1.5">

@@ -31,7 +31,7 @@ export default function NoticeCard({ notice }: NoticeCardProps) {
     purple: "border-l-purple-500",
   };
 
-  const cfg = categoryConfig[notice.category] || categoryConfig.General;
+  const cfg = categoryConfig[notice.category as keyof typeof categoryConfig] || categoryConfig.Others;
   const borderColor = notice.isImportant
     ? (importanceBorder[notice.importanceColor ?? "red"] ?? "border-l-red-500")
     : cfg.border;

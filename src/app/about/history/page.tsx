@@ -45,8 +45,8 @@ export default function HistoryPage() {
 
         <p className="text-sm sm:text-base text-neutral-body leading-relaxed mb-10 max-w-2xl">
           {language === "en" 
-            ? "Founded in 2008 with a handful of students and an unwavering belief that every child — regardless of geography — deserves world-class education, Nav Jeevan Public School has grown into one of the most trusted institutions in Kaptanganj, Kushinagar."
-            : "2008 में मुट्ठी भर छात्रों और एक अटूट विश्वास के साथ स्थापित कि प्रत्येक बच्चा - भूगोल की परवाह किए बिना - विश्व स्तरीय शिक्षा का हकदार है, नव जीवन स्कूल कप्तानगंज, कुशीनगर में सबसे भरोसेमंद संस्थानों में से एक बन गया है।"}
+            ? "Founded in 2011 with a handful of students and an unwavering belief that every child — regardless of geography — deserves world-class education, Nav Jeevan Public School has grown into one of the most trusted institutions in Kaptanganj, Kushinagar."
+            : "2011 में मुट्ठी भर छात्रों और एक अटूट विश्वास के साथ स्थापित कि प्रत्येक बच्चा - भूगोल की परवाह किए बिना - विश्व स्तरीय शिक्षा का हकदार है, नव जीवन स्कूल कप्तानगंज, कुशीनगर में सबसे भरोसेमंद संस्थानों में से एक बन गया है।"}
         </p>
 
         <div className="relative">

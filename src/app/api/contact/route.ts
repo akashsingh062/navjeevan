@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     if (saved) {
       
-      console.log(`[EMAIL SEND SIMULATION] Sending notification email to info@navjeevanschool.org for new inquiry from ${validatedData.name}.`);
+      console.log(`[EMAIL SEND SIMULATION] Sending notification email to navjeevanschool2011@gmail.com for new inquiry from ${validatedData.name}.`);
       return NextResponse.json({ success: true, message: "Inquiry saved and notification queued." });
     } else {
       return NextResponse.json(
@@ -31,15 +31,16 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: error.issues[0]?.message || "Invalid input data." },
         { status: 400 }
       );
     }
+    const errMsg = error instanceof Error ? error.message : "Failed to process contact submission.";
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to process contact submission." },
+      { success: false, message: errMsg },
       { status: 500 }
     );
   }
