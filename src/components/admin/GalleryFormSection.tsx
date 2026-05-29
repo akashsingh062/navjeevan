@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
-import { PlusCircle, Camera, Trash2 } from "lucide-react";
+import { PlusCircle, Camera, Trash2, Link as LinkIcon, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
 import { GalleryItem } from "@/types";
 
 interface GalleryFormInput {
@@ -43,6 +43,110 @@ export default function GalleryFormSection({
   }[]>([]);
   const [isGalleryUploading, setIsGalleryUploading] = useState(false);
   const [selectedGalleryIds, setSelectedGalleryIds] = useState<string[]>([]);
+
+  const [uploadMode, setUploadMode] = useState<"file" | "links">("file");
+  const [linksInput, setLinksInput] = useState("");
+
+  const parsedLinks = React.useMemo(() => {
+    if (!linksInput.trim()) return [];
+    return linksInput.split("\n").map(line => line.trim()).filter(line => line.length > 0);
+  }, [linksInput]);
+
+  const resolveExternalLink = (url: string): string => {
+    const resolved = url.trim();
+    if (resolved.includes("drive.google.com")) {
+      const fileIdMatch = resolved.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || resolved.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (fileIdMatch && fileIdMatch[1]) {
+        return `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}`;
+      }
+    }
+    if (resolved.includes("dropbox.com")) {
+      return resolved
+        .replace("www.dropbox.com", "dl.dropboxusercontent.com")
+        .replace("?dl=0", "")
+        .replace("&dl=0", "")
+        .replace("?dl=1", "")
+        .replace("&dl=1", "");
+    }
+    return resolved;
+  };
+
+  const needsResolution = (url: string): boolean => {
+    const u = url.trim().toLowerCase();
+    
+    // Direct image extensions
+    if (u.match(/\.(jpeg|jpg|gif|png|webp|svg)($|\?)/)) {
+      return false;
+    }
+    
+    // Whitelisted direct CDNs
+    if (u.includes("res.cloudinary.com") || u.includes("fbcdn.net") || u.includes("googleusercontent.com")) {
+      return false;
+    }
+    
+    // Webpage links require resolution
+    return u.startsWith("http://") || u.startsWith("https://");
+  };
+
+  const handleResolveLink = async (originalLink: string) => {
+    const u = originalLink.trim().toLowerCase();
+    
+    // Standard static conversions (Google Drive / Dropbox)
+    if (u.includes("drive.google.com") || u.includes("dropbox.com")) {
+      const resolved = resolveExternalLink(originalLink);
+      if (resolved !== originalLink) {
+        setLinksInput(prev => {
+          const lines = prev.split("\n");
+          const index = lines.findIndex(l => l.trim() === originalLink);
+          if (index !== -1) {
+            lines[index] = resolved;
+          }
+          return lines.join("\n");
+        });
+        toast.success("Link resolved successfully to direct URL!");
+        return;
+      }
+    }
+
+    // Dynamic webpage scraping (Facebook, Instagram, Google Photos, any website)
+    const isFB = u.includes("facebook.com");
+    const isInsta = u.includes("instagram.com");
+    const isGPhotos = u.includes("photos.google.com") || u.includes("photos.app.goo.gl");
+    
+    let platformName = "webpage";
+    if (isFB) platformName = "Facebook";
+    else if (isInsta) platformName = "Instagram";
+    else if (isGPhotos) platformName = "Google Photos";
+
+    const loadingToast = toast.loading(`Connecting to ${platformName} to extract images...`);
+    try {
+      const res = await fetch("/api/resolve-facebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: originalLink })
+      });
+      const result = await res.json();
+      
+      if (res.ok && result.success && Array.isArray(result.images) && result.images.length > 0) {
+        const resolvedUrls = result.images.join("\n");
+        
+        setLinksInput(prev => {
+          const lines = prev.split("\n");
+          const index = lines.findIndex(l => l.trim() === originalLink);
+          if (index !== -1) {
+            lines[index] = resolvedUrls;
+          }
+          return lines.join("\n");
+        });
+        toast.success(`Successfully extracted ${result.images.length} direct image(s) from ${platformName}!`, { id: loadingToast });
+      } else {
+        toast.error(result.message || `Failed to extract images from ${platformName}. Make sure it is public.`, { id: loadingToast });
+      }
+    } catch (err) {
+      toast.error(`Failed to connect to ${platformName} resolution API.`, { id: loadingToast });
+      console.error(`${platformName} extraction error:`, err);
+    }
+  };
 
   const handleDeleteGallery = async (id: string) => {
     const loadingToast = toast.loading("Deleting photo...");
@@ -83,13 +187,7 @@ export default function GalleryFormSection({
     }
   };
 
-  const handleGalleryMultiUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (galleryQueue.length === 0) {
-      toast.error("Please choose one or more photo files/folders to upload first.");
-      return;
-    }
-
+  const handleGalleryMultiUpload = async () => {
     setIsGalleryUploading(true);
     const mainLoadingToast = toast.loading(`Uploading batch of ${galleryQueue.length} photos...`);
     let successCount = 0;
@@ -185,11 +283,104 @@ export default function GalleryFormSection({
     }
   };
 
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (uploadMode === "file") {
+      await handleGalleryMultiUpload();
+    } else {
+      await handleGalleryLinksUpload();
+    }
+  };
+
+  const handleGalleryLinksUpload = async () => {
+    if (parsedLinks.length === 0) {
+      toast.error("Please enter one or more image links to add to the gallery.");
+      return;
+    }
+
+    setIsGalleryUploading(true);
+    const mainLoadingToast = toast.loading(`Saving ${parsedLinks.length} web links to the gallery...`);
+    let successCount = 0;
+    let failCount = 0;
+
+    const baseTitle = galleryForm.getValues("title") || "";
+    const category = galleryForm.getValues("category") || "Annual Function";
+    
+    let finalCategory = category;
+    if (category === "Others") {
+      finalCategory = customCategory.trim() || "Others";
+    }
+
+    const getFilenameFromUrl = (url: string) => {
+      try {
+        const u = new URL(url);
+        const pathname = u.pathname;
+        const lastSegment = pathname.substring(pathname.lastIndexOf("/") + 1);
+        if (lastSegment && lastSegment.includes(".")) {
+          return lastSegment.substring(0, lastSegment.lastIndexOf("."))
+            .replace(/[-_]+/g, " ")
+            .trim();
+        }
+      } catch {}
+      return "";
+    };
+
+    for (let i = 0; i < parsedLinks.length; i++) {
+      const link = parsedLinks[i];
+      try {
+        const resolvedLink = resolveExternalLink(link);
+
+        const cleanFileName = getFilenameFromUrl(resolvedLink) || `Web Photo ${i + 1}`;
+        const capitalizedFileName = cleanFileName
+          .split(" ")
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ");
+
+        const finalTitle = baseTitle 
+          ? `${baseTitle} - ${capitalizedFileName}` 
+          : capitalizedFileName;
+
+        const galleryRes = await fetch("/api/gallery", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: finalTitle,
+            category: finalCategory,
+            imageUrl: resolvedLink
+          })
+        });
+        const galleryResult = await galleryRes.json();
+
+        if (!galleryRes.ok || !galleryResult.success) {
+          throw new Error(galleryResult.message || "Failed to save link.");
+        }
+
+        successCount++;
+      } catch (error) {
+        failCount++;
+        console.error(`Failed to save link: ${link}`, error);
+      }
+    }
+
+    setIsGalleryUploading(false);
+
+    if (failCount === 0) {
+      toast.success(`Successfully saved all ${successCount} links directly to the school gallery!`, { id: mainLoadingToast });
+      setLinksInput("");
+      galleryForm.reset({ title: "", category });
+      setCustomCategory("");
+      refreshData();
+    } else {
+      toast.error(`Completed processing: ${successCount} succeeded, ${failCount} failed. Please verify link formats.`, { id: mainLoadingToast });
+      refreshData();
+    }
+  };
+
   return (
-    <form onSubmit={handleGalleryMultiUpload} className="flex flex-col gap-5">
+    <form onSubmit={handleFormSubmit} className="flex flex-col gap-5">
       <div className="flex flex-col gap-1 text-left mb-2">
         <h3 className="text-base font-extrabold text-neutral-dark">Add Photo Log (Multi-Upload)</h3>
-        <p className="text-xs text-neutral-body">Choose multiple files or select an entire folder of photos instantly to register them into the school gallery.</p>
+        <p className="text-xs text-neutral-body">Choose multiple files, folders, or paste external image links instantly to register them into the school gallery.</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -228,80 +419,191 @@ export default function GalleryFormSection({
         <label className="text-xs font-extrabold text-neutral-dark">Optional Base Caption Title Prefix</label>
         <input
           type="text"
-          placeholder="e.g. Traditional Folk Dance (Optional: file names will be appended/used)"
+          placeholder="e.g. Traditional Folk Dance (Optional: file/link names will be appended/used)"
           className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
           {...galleryForm.register("title")}
         />
         <span className="text-[10px] text-neutral-body font-medium leading-relaxed mt-0.5">
-          If left blank, clean capitalized file names will be used as captions automatically.
+          If left blank, clean capitalized file or link names will be used as captions automatically.
         </span>
       </div>
 
-      <div className="flex flex-col gap-2.5">
-        <label className="text-xs font-extrabold text-neutral-dark">Select Photos or Folder</label>
-        
-        <div className="flex flex-col gap-4 p-6 bg-neutral-light border border-dashed border-gray-300 rounded-2xl text-center items-center justify-center">
-          <Camera className="w-10 h-10 text-primary/40 mb-1" />
-          
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-center w-full">
-            <label className="px-5 py-2.5 bg-primary text-white text-xs font-extrabold rounded-xl hover:bg-primary-hover transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-              <PlusCircle className="w-4 h-4" />
-              <span>Select Multiple Files</span>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={(e) => {
-                  const files = e.target.files;
-                  if (!files) return;
-                  const newItems = Array.from(files).map(file => ({
-                    id: Math.random().toString(36).substring(2, 9),
-                    file,
-                    status: "idle" as const
-                  }));
-                  setGalleryQueue(prev => [...prev, ...newItems]);
-                  e.target.value = "";
-                }}
-                className="hidden"
-              />
-            </label>
-
-            <label className="px-5 py-2.5 bg-neutral-dark text-white text-xs font-extrabold rounded-xl hover:bg-neutral-dark/95 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
-              <PlusCircle className="w-4 h-4" />
-              <span>Select Entire Folder</span>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                {...({ webkitdirectory: "", directory: "" } as React.InputHTMLAttributes<HTMLInputElement>)}
-                onChange={(e) => {
-                  const files = e.target.files;
-                  if (!files) return;
-                  const imageFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
-                  if (imageFiles.length === 0) {
-                    toast.error("No image files found in the selected folder.");
-                    return;
-                  }
-                  const newItems = imageFiles.map(file => ({
-                    id: Math.random().toString(36).substring(2, 9),
-                    file,
-                    status: "idle" as const
-                  }));
-                  setGalleryQueue(prev => [...prev, ...newItems]);
-                  e.target.value = "";
-                }}
-                className="hidden"
-              />
-            </label>
-          </div>
-          
-          <p className="text-[10px] text-neutral-body leading-tight">
-            Upload multiple JPEGs, PNGs. All folders are automatically filtered to process images only.
-          </p>
+      {/* Dynamic Mode Switcher: Local Files vs Web Links */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-extrabold text-neutral-dark">Photo Upload Method</label>
+        <div className="flex bg-neutral-light/75 border border-gray-150 p-1.5 rounded-2xl gap-1.5">
+          <button
+            type="button"
+            onClick={() => setUploadMode("file")}
+            className={`grow py-3 px-4 text-xs font-black rounded-xl transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center gap-1.5 select-none ${
+              uploadMode === "file" 
+                ? "bg-white text-primary shadow-xs border border-gray-250" 
+                : "text-neutral-body hover:text-neutral-dark"
+            }`}
+          >
+            <Camera className="w-4 h-4 shrink-0" />
+            <span>Select Local Files/Folder</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setUploadMode("links")}
+            className={`grow py-3 px-4 text-xs font-black rounded-xl transition-all duration-300 cursor-pointer focus:outline-none flex items-center justify-center gap-1.5 select-none ${
+              uploadMode === "links" 
+                ? "bg-white text-primary shadow-xs border border-gray-255" 
+                : "text-neutral-body hover:text-neutral-dark"
+            }`}
+          >
+            <LinkIcon className="w-4 h-4 shrink-0" />
+            <span>External Image Link(s)</span>
+          </button>
         </div>
       </div>
 
-      {galleryQueue.length > 0 && (
+      {uploadMode === "file" ? (
+        /* =========================================================
+            PANEL A: STANDARD FILE MULTI-UPLOAD
+            ========================================================= */
+        <div className="flex flex-col gap-2.5">
+          <label className="text-xs font-extrabold text-neutral-dark">Select Photos or Folder</label>
+          
+          <div className="flex flex-col gap-4 p-6 bg-neutral-light border border-dashed border-gray-300 rounded-2xl text-center items-center justify-center">
+            <Camera className="w-10 h-10 text-primary/40 mb-1" />
+            
+            <div className="flex flex-col sm:flex-row gap-3 items-center justify-center w-full">
+              <label className="px-5 py-2.5 bg-primary text-white text-xs font-extrabold rounded-xl hover:bg-primary-hover transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
+                <PlusCircle className="w-4 h-4" />
+                <span>Select Multiple Files</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (!files) return;
+                    const newItems = Array.from(files).map(file => ({
+                      id: Math.random().toString(36).substring(2, 9),
+                      file,
+                      status: "idle" as const
+                    }));
+                    setGalleryQueue(prev => [...prev, ...newItems]);
+                    e.target.value = "";
+                  }}
+                  className="hidden"
+                />
+              </label>
+
+              <label className="px-5 py-2.5 bg-neutral-dark text-white text-xs font-extrabold rounded-xl hover:bg-neutral-dark/95 transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm">
+                <PlusCircle className="w-4 h-4" />
+                <span>Select Entire Folder</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  {...({ webkitdirectory: "", directory: "" } as React.InputHTMLAttributes<HTMLInputElement>)}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (!files) return;
+                    const imageFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
+                    if (imageFiles.length === 0) {
+                      toast.error("No image files found in the selected folder.");
+                      return;
+                    }
+                    const newItems = imageFiles.map(file => ({
+                      id: Math.random().toString(36).substring(2, 9),
+                      file,
+                      status: "idle" as const
+                    }));
+                    setGalleryQueue(prev => [...prev, ...newItems]);
+                    e.target.value = "";
+                  }}
+                  className="hidden"
+                />
+              </label>
+            </div>
+            
+            <p className="text-[10px] text-neutral-body leading-tight">
+              Upload multiple JPEGs, PNGs. All folders are automatically filtered to process images only.
+            </p>
+          </div>
+        </div>
+      ) : (
+        /* =========================================================
+            PANEL B: EXTERNAL PHOTO LINKS DIRECT REGISTRATION
+            ========================================================= */
+        <div className="flex flex-col gap-4 text-left">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-extrabold text-neutral-dark">Image URL links (One URL per line)</label>
+            <textarea
+              rows={4}
+              placeholder="Paste direct URLs here (one link per line)&#10;e.g.&#10;https://images.unsplash.com/photo-1522071820081-009f0129c71c&#10;https://drive.google.com/file/d/1A2B3C_4D5E.../view"
+              className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-xs rounded-xl font-medium font-mono text-neutral-dark focus:outline-none focus:border-primary transition-all"
+              value={linksInput}
+              onChange={(e) => setLinksInput(e.target.value)}
+            />
+            <span className="text-[10px] text-neutral-body leading-relaxed mt-0.5">
+              Enter one or multiple links. External links will be saved directly and **never uploaded to Cloudinary**, rendering fully from their source host.
+            </span>
+          </div>
+
+          {/* Links Queue & Live Link Resolution Display */}
+          {parsedLinks.length > 0 && (
+            <div className="flex flex-col gap-3 border border-gray-200 rounded-2xl p-4 bg-white mt-1">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                <span className="text-xs font-extrabold text-neutral-dark">
+                  Links Queue ({parsedLinks.length} URLs detected)
+                </span>
+                <button
+                  type="button"
+                  disabled={isGalleryUploading}
+                  onClick={() => setLinksInput("")}
+                  className="text-[10px] font-black text-red-600 hover:underline cursor-pointer focus:outline-none disabled:opacity-50"
+                >
+                  Clear Links
+                </button>
+              </div>
+
+              <div className="max-h-48 overflow-y-auto flex flex-col gap-2 divide-y divide-gray-50 pr-1">
+                {parsedLinks.map((link, idx) => {
+                  const needsResolve = needsResolution(link);
+                  return (
+                    <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 text-xs font-medium gap-3">
+                      <span className="text-neutral-dark truncate max-w-sm sm:max-w-md font-mono text-[11px]" title={link}>
+                        {link}
+                      </span>
+                      
+                      <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-center">
+                        {needsResolve ? (
+                          <>
+                            <span className="text-[9px] uppercase font-black px-2 py-0.5 bg-brand-amber/10 border border-brand-amber/15 text-brand-amber rounded flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" />
+                              Page link
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleResolveLink(link)}
+                              className="px-2.5 py-1 bg-primary hover:bg-primary-hover text-white text-[10px] font-bold rounded-lg transition-colors flex items-center gap-1 focus:outline-none cursor-pointer"
+                            >
+                              <Sparkles className="w-3 h-3 shrink-0 animate-pulse" />
+                              <span>Resolve Link</span>
+                            </button>
+                          </>
+                        ) : (
+                          <span className="text-[9px] uppercase font-black px-2 py-0.5 bg-emerald-100 border border-emerald-150 text-emerald-800 rounded flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Direct Link
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {uploadMode === "file" && galleryQueue.length > 0 && (
         <div className="flex flex-col gap-3 border border-gray-200 rounded-2xl p-4 bg-white">
           <div className="flex items-center justify-between border-b border-gray-100 pb-2">
             <span className="text-xs font-extrabold text-neutral-dark">
@@ -364,16 +666,33 @@ export default function GalleryFormSection({
 
       <button
         type="submit"
-        disabled={isGalleryUploading || galleryQueue.length === 0}
+        disabled={
+          isGalleryUploading || 
+          (uploadMode === "file" ? galleryQueue.length === 0 : parsedLinks.length === 0)
+        }
         className="w-full mt-4 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
       >
-        <PlusCircle className="w-4 h-4" />
-        <span>
-          {isGalleryUploading 
-            ? `Uploading Photos (${galleryQueue.filter(q => q.status === "success").length}/${galleryQueue.length})...`
-            : `Start Upload & Save (${galleryQueue.length} Photos)`
-          }
-        </span>
+        {uploadMode === "file" ? (
+          <>
+            <PlusCircle className="w-4 h-4" />
+            <span>
+              {isGalleryUploading 
+                ? `Uploading Photos (${galleryQueue.filter(q => q.status === "success").length}/${galleryQueue.length})...`
+                : `Start Upload & Save (${galleryQueue.length} Photos)`
+              }
+            </span>
+          </>
+        ) : (
+          <>
+            <PlusCircle className="w-4 h-4" />
+            <span>
+              {isGalleryUploading 
+                ? `Saving External Links...`
+                : `Save Direct Links (${parsedLinks.length} Photos)`
+              }
+            </span>
+          </>
+        )}
       </button>
 
       {/* Live Event Photos inside Admin Panel for deletion */}

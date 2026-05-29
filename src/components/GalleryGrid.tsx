@@ -9,7 +9,8 @@ import {
   FolderOpen, 
   ArrowLeft, 
   Shuffle, 
-  Image as ImageIcon 
+  Image as ImageIcon,
+  Loader2
 } from "lucide-react";
 import ImageModal from "./ImageModal";
 
@@ -20,11 +21,23 @@ interface GalleryGridProps {
 
 export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [prevCategory, setPrevCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [currentHighlight, setCurrentHighlight] = useState<GalleryItem | null>(null);
   const [isFading, setIsFading] = useState(false);
   const [isShuffling, setIsShuffling] = useState(false);
+
+  const [visibleCount, setVisibleCount] = useState(16);
+  const sentinelRef = React.useRef<HTMLDivElement | null>(null);
+
+  // Synchronously adjust state during render to avoid cascading renders (React official pattern)
+  if (selectedCategory !== prevCategory) {
+    setPrevCategory(selectedCategory);
+    setVisibleCount(16);
+  }
+
+
 
   // Dynamically build the categories list including any custom ones present in items
   const dynamicCategories = React.useMemo(() => {
@@ -107,6 +120,30 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
   
   const displayedItems = limit ? filteredItems.slice(0, limit) : filteredItems;
 
+  useEffect(() => {
+    if (limit || !selectedCategory) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount(prev => Math.min(prev + 12, displayedItems.length));
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
+    }
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+    };
+  }, [selectedCategory, displayedItems.length, limit]);
+
   return (
     <div className="flex flex-col gap-10">
       
@@ -139,11 +176,11 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                     />
                     
                     {/* Modern Premium Overlay: Gradient with category and title */}
-                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end text-white text-left transition-all duration-300">
-                      <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block self-start mb-1.5 tracking-wider">
+                    <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end items-center text-center text-white transition-all duration-300">
+                      <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block mb-1.5 tracking-wider">
                         {item.category}
                       </span>
-                      <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors">
+                      <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors text-center w-full">
                         {item.title}
                       </h3>
                     </div>
@@ -234,11 +271,11 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                   )}
 
                   {/* Gradient Overlay Info Banner */}
-                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-4 md:p-6 text-white flex flex-col justify-end text-left transition-opacity duration-300 rounded-b-2xl">
-                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-white bg-primary px-2.5 py-0.5 rounded-md inline-block self-start mb-2 tracking-wider">
+                  <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-4 md:p-6 text-white flex flex-col justify-end items-center text-center transition-opacity duration-300 rounded-b-2xl">
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase text-white bg-primary px-2.5 py-0.5 rounded-md inline-block mb-2 tracking-wider">
                       {currentHighlight.category}
                     </span>
-                    <h4 className="text-sm sm:text-base font-black leading-tight drop-shadow-xs truncate max-w-full">
+                    <h4 className="text-sm sm:text-base font-black leading-tight drop-shadow-xs truncate max-w-full text-center">
                       {currentHighlight.title}
                     </h4>
                   </div>
@@ -351,7 +388,7 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                 </div>
               ) : (
                 <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 [column-fill:balance] w-full">
-                  {displayedItems.map((item, idx) => {
+                  {displayedItems.slice(0, visibleCount).map((item, idx) => {
                     const hasError = imageErrors[item.id || ""] || false;
                     const delays = ["", "delay-100", "delay-200", "delay-300"];
                     const delayClass = delays[idx % 4];
@@ -375,11 +412,11 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                             />
                             
                             {/* Modern Premium Overlay: Gradient with category and title */}
-                            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end text-white text-left transition-all duration-300">
-                              <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block self-start mb-1.5 tracking-wider">
+                            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end items-center text-center text-white transition-all duration-300">
+                              <span className="text-[9px] font-black uppercase text-white bg-accent/95 px-2 py-0.5 rounded-md inline-block mb-1.5 tracking-wider">
                                 {item.category}
                               </span>
-                              <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors">
+                              <h3 className="text-xs md:text-sm font-extrabold text-white mt-1 leading-snug line-clamp-2 drop-shadow-xs group-hover:text-primary-light transition-colors text-center w-full">
                                 {item.title}
                               </h3>
                             </div>
@@ -405,6 +442,18 @@ export default function GalleryGrid({ items, limit }: GalleryGridProps) {
                       </button>
                     );
                   })}
+                </div>
+              )}
+
+              {/* Sentinel indicator loader for Infinite Scroll */}
+              {!limit && selectedCategory && visibleCount < displayedItems.length && (
+                <div ref={sentinelRef} className="w-full flex items-center justify-center py-10 mt-4 animate-fade-in-up">
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                    <span className="text-[10px] font-black uppercase tracking-wider text-neutral-body">
+                      Loading more images...
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
