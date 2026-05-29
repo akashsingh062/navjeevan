@@ -86,10 +86,10 @@ export default function FindUsPage() {
                   {findUsDetails.phoneLabel[language]}
                 </span>
                 <a
-                  href="tel:+919935661144"
+                  href="tel:+919889897057"
                   className="block font-bold text-neutral-dark hover:text-primary transition-colors"
                 >
-                  +91 99356 61144
+                  +91 98898 97057
                 </a>
               </div>
               <div className="mt-1">

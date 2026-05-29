@@ -286,14 +286,14 @@ export default function Home() {
                     </span>
                   </Link>
                   <a
-                    href="tel:+919935661144"
+                    href="tel:+919889897057"
                     className="flex items-center justify-center gap-2 w-full py-2.5 border border-border hover:bg-neutral-light text-neutral-dark rounded-xl font-semibold text-xs transition-all"
                   >
                     <Phone className="w-3.5 h-3.5 text-primary" />
                     <span>
                       {language === "en"
-                        ? "Call: +91 99356 61144"
-                        : "कॉल करें: +91 99356 61144"}
+                        ? "Call: +91 98898 97057"
+                        : "कॉल करें: +91 98898 97057"}
                     </span>
                   </a>
                 </div>
@@ -634,7 +634,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
             <a
-              href="tel:+919935661144"
+              href="tel:+919889897057"
               className="flex items-center gap-3 flex-1 p-4 border border-border rounded-2xl hover:border-primary/30 hover:bg-neutral-light transition-all reveal-on-scroll reveal-fade-right delay-100"
             >
               <div className="p-2.5 bg-primary-light rounded-xl text-primary shrink-0">
@@ -645,7 +645,7 @@ export default function Home() {
                   {language === "en" ? "Call Office" : "कार्यालय में कॉल करें"}
                 </span>
                 <span className="block text-sm font-black text-neutral-dark">
-                  +91 99356 61144
+                  +91 98898 97057
                 </span>
               </div>
             </a>

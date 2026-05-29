@@ -22,8 +22,8 @@ export const contactDirectory: ContactCard[] = [
       hi: "सामान्य हॉटलाइन"
     },
     detail: {
-      en: "+91 99356 61144",
-      hi: "+91 99356 61144"
+      en: "+91 98898 97057",
+      hi: "+91 98898 97057"
     },
     desc: {
       en: "For general admission queries, parent updates, and document requests.",
@@ -33,7 +33,7 @@ export const contactDirectory: ContactCard[] = [
       en: "Call Helpline",
       hi: "हेल्पलाइन कॉल करें"
     },
-    href: "tel:+919935661144",
+    href: "tel:+919889897057",
     iconName: "Phone",
     accentBg: "bg-primary-light",
     accentText: "text-primary",
@@ -41,23 +41,23 @@ export const contactDirectory: ContactCard[] = [
   },
   {
     title: {
-      en: "WhatsApp Admissions",
-      hi: "व्हाट्सएप प्रवेश"
+      en: "Alternative Hotline",
+      hi: "वैकल्पिक हॉटलाइन"
     },
     detail: {
-      en: "Chat Directly",
-      hi: "सीधी चैट करें"
+      en: "+91 99565 26062",
+      hi: "+91 99565 26062"
     },
     desc: {
-      en: "Instant text helpline with admissions officers regarding class structures.",
-      hi: "कक्षा की संरचना और विवरण के संबंध में प्रवेश अधिकारियों के साथ तत्काल पाठ हेल्पलाइन।"
+      en: "Alternative mobile helpline for direct calls and WhatsApp queries regarding registrations.",
+      hi: "पंजीकरण के संबंध में सीधी कॉल और व्हाट्सएप पूछताछ के लिए वैकल्पिक हेल्पलाइन।"
     },
     actionLabel: {
-      en: "Message Desk",
-      hi: "व्हाट्सएप चैट"
+      en: "Call Alternative",
+      hi: "वैकल्पिक नंबर कॉल करें"
     },
-    href: "https://wa.me/919935661144?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry.",
-    iconName: "MessageSquare",
+    href: "tel:+919956526062",
+    iconName: "Phone",
     accentBg: "bg-emerald-50 text-emerald-600 border-emerald-100",
     accentText: "text-emerald-700",
     borderColor: "border-emerald-200/50"

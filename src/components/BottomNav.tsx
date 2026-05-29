@@ -42,7 +42,7 @@ export default function BottomNav() {
             <Link
               key={href}
               href={href}
-              className={`flex flex-col items-center justify-center flex-1 gap-0.5 min-h-0 transition-all relative ${
+              className={`flex flex-col items-center justify-center flex-1 gap-0.5 min-h-0 min-w-0 text-center transition-all relative ${
                 isActive ? "text-primary" : "text-neutral-body"
               }`}
               aria-label={label}
@@ -59,7 +59,7 @@ export default function BottomNav() {
                 />
               </span>
               <span
-                className={`text-[10px] font-bold leading-none transition-all ${
+                className={`text-[10px] font-bold leading-none truncate w-full text-center transition-all ${
                   isActive ? "text-primary font-extrabold" : "text-neutral-body"
                 }`}
               >

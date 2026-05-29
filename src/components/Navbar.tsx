@@ -318,19 +318,19 @@ export default function Navbar() {
                 </button>
 
                 <a
-                  href="tel:+919935661144"
-                  className="p-2 sm:p-2.5 bg-primary-light text-primary rounded-xl"
+                  href="tel:+919889897057"
+                  className="p-2 sm:p-2.5 bg-primary-light text-primary rounded-xl flex items-center justify-center"
                   aria-label="Call"
                 >
-                  <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <Phone className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
                 </a>
 
                 <button
                   onClick={() => setIsOpen(true)}
-                  className="p-2 sm:p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl focus:outline-none"
+                  className="p-2 sm:p-2.5 text-neutral-dark hover:bg-neutral-light rounded-xl flex items-center justify-center focus:outline-none"
                   aria-label="Open menu"
                 >
-                  <Menu className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+                  <Menu className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
                 </button>
               </div>
             </div>
@@ -397,11 +397,11 @@ export default function Navbar() {
             })}
 
             <a
-              href="tel:+919935661144"
+              href="tel:+919889897057"
               className="ml-auto flex items-center gap-1.5 px-3 h-full text-white/90 hover:bg-white/15 text-[11px] font-bold border-l border-white/20 shrink-0 transition-colors"
             >
               <Phone className="w-3.5 h-3.5" />
-              <span>99356 61144</span>
+              <span>98898 97057</span>
             </a>
           </div>
         </div>

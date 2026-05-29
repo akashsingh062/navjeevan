@@ -227,18 +227,18 @@ export default function MobileMenu({
               }}
             >
               <a
-                href="tel:+919935661144"
+                href="tel:+919889897057"
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-primary text-white rounded-2xl font-bold text-sm transition-all"
               >
                 <Phone className="w-4 h-4" />
                 <span>
                   {language === "en"
-                    ? "Call School: 99356 61144"
-                    : "फ़ोन कॉल: 99356 61144"}
+                    ? "Call School: 98898 97057"
+                    : "फ़ोन कॉल: 98898 97057"}
                 </span>
               </a>
               <a
-                href="https://wa.me/919935661144?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                href="https://wa.me/919956526062?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-white rounded-2xl font-bold text-sm"

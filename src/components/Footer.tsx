@@ -106,7 +106,7 @@ export default function Footer() {
               <div className="flex gap-2.5 items-center">
                 {}
                 <a
-                  href="https://wa.me/919935661144?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                  href="https://wa.me/919956526062?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl transition-all duration-300 shadow-2xs hover:shadow-xs focus:outline-none"
@@ -331,7 +331,7 @@ export default function Footer() {
             url: "https://njpskhabharabhar.vercel.app",
             logo: "https://njpskhabharabhar.vercel.app/logo.png",
             image: "https://njpskhabharabhar.vercel.app/about-students.png",
-            telephone: "+919935661144",
+            telephone: "+919889897057",
             email: "navjeevanschool2011@gmail.com",
             foundingDate: "2011",
             award: "Affiliated to CBSE Pattern",
