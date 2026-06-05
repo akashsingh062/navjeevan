@@ -29,6 +29,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const toEmail = process.env.RESEND_TO_EMAIL || "njpschool2011@gmail.com";
+
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 16px; background-color: #fafaf9;">
         <h2 style="color: #c2185b; border-bottom: 2px solid #c2185b; padding-bottom: 10px; margin-top: 0;">New Admission Inquiry Form Submission</h2>
@@ -82,7 +84,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         from: "onboarding@resend.dev",
-        to: "akash622003singh@gmail.com",
+        to: toEmail,
         subject: `New Admission Inquiry: ${studentName} (${desiredClass})`,
         html: emailHtml,
       }),

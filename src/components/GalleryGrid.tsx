@@ -235,7 +235,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
             const delayClass = delays[idx % 4];
             return (
               <button
-                key={item.id}
+                key={item.id ?? item._id ?? `home-${idx}`}
                 onClick={() => setSelectedItem(item)}
                 className={`group relative w-full aspect-4/5 sm:aspect-3/4 rounded-3xl overflow-hidden border border-border/80 bg-white shadow-xs hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 ease-out focus:outline-none text-left cursor-pointer reveal-on-scroll reveal-fade-up ${delayClass}`}
                 aria-haspopup="dialog"
@@ -497,7 +497,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                     const delayClass = delays[idx % 4];
                     return (
                       <button
-                        key={item.id}
+                        key={item.id ?? item._id ?? `cat-${idx}`}
                         onClick={() => setSelectedItem(item)}
                         className={`break-inside-avoid mb-6 w-full rounded-3xl overflow-hidden border border-border/60 shadow-xs hover:shadow-2xl hover:scale-[1.015] transition-all duration-300 group focus:outline-none text-left cursor-pointer relative reveal-on-scroll reveal-fade-up ${delayClass}`}
                         aria-haspopup="dialog"
