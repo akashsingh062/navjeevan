@@ -835,7 +835,7 @@ export default function Admissions() {
                       value={formData.whatsappNumber}
                       onChange={handleChange}
                       placeholder={
-                        language === "en" ? "e.g., 9956526062" : "उदा. 9956526062"
+                        language === "en" ? "e.g., 9415906899" : "उदा. 9415906899"
                       }
                       className="px-4 py-3 rounded-xl border border-gray-300 bg-white text-xs font-semibold text-neutral-dark focus:outline-none focus:border-primary/50 transition-colors"
                     />
@@ -981,7 +981,7 @@ export default function Admissions() {
 
           <div className="flex flex-wrap gap-3.5 shrink-0">
             <a
-              href="https://wa.me/919956526062?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+              href="https://wa.me/919415906899?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black text-sm transition-all shadow-md focus:outline-none shrink-0 cursor-pointer"

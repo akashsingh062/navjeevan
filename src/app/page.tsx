@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import NoticeCard from "@/components/NoticeCard";
+import NoticeDetailModal from "@/components/NoticeDetailModal";
 import GalleryGrid from "@/components/GalleryGrid";
 import CTASection from "@/components/CTASection";
 import { useLanguage } from "@/context/LanguageContext";
@@ -71,6 +72,7 @@ export default function Home() {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -146,6 +148,7 @@ export default function Home() {
                         <NoticeCard
                           key={notice.id || notice._id}
                           notice={notice}
+                          onClick={() => setSelectedNotice(notice)}
                         />
                       ))}
                     </div>
@@ -192,7 +195,8 @@ export default function Home() {
                         return (
                           <div
                             key={notice.id || notice._id}
-                            className={`p-3 bg-neutral-light border border-gray-200 border-l-4 ${activeBorderColor} rounded-xl shadow-3xs flex flex-col gap-2 text-left`}
+                            onClick={() => setSelectedNotice(notice)}
+                            className={`p-3 bg-neutral-light border border-gray-200 border-l-4 ${activeBorderColor} rounded-xl shadow-3xs flex flex-col gap-2 text-left cursor-pointer hover:shadow-xs hover:border-primary/30 transition-all`}
                           >
                             <div className="flex items-center justify-between gap-2">
                               <span
@@ -222,6 +226,7 @@ export default function Home() {
                                   href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
                                   className="p-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors shrink-0 flex items-center justify-center"
                                   title="Download Circular"
                                 >
@@ -237,6 +242,15 @@ export default function Home() {
                 )}
               </div>
             </div>
+
+            {selectedNotice && (
+              <NoticeDetailModal
+                isOpen={!!selectedNotice}
+                notice={selectedNotice}
+                onClose={() => setSelectedNotice(null)}
+                language={language}
+              />
+            )}
 
             <div className="hidden md:flex flex-col gap-4 text-left reveal-on-scroll reveal-fade-left">
               <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">

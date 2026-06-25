@@ -238,7 +238,7 @@ export default function MobileMenu({
                 </span>
               </a>
               <a
-                href="https://wa.me/919956526062?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
+                href="https://wa.me/919415906899?text=Hello%20Nav%20Jeevan%20School%2C%20I%20have%20an%20admission%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3.5 bg-accent text-white rounded-2xl font-bold text-sm"

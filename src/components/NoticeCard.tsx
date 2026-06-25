@@ -3,9 +3,10 @@ import { Calendar, AlertTriangle, Paperclip, FileDown } from "lucide-react";
 
 interface NoticeCardProps {
   notice: Notice;
+  onClick?: () => void;
 }
 
-export default function NoticeCard({ notice }: NoticeCardProps) {
+export default function NoticeCard({ notice, onClick }: NoticeCardProps) {
   const formatDate = (isoString: string) => {
     try {
       return new Date(isoString).toLocaleDateString("en-IN", {
@@ -37,7 +38,8 @@ export default function NoticeCard({ notice }: NoticeCardProps) {
 
   return (
     <article
-      className={`bg-white rounded-2xl border border-border border-l-4 ${borderColor} shadow-sm overflow-hidden wrap-break-word transition-all hover:shadow-md`}
+      onClick={onClick}
+      className={`bg-white rounded-2xl border border-border border-l-4 ${borderColor} shadow-sm overflow-hidden wrap-break-word transition-all hover:shadow-md ${onClick ? "cursor-pointer" : ""}`}
     >
       <div className="px-4 pt-4 pb-3">
 
@@ -68,6 +70,7 @@ export default function NoticeCard({ notice }: NoticeCardProps) {
           href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
           className="flex items-center gap-2 px-4 py-3 bg-primary-light border-t border-border text-primary text-xs font-bold transition-colors hover:bg-primary/15 active:bg-primary/20 w-full"
         >
           <div className="flex items-center gap-1.5 flex-1">

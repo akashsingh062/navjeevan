@@ -45,8 +45,8 @@ export const contactDirectory: ContactCard[] = [
       hi: "वैकल्पिक हॉटलाइन"
     },
     detail: {
-      en: "+91 99565 26062",
-      hi: "+91 99565 26062"
+      en: "+91 94159 06899",
+      hi: "+91 94159 06899"
     },
     desc: {
       en: "Alternative mobile helpline for direct calls and WhatsApp queries regarding registrations.",
@@ -56,7 +56,7 @@ export const contactDirectory: ContactCard[] = [
       en: "Call Alternative",
       hi: "वैकल्पिक नंबर कॉल करें"
     },
-    href: "tel:+919956526062",
+    href: "tel:+919415906899",
     iconName: "Phone",
     accentBg: "bg-emerald-50 text-emerald-600 border-emerald-100",
     accentText: "text-emerald-700",

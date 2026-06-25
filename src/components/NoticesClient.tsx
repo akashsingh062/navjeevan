@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Notice } from "@/types";
 import NoticeCard from "@/components/NoticeCard";
+import NoticeDetailModal from "@/components/NoticeDetailModal";
 import { Search, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -25,6 +26,7 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
   const { language } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState<typeof CATEGORIES[number]>("All");
+  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
 
   const filteredNotices = initialNotices.filter((notice) => {
     let matchesCategory = false;
@@ -94,9 +96,22 @@ export default function NoticesClient({ initialNotices }: NoticesClientProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {filteredNotices.map((notice) => (
-            <NoticeCard key={notice.id} notice={notice} />
+            <NoticeCard
+              key={notice.id}
+              notice={notice}
+              onClick={() => setSelectedNotice(notice)}
+            />
           ))}
         </div>
+      )}
+
+      {selectedNotice && (
+        <NoticeDetailModal
+          isOpen={!!selectedNotice}
+          notice={selectedNotice}
+          onClose={() => setSelectedNotice(null)}
+          language={language}
+        />
       )}
     </div>
   );

@@ -37,7 +37,7 @@ export default function CTASection() {
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            href="/admissions#download"
+            href="/admissions"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-white/12 border border-white/25 text-white hover:bg-white/18 rounded-2xl font-bold text-sm transition-all active:scale-95"
           >
             <FileText className="w-4 h-4" />

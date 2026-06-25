@@ -40,8 +40,9 @@ async function isDbConnected(): Promise<boolean> {
   try {
     const conn = await connectToDatabase();
     return conn !== null;
-  } catch {
+  } catch (err) {
     console.warn("Database connection failed. Falling back to local static data.");
+    console.error("Database connection error details:", err);
     return false;
   }
 }
