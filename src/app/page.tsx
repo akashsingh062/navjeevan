@@ -50,7 +50,7 @@ const managementMembers = [
       en: "Principal",
       hi: "प्रधानाचार्य",
     },
-    photo: '/un.jpeg',
+    photo: '/principle.jpeg',
   },
   {
     name: {
@@ -185,11 +185,11 @@ export default function Home() {
                           ? (borderColors[notice.importanceColor ?? "red"] ??
                             "border-l-red-500")
                           : (categoryBorders[
-                              notice.category as keyof typeof categoryBorders
-                            ] ?? categoryBorders.Others);
+                            notice.category as keyof typeof categoryBorders
+                          ] ?? categoryBorders.Others);
                         const activeBadgeStyle =
                           categoryBadges[
-                            notice.category as keyof typeof categoryBadges
+                          notice.category as keyof typeof categoryBadges
                           ] ?? categoryBadges.Others;
 
                         return (
@@ -464,18 +464,17 @@ export default function Home() {
             <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
             {managementMembers.map((member, i) => {
               const delays = ["", "delay-100", "delay-200", "delay-300"];
               const isMd = i === 2;
               return (
                 <div
                   key={i}
-                  className={`flex flex-col w-full sm:h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${
-                    isMd
+                  className={`flex flex-col w-full sm:h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${isMd
                       ? "bg-white border-2 border-primary/25 shadow-md hover:border-primary/55 hover:-translate-y-1.5"
                       : "bg-white border border-border shadow-xs hover:border-primary/20 hover:shadow-md hover:-translate-y-1.5"
-                  }`}
+                    }`}
                 >
                   <div className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
                     <Image
@@ -494,11 +493,10 @@ export default function Home() {
                       {member.name[language]}
                     </h3>
                     <span
-                      className={`text-[10px] font-bold uppercase tracking-wider px-3.5 py-0.5 rounded-md leading-none transition-all duration-300 border ${
-                        isMd
+                      className={`text-[10px] font-bold uppercase tracking-wider px-3.5 py-0.5 rounded-md leading-none transition-all duration-300 border ${isMd
                           ? "bg-primary/10 text-primary border-primary/20 group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
                           : "bg-neutral-light text-neutral-body border-border group-hover:bg-primary group-hover:text-white group-hover:border-transparent"
-                      }`}
+                        }`}
                     >
                       {member.role[language]}
                     </span>

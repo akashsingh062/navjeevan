@@ -62,52 +62,7 @@ export const contactDirectory: ContactCard[] = [
     accentText: "text-emerald-700",
     borderColor: "border-emerald-200/50"
   },
-  {
-    title: {
-      en: "Email Support Desk",
-      hi: "ईमेल सहायता डेस्क"
-    },
-    detail: {
-      en: "navjeevanschool2011@gmail.com",
-      hi: "navjeevanschool2011@gmail.com"
-    },
-    desc: {
-      en: "For transfer requests, complaints, official records, or feedback submissions.",
-      hi: "स्थानांतरण प्रमाण पत्र, शिकायतों, आधिकारिक रिकॉर्ड या प्रतिक्रिया सबमिशन के लिए।"
-    },
-    actionLabel: {
-      en: "Send Email",
-      hi: "ईमेल भेजें"
-    },
-    href: "mailto:navjeevanschool2011@gmail.com",
-    iconName: "Mail",
-    accentBg: "bg-accent-light",
-    accentText: "text-accent",
-    borderColor: "border-accent/10"
-  },
-  {
-    title: {
-      en: "Campus Office Hours",
-      hi: "कार्यालय कार्य समय"
-    },
-    detail: {
-      en: "08:00 AM - 01:30 PM",
-      hi: "08:00 AM - 01:30 PM"
-    },
-    desc: {
-      en: "Subsidized fee counters and physical document reception are active Mon - Sat.",
-      hi: "रियायती शुल्क काउंटर और भौतिक दस्तावेज़ जमा करने की सुविधा सोमवार से शनिवार तक उपलब्ध है।"
-    },
-    actionLabel: {
-      en: "Visit Campus",
-      hi: "परिसर में आएं"
-    },
-    href: "#campus-location",
-    iconName: "Clock",
-    accentBg: "bg-neutral-light",
-    accentText: "text-neutral-dark",
-    borderColor: "border-border"
-  },
+  
   {
     title: {
       en: "WhatsApp Channel",
@@ -130,5 +85,28 @@ export const contactDirectory: ContactCard[] = [
     accentBg: "bg-emerald-50 text-emerald-600 border-emerald-100",
     accentText: "text-emerald-700",
     borderColor: "border-emerald-200/50"
+  },
+  {
+    title: {
+      en: "Email Support Desk",
+      hi: "ईमेल सहायता डेस्क"
+    },
+    detail: {
+      en: "navjeevanschool2011@gmail.com",
+      hi: "navjeevanschool2011@gmail.com"
+    },
+    desc: {
+      en: "For transfer requests, complaints, official records, or feedback submissions.",
+      hi: "स्थानांतरण प्रमाण पत्र, शिकायतों, आधिकारिक रिकॉर्ड या प्रतिक्रिया सबमिशन के लिए।"
+    },
+    actionLabel: {
+      en: "Send Email",
+      hi: "ईमेल भेजें"
+    },
+    href: "mailto:navjeevanschool2011@gmail.com",
+    iconName: "Mail",
+    accentBg: "bg-accent-light",
+    accentText: "text-accent",
+    borderColor: "border-accent/10"
   }
 ];

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Save, PlusCircle, Users, Edit, Trash2, Camera, UploadCloud, GraduationCap, Briefcase } from "lucide-react";
 import { Faculty } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
+import ImageCropper from "./ImageCropper";
 
 interface FacultyFormInput {
   name: string;
@@ -43,13 +44,33 @@ export default function FacultyFormSection({
 
   const [editingFacultyId, setEditingFacultyId] = useState<string | null>(null);
   const [facultyImageUploading, setFacultyImageUploading] = useState(false);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
 
-  const handleFacultyImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFacultyImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setSelectedFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropperSrc(reader.result as string);
+      setCropperOpen(true);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleCroppedUpload = async (croppedBlob: Blob) => {
+    setCropperOpen(false);
+    setCropperSrc(null);
     setFacultyImageUploading(true);
     const loadingToast = toast.loading("Uploading staff photograph...");
+
+    const file = new File([croppedBlob], selectedFileName || "staff-photo.jpg", {
+      type: "image/jpeg"
+    });
 
     const formData = new FormData();
     formData.append("file", file);
@@ -404,7 +425,7 @@ export default function FacultyFormSection({
                                 () => handleDeleteFaculty(member.id || member._id || "")
                               );
                             }}
-                            className="py-2.5 px-3.5 bg-slate-50 hover:bg-red-50 border border-slate-100 hover:border-red-200 text-slate-500 hover:text-red-650 rounded-xl transition-all focus:outline-none cursor-pointer"
+                            className="py-2.5 px-3.5 bg-red-50/50 hover:bg-red-50 border border-red-100 hover:border-red-200 text-red-600 hover:text-red-700 rounded-xl transition-all focus:outline-none cursor-pointer"
                             title="Delete profile"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -419,6 +440,16 @@ export default function FacultyFormSection({
           </div>
         )}
       </div>
+
+      <ImageCropper
+        isOpen={cropperOpen}
+        onClose={() => {
+          setCropperOpen(false);
+          setCropperSrc(null);
+        }}
+        imageSrc={cropperSrc || ""}
+        onCrop={handleCroppedUpload}
+      />
     </div>
   );
 }
