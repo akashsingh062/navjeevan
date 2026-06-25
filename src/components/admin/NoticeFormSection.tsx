@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Save, Paperclip, Edit, Trash2 } from "lucide-react";
+import { Save, Paperclip, Edit, Trash2, Search, Filter, AlertCircle, FileText, CheckCircle2 } from "lucide-react";
 import { Notice } from "@/types";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface NoticeFormInput {
   title: string;
@@ -41,10 +42,15 @@ export default function NoticeFormSection({
     name: "category",
     defaultValue: "General"
   });
+  
   const [noticeAttachmentUrl, setNoticeAttachmentUrl] = useState("");
   const [isNoticeAttachmentUploading, setIsNoticeAttachmentUploading] = useState(false);
   const [editingNoticeId, setEditingNoticeId] = useState<string | null>(null);
   const [selectedNoticeIds, setSelectedNoticeIds] = useState<string[]>([]);
+
+  // Search & Filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterCategory, setFilterCategory] = useState("All");
 
   const handleNoticeAttachmentUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -156,7 +162,12 @@ export default function NoticeFormSection({
     setSelectedColor(notice.importanceColor || "blue");
     setNoticeAttachmentUrl(notice.attachmentUrl || "");
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const container = document.getElementById("admin-notice-form-top");
+    if (container) {
+      container.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleDeleteNotice = async (id: string) => {
@@ -198,293 +209,409 @@ export default function NoticeFormSection({
     }
   };
 
+  // Filter and search computation
+  const filteredNotices = noticesList.filter((notice) => {
+    const matchesSearch = notice.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          notice.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = filterCategory === "All" || notice.category === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  // Group by category
+  const groupedNotices = filteredNotices.reduce((acc, notice) => {
+    const category = notice.category || "Others";
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(notice);
+    return acc;
+  }, {} as Record<string, Notice[]>);
+
+  const categoryOrder = ["General", "Admission", "Exam", "Holiday"];
+  const sortedCategories = Object.keys(groupedNotices).sort((a, b) => {
+    const indexA = categoryOrder.indexOf(a);
+    const indexB = categoryOrder.indexOf(b);
+    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+    return a.localeCompare(b);
+  });
+
   return (
-    <form onSubmit={noticeForm.handleSubmit(onAddNotice)} className="flex flex-col gap-5">
-      <div className="flex flex-col gap-1 text-left mb-2">
-        <h3 className="text-base font-extrabold text-neutral-dark">
-          {editingNoticeId ? "Edit Notice Details" : "Post New Notice"}
-        </h3>
-        <p className="text-xs text-neutral-body">
-          {editingNoticeId
-            ? "Modify notice parameters. Save changes to update the bulletin board instantly."
-            : "Fills the bulletin board instantly with high-priority warnings or exam records."}
-        </p>
-      </div>
+    <div id="admin-notice-form-top" className="flex flex-col gap-8">
+      {/* Form Content */}
+      <form onSubmit={noticeForm.handleSubmit(onAddNotice)} className="flex flex-col gap-6 text-left">
+        <div className="flex flex-col gap-1.5 border-b border-slate-100 pb-4">
+          <h3 className="text-base font-black text-slate-900">
+            {editingNoticeId ? "Edit Bulletin Board Announcement" : "Create New Announcement Bulletin"}
+          </h3>
+          <p className="text-xs text-slate-500 font-medium">
+            Announcements are published in real-time to the public site feed, complete with categories and optional files.
+          </p>
+        </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-extrabold text-neutral-dark">Notice Category</label>
-        <select
-          className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-          {...noticeForm.register("category")}
-        >
-          <option value="General">General / Administrative</option>
-          <option value="Admission">Admissions Updates</option>
-          <option value="Exam">Examination Schedule</option>
-          <option value="Holiday">Holidays & Vacations</option>
-          <option value="Others">Others</option>
-        </select>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Category selection */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-extrabold text-slate-700 tracking-wide">Notice Category</label>
+            <select
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              {...noticeForm.register("category")}
+            >
+              <option value="General">General / Administrative</option>
+              <option value="Admission">Admissions Updates</option>
+              <option value="Exam">Examination Schedule</option>
+              <option value="Holiday">Holidays & Vacations</option>
+              <option value="Others">Others</option>
+            </select>
 
-        {watchedCategory === "Others" && (
-          <div className="flex flex-col gap-1.5 mt-2 transition-all">
-            <label className="text-xs font-bold text-neutral-dark">Specify Custom Category</label>
+            {watchedCategory === "Others" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="flex flex-col gap-2 mt-2"
+              >
+                <label className="text-xs font-bold text-slate-700">Specify Custom Category</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Science Exhibition, Sports Meet"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                />
+              </motion.div>
+            )}
+          </div>
+
+          {/* Title */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-extrabold text-slate-700 tracking-wide">Announcement Title</label>
             <input
               type="text"
-              placeholder="e.g. Science Exhibition, Sports Meet"
-              className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-              value={customCategory}
-              onChange={(e) => setCustomCategory(e.target.value)}
+              placeholder="e.g. Annual Summer Vacation Notification"
+              required
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              {...noticeForm.register("title")}
             />
-            <span className="text-[10px] text-neutral-body font-medium leading-relaxed">
-              If left blank, the category will default to &quot;Others&quot;.
-            </span>
           </div>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-extrabold text-neutral-dark">Notice Title</label>
-        <input
-          type="text"
-          placeholder="e.g. Summer Vacation Commences June 1st"
-          required
-          className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-          {...noticeForm.register("title")}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-extrabold text-neutral-dark">Notice Body Description</label>
-        <textarea
-          rows={5}
-          placeholder="Write clear detailed points explaining dates, times, and directives for parents..."
-          required
-          className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-          {...noticeForm.register("description")}
-        />
-      </div>
-
-      <div className="flex flex-col gap-2 mt-2">
-        <label className="text-xs font-extrabold text-neutral-dark">Choose Importance Tag</label>
-        <div className="flex items-center gap-2.5 flex-wrap">
-          {[
-            { color: "red", label: "Urgent Alert", isImportant: true, bg: "bg-red-50 text-red-800 border-red-200 hover:bg-red-100", dot: "bg-red-500" },
-            { color: "amber", label: "Important", isImportant: true, bg: "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100", dot: "bg-amber-500" },
-            { color: "blue", label: "Information", isImportant: false, bg: "bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-100", dot: "bg-blue-500" },
-            { color: "green", label: "General Info", isImportant: false, bg: "bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100", dot: "bg-emerald-500" },
-            { color: "purple", label: "Special Notice", isImportant: false, bg: "bg-purple-50 text-purple-800 border-purple-200 hover:bg-purple-100", dot: "bg-purple-500" }
-          ].map((opt) => (
-            <button
-              key={opt.color}
-              type="button"
-              onClick={() => {
-                setSelectedColor(opt.color);
-                noticeForm.setValue("importanceColor", opt.color);
-                noticeForm.setValue("isImportant", opt.isImportant);
-              }}
-              className={`flex items-center gap-1.5 px-3 py-2 border rounded-xl transition-all text-[11px] font-black uppercase tracking-wider cursor-pointer focus:outline-none ${
-                selectedColor === opt.color
-                  ? `${opt.bg} border-current ring-1 ring-offset-1 ring-current`
-                  : "border-gray-200 bg-white text-neutral-body hover:border-gray-300"
-              }`}
-            >
-              <span className={`w-2.5 h-2.5 rounded-full ${opt.dot}`} />
-              <span>{opt.label}</span>
-            </button>
-          ))}
         </div>
-        <input type="hidden" {...noticeForm.register("importanceColor")} />
-        <input type="hidden" {...noticeForm.register("isImportant")} />
-        <p className="text-[10px] text-neutral-body leading-tight mt-0.5">
-          Notice bulletins marked as **Urgent Alert** or **Important** are treated as high priority and remain sticky at the top of the feed.
-        </p>
-      </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-extrabold text-neutral-dark">Attach Notice Document / Image (Optional)</label>
-        <div className="flex items-center gap-4 p-4 bg-neutral-light border border-gray-200 rounded-xl">
-          <div className="flex-1 text-left">
-            <input
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={handleNoticeAttachmentUpload}
-              disabled={isNoticeAttachmentUploading}
-              className="text-xs text-neutral-body file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
-            />
-            <p className="text-[10px] text-neutral-body mt-1.5 leading-tight">
-              {isNoticeAttachmentUploading
-                ? "Uploading attachment..."
-                : "Upload a PDF document or image copy of the notice (Max 5MB)."
-              }
-            </p>
-          </div>
-          {noticeAttachmentUrl && (
-            <div className="shrink-0 flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-[10px] font-bold">
-              <Paperclip className="w-3.5 h-3.5 animate-pulse" />
-              <span>Attached</span>
+        {/* Description body */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-extrabold text-slate-700 tracking-wide">Notice Body Description</label>
+          <textarea
+            rows={5}
+            placeholder="Write clear detailed points explaining dates, times, and directives for parents..."
+            required
+            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+            {...noticeForm.register("description")}
+          />
+        </div>
+
+        {/* Priority options */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-extrabold text-slate-700 tracking-wide">Importance & Priority Tag</label>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {[
+              { color: "red", label: "Urgent Alert", isImportant: true, bg: "bg-red-50 text-red-700 border-red-200 hover:bg-red-100/50", dot: "bg-red-500" },
+              { color: "amber", label: "Important", isImportant: true, bg: "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/50", dot: "bg-amber-500" },
+              { color: "blue", label: "Information", isImportant: false, bg: "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100/50", dot: "bg-blue-500" },
+              { color: "green", label: "General Info", isImportant: false, bg: "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100/50", dot: "bg-emerald-500" },
+              { color: "purple", label: "Special Notice", isImportant: false, bg: "bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100/50", dot: "bg-purple-500" }
+            ].map((opt) => (
               <button
+                key={opt.color}
                 type="button"
                 onClick={() => {
-                  setNoticeAttachmentUrl("");
-                  noticeForm.setValue("attachmentUrl", "");
+                  setSelectedColor(opt.color);
+                  noticeForm.setValue("importanceColor", opt.color);
+                  noticeForm.setValue("isImportant", opt.isImportant);
                 }}
-                className="text-red-600 hover:text-red-800 font-extrabold focus:outline-none"
+                className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl transition-all text-[11px] font-black uppercase tracking-wider cursor-pointer focus:outline-none select-none ${
+                  selectedColor === opt.color
+                    ? `${opt.bg} border-current ring-1 ring-offset-1 ring-current`
+                    : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
+                }`}
               >
-                Remove
+                <span className={`w-2 h-2 rounded-full ${opt.dot}`} />
+                <span>{opt.label}</span>
               </button>
+            ))}
+          </div>
+          <input type="hidden" {...noticeForm.register("importanceColor")} />
+          <input type="hidden" {...noticeForm.register("isImportant")} />
+        </div>
+
+        {/* Attachment upload */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-extrabold text-slate-700 tracking-wide">Attach Circular Document (Optional)</label>
+          <div className="flex items-center justify-between gap-4 p-4.5 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex-1 text-left">
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                onChange={handleNoticeAttachmentUpload}
+                disabled={isNoticeAttachmentUploading}
+                className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
+              />
+              <p className="text-[10px] text-slate-400 mt-1.5 font-medium leading-none">
+                {isNoticeAttachmentUploading
+                  ? "Uploading attachment file to Cloud Storage..."
+                  : "PDF documents or images copy (Max 5MB)."
+                }
+              </p>
             </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex gap-3.5 mt-4">
-        <button
-          type="submit"
-          disabled={status === "saving" || isNoticeAttachmentUploading}
-          className="flex-1 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
-        >
-          <Save className="w-4 h-4" />
-          <span>
-            {editingNoticeId
-              ? "Save Notice Changes"
-              : (status === "saving" ? "Posting Notice..." : "Publish Notice")}
-          </span>
-        </button>
-
-        {editingNoticeId && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditingNoticeId(null);
-              noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
-              setSelectedColor("blue");
-              setNoticeAttachmentUrl("");
-            }}
-            className="px-6 py-3.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark font-bold text-sm rounded-xl shadow-sm transition-all focus:outline-none cursor-pointer"
-          >
-            Cancel Edit
-          </button>
-        )}
-      </div>
-
-      <div className="mt-10 border-t border-gray-100 pt-8 text-left">
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h4 className="text-sm font-extrabold text-neutral-dark">Active Notices ({noticesList.length})</h4>
-          {noticesList.length > 0 && (
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  if (selectedNoticeIds.length === noticesList.length) {
-                    setSelectedNoticeIds([]);
-                  } else {
-                    setSelectedNoticeIds(noticesList.map(n => n.id || n._id || "").filter(Boolean));
-                  }
-                }}
-                className="px-2.5 py-1.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
-              >
-                {selectedNoticeIds.length === noticesList.length ? "Deselect All" : "Select All"}
-              </button>
-              {selectedNoticeIds.length > 0 && (
+            {noticeAttachmentUrl && (
+              <div className="shrink-0 flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-[10px] font-bold">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Attached</span>
                 <button
                   type="button"
                   onClick={() => {
-                    triggerConfirm(
-                      "Delete Selected Notices",
-                      `Are you sure you want to permanently delete all ${selectedNoticeIds.length} selected notices? This action cannot be undone.`,
-                      handleBulkDeleteNotices
-                    );
+                    setNoticeAttachmentUrl("");
+                    noticeForm.setValue("attachmentUrl", "");
                   }}
-                  className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-lg shadow-sm transition-all focus:outline-none cursor-pointer"
+                  className="text-red-650 hover:text-red-800 font-extrabold cursor-pointer focus:outline-none"
                 >
-                  Delete Selected ({selectedNoticeIds.length})
+                  Remove
                 </button>
-              )}
-            </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Form buttons */}
+        <div className="flex gap-3.5 mt-2">
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            type="submit"
+            disabled={status === "saving" || isNoticeAttachmentUploading}
+            className="flex-1 py-4 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-black text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
+          >
+            <Save className="w-4 h-4" />
+            <span>
+              {editingNoticeId
+                ? "Save Announcement Changes"
+                : (status === "saving" ? "Publishing Bulletin..." : "Publish Announcement")}
+            </span>
+          </motion.button>
+
+          {editingNoticeId && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingNoticeId(null);
+                noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
+                setSelectedColor("blue");
+                setNoticeAttachmentUrl("");
+              }}
+              className="px-6 py-4 border border-slate-350 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl shadow-3xs transition-all focus:outline-none cursor-pointer"
+            >
+              Cancel Edit
+            </button>
           )}
         </div>
-        {noticesList.length === 0 ? (
-          <p className="text-xs text-neutral-body italic">No active notices found.</p>
+      </form>
+
+      {/* Bulletins list section */}
+      <div className="mt-12 border-t border-slate-100 pt-10 text-left flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h4 className="text-sm font-black text-slate-900">Active School Announcements ({noticesList.length})</h4>
+            <p className="text-[11px] text-slate-400 mt-1 font-semibold">Search, filter, or delete active circular listings.</p>
+          </div>
+
+          <div className="flex items-center gap-2.5 self-stretch sm:self-auto flex-wrap">
+            {selectedNoticeIds.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  triggerConfirm(
+                    "Delete Selected Notices",
+                    `Are you sure you want to permanently delete all ${selectedNoticeIds.length} selected notices? This action cannot be undone.`,
+                    handleBulkDeleteNotices
+                  );
+                }}
+                className="px-3.5 py-2.5 bg-red-650 hover:bg-red-750 text-white text-[10px] font-black uppercase rounded-xl shadow-xs transition-all focus:outline-none cursor-pointer"
+              >
+                Delete Selected ({selectedNoticeIds.length})
+              </button>
+            )}
+            
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedNoticeIds.length === noticesList.length) {
+                  setSelectedNoticeIds([]);
+                } else {
+                  setSelectedNoticeIds(noticesList.map(n => n.id || n._id || "").filter(Boolean));
+                }
+              }}
+              className="px-3.5 py-2.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-[10px] font-black uppercase rounded-xl shadow-3xs transition-all focus:outline-none cursor-pointer select-none"
+            >
+              {selectedNoticeIds.length === noticesList.length ? "Deselect All" : "Select All"}
+            </button>
+          </div>
+        </div>
+
+        {/* Filter controls */}
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3.5 items-center">
+          {/* Search bar */}
+          <div className="sm:col-span-8 relative flex items-center">
+            <Search className="w-4 h-4 text-slate-400 absolute left-4 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search announcements by title or description details..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 text-xs rounded-xl font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary transition-all"
+            />
+          </div>
+
+          {/* Category Dropdown */}
+          <div className="sm:col-span-4 relative flex items-center">
+            <Filter className="w-4 h-4 text-slate-400 absolute left-4 pointer-events-none" />
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 text-xs rounded-xl font-bold text-slate-700 focus:outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+            >
+              <option value="All">All Categories</option>
+              <option value="General">General / Admin</option>
+              <option value="Admission">Admissions</option>
+              <option value="Exam">Examinations</option>
+              <option value="Holiday">Holidays</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Grid Lists */}
+        {filteredNotices.length === 0 ? (
+          <div className="p-8 text-center bg-slate-50 border border-slate-150 rounded-2xl">
+            <p className="text-xs text-slate-500 font-semibold italic">No active bulletins match your filters.</p>
+          </div>
         ) : (
-          <div className="flex flex-col gap-3.5">
-            {noticesList.map((notice) => (
-              <div key={notice.id || notice._id} className="p-4 bg-neutral-light border border-gray-200 rounded-2xl flex items-start justify-between gap-4 wrap-break-word overflow-hidden">
-                <div className="pt-0.5">
-                  <input
-                    type="checkbox"
-                    checked={selectedNoticeIds.includes(notice.id || notice._id || "")}
-                    onChange={(e) => {
-                      const id = notice.id || notice._id || "";
-                      if (e.target.checked) {
-                        setSelectedNoticeIds(prev => [...prev, id]);
-                      } else {
-                        setSelectedNoticeIds(prev => prev.filter(x => x !== id));
-                      }
-                    }}
-                    className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                  />
+          <div className="flex flex-col gap-8">
+            {sortedCategories.map((category) => (
+              <div key={category} className="flex flex-col gap-4">
+                {/* Category Header Badge */}
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+                  <span className="text-[10px] uppercase font-black tracking-widest text-slate-600 bg-slate-100/80 px-2.5 py-1.5 rounded-xl border border-slate-200">
+                    {category}
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400">
+                    ({groupedNotices[category].length} announcements)
+                  </span>
                 </div>
-                <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded tracking-wide border ${
-                      notice.importanceColor === "red"
-                        ? "bg-red-100 text-red-850 border-red-200"
-                        : notice.importanceColor === "amber"
-                        ? "bg-amber-100 text-amber-850 border-amber-200"
-                        : notice.importanceColor === "green"
-                        ? "bg-emerald-100 text-emerald-850 border-emerald-200"
-                        : notice.importanceColor === "purple"
-                        ? "bg-purple-100 text-purple-850 border-purple-200"
-                        : "bg-blue-100 text-blue-850 border-blue-200"
-                    }`}>
-                      {notice.category}
-                    </span>
-                    <span className="text-[10px] text-neutral-body font-semibold">
-                      {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                    </span>
-                  </div>
-                  <h5 className="text-xs font-black text-neutral-dark tracking-wide leading-snug wrap-break-word">{notice.title}</h5>
-                  <p className="text-[11px] text-neutral-body leading-relaxed font-medium line-clamp-2 wrap-break-word">{notice.description}</p>
-                  {notice.attachmentUrl && (
-                    <a
-                      href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline font-bold self-start mt-1"
-                    >
-                      <Paperclip className="w-3.5 h-3.5" />
-                      <span>View Attachment Circular</span>
-                    </a>
-                  )}
-                </div>
-                <div className="flex gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleStartEditNotice(notice)}
-                    className="flex items-center justify-center p-2 border border-gray-200 hover:bg-neutral-light text-neutral-dark rounded-xl transition-all cursor-pointer focus:outline-none"
-                    title="Edit Notice"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerConfirm(
-                        "Delete Notice",
-                        "Are you sure you want to permanently delete this notice bulletin? This action cannot be undone.",
-                        () => handleDeleteNotice(notice.id || notice._id || "")
+
+                <div className="flex flex-col gap-4">
+                  <AnimatePresence>
+                    {groupedNotices[category].map((notice, index) => {
+                      const isChecked = selectedNoticeIds.includes(notice.id || notice._id || "");
+                      return (
+                        <motion.div
+                          key={notice.id || notice._id || `notice-${index}`}
+                          layout
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95 }}
+                          className={`p-5 rounded-2xl border transition-all flex items-start gap-4 shadow-3xs relative bg-white ${
+                            isChecked ? "border-primary/40 bg-primary-light/10" : "border-slate-200 hover:border-slate-300"
+                          }`}
+                        >
+                          {/* Check selection */}
+                          <div className="pt-1.5 shrink-0">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={(e) => {
+                                const id = notice.id || notice._id || "";
+                                if (e.target.checked) {
+                                  setSelectedNoticeIds(prev => [...prev, id]);
+                                } else {
+                                  setSelectedNoticeIds(prev => prev.filter(x => x !== id));
+                                }
+                              }}
+                              className="w-4 h-4 rounded-md border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                            />
+                          </div>
+
+                          {/* Meta info */}
+                          <div className="flex-1 flex flex-col gap-2 min-w-0">
+                            <div className="flex items-center gap-2.5 flex-wrap">
+                              <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded-md tracking-wider border leading-none ${
+                                notice.importanceColor === "red"
+                                  ? "bg-red-50 text-red-700 border-red-150"
+                                  : notice.importanceColor === "amber"
+                                  ? "bg-amber-50 text-amber-700 border-amber-150"
+                                  : notice.importanceColor === "green"
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-150"
+                                  : notice.importanceColor === "purple"
+                                  ? "bg-purple-50 text-purple-700 border-purple-150"
+                                  : "bg-blue-50 text-blue-700 border-blue-150"
+                              }`}>
+                                {notice.category}
+                              </span>
+                              
+                              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">
+                                {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                              </span>
+                            </div>
+
+                            <h5 className="text-xs font-black text-slate-900 tracking-wide leading-snug wrap-break-word">{notice.title}</h5>
+                            <p className="text-xs text-slate-500 leading-relaxed font-medium wrap-break-word whitespace-pre-wrap">{notice.description}</p>
+                            
+                            {notice.attachmentUrl && (
+                              <a
+                                href={`/api/notices/download?url=${encodeURIComponent(notice.attachmentUrl)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 text-[10px] text-primary hover:underline font-extrabold self-start mt-2"
+                              >
+                                <Paperclip className="w-3.5 h-3.5" />
+                                <span>View Attachment Circular</span>
+                              </a>
+                            )}
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex gap-2 shrink-0 self-center">
+                            <button
+                              type="button"
+                              onClick={() => handleStartEditNotice(notice)}
+                              className="flex items-center justify-center p-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl transition-all cursor-pointer focus:outline-none"
+                              title="Edit Notice"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                triggerConfirm(
+                                  "Delete Notice",
+                                  "Are you sure you want to permanently delete this notice bulletin? This action cannot be undone.",
+                                  () => handleDeleteNotice(notice.id || notice._id || "")
+                                );
+                              }}
+                              className="flex items-center justify-center p-2.5 border border-red-150 hover:bg-red-50 text-red-650 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                              title="Delete Notice"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </motion.div>
                       );
-                    }}
-                    className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                    title="Delete Notice"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    })}
+                  </AnimatePresence>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-    </form>
+    </div>
   );
 }

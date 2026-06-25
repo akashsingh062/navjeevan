@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
-import { Save, PlusCircle, Users, Edit, Trash2 } from "lucide-react";
+import { Save, PlusCircle, Users, Edit, Trash2, Camera, UploadCloud, GraduationCap, Briefcase } from "lucide-react";
 import { Faculty } from "@/types";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FacultyFormInput {
   name: string;
@@ -124,7 +125,12 @@ export default function FacultyFormSection({
       imageUrl: member.imageUrl || ""
     });
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const formElement = document.getElementById("admin-faculty-form-top");
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const handleDeleteFaculty = async (id: string) => {
@@ -143,206 +149,276 @@ export default function FacultyFormSection({
     }
   };
 
+  // Group faculty list by teaching subject/department
+  const groupedFaculty = facultyList.reduce((acc, member) => {
+    const subject = member.subject?.trim() || "General / Other Departments";
+    if (!acc[subject]) {
+      acc[subject] = [];
+    }
+    acc[subject].push(member);
+    return acc;
+  }, {} as Record<string, Faculty[]>);
+
+  const sortedSubjects = Object.keys(groupedFaculty).sort((a, b) => a.localeCompare(b));
+
   return (
-    <form onSubmit={facultyForm.handleSubmit(onAddFaculty)} className="flex flex-col gap-5">
-      <div className="flex flex-col gap-1 text-left mb-2">
-        <h3 className="text-base font-extrabold text-neutral-dark">
-          {editingFacultyId ? "Edit Teacher Profile" : "Register New Teacher"}
-        </h3>
-        <p className="text-xs text-neutral-body">
-          {editingFacultyId
-            ? "Modify an existing teacher's profile details."
-            : "Adds a teacher profile card to the Faculty portal."}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-extrabold text-neutral-dark">Teacher Name</label>
-          <input
-            type="text"
-            placeholder="e.g. Shri Vinod Kumar Yadav"
-            required
-            className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-            {...facultyForm.register("name")}
-          />
+    <div id="admin-faculty-form-top" className="flex flex-col gap-8">
+      {/* Form Content */}
+      <form onSubmit={facultyForm.handleSubmit(onAddFaculty)} className="flex flex-col gap-6 text-left">
+        <div className="flex flex-col gap-1.5 border-b border-slate-100 pb-4">
+          <h3 className="text-base font-black text-slate-900">
+            {editingFacultyId ? "Modify Staff Credentials" : "Register Educator Profile"}
+          </h3>
+          <p className="text-xs text-slate-500 font-medium">
+            Introduce newly joined mentors or modify active bios on the public faculty page.
+          </p>
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-extrabold text-neutral-dark">Prescribed Subject</label>
-          <input
-            type="text"
-            placeholder="e.g. Science & Biology"
-            className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-            {...facultyForm.register("subject")}
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-extrabold text-neutral-dark">Qualifications</label>
-          <input
-            type="text"
-            placeholder="e.g. M.Sc. (Zoology), B.Ed."
-            className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-            {...facultyForm.register("qualification")}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-extrabold text-neutral-dark">Teaching Tenure Experience</label>
-          <input
-            type="text"
-            placeholder="e.g. 9 Years"
-            className="w-full px-4 py-3 bg-neutral-light border border-gray-200 text-sm rounded-xl font-medium text-neutral-dark focus:outline-none focus:border-primary"
-            {...facultyForm.register("experience")}
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2.5">
-        <label className="text-xs font-extrabold text-neutral-dark">Teacher Photograph</label>
-
-        <div className="flex flex-col sm:flex-row gap-4 items-center p-5 bg-neutral-light border border-gray-200 rounded-2xl">
-          <div className="w-20 h-20 bg-gray-200 rounded-xl overflow-hidden shrink-0 border border-gray-300 relative flex items-center justify-center">
-            {watchedFacultyImage ? (
-              <Image
-                src={watchedFacultyImage}
-                alt="Staff Preview"
-                width={80}
-                height={80}
-                unoptimized
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <Users className="w-8 h-8 text-neutral-body/40" />
-            )}
-          </div>
-
-          <div className="flex-1 flex flex-col gap-2 items-start w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-extrabold text-slate-700 tracking-wide">Teacher Name</label>
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleFacultyImageUpload}
-              disabled={facultyImageUploading}
-              className="text-xs text-neutral-body file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
+              type="text"
+              placeholder="e.g. Shri Vinod Kumar Yadav"
+              required
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              {...facultyForm.register("name")}
             />
+          </div>
 
-            <p className="text-[10px] text-neutral-body leading-tight">
-              {facultyImageUploading
-                ? "Uploading photograph, please wait..."
-                : "Select PNG or JPG photo. Maximum file size 5MB."
-              }
-            </p>
-
-            {watchedFacultyImage && (
-              <button
-                type="button"
-                onClick={() => facultyForm.setValue("imageUrl", "")}
-                className="text-[10px] font-bold text-red-600 hover:underline cursor-pointer focus:outline-none"
-              >
-                Remove photo
-              </button>
-            )}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-extrabold text-slate-700 tracking-wide">Teaching Subject / Department</label>
+            <input
+              type="text"
+              placeholder="e.g. Mathematics & IT Literacy"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              {...facultyForm.register("subject")}
+            />
           </div>
         </div>
 
-        <input
-          type="hidden"
-          {...facultyForm.register("imageUrl")}
-        />
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-extrabold text-slate-700 tracking-wide">Degrees & Qualifications</label>
+            <input
+              type="text"
+              placeholder="e.g. M.Sc. (Physics), B.Ed."
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              {...facultyForm.register("qualification")}
+            />
+          </div>
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={status === "saving"}
-          className="flex-1 mt-4 py-3.5 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-bold text-sm rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
-        >
-          {editingFacultyId ? (
-            <Save className="w-4 h-4" />
-          ) : (
-            <PlusCircle className="w-4 h-4" />
-          )}
-          <span>
-            {editingFacultyId
-              ? "Save Teacher Changes"
-              : (status === "saving" ? "Adding Teacher..." : "Register Teacher Profile")}
-          </span>
-        </button>
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-extrabold text-slate-700 tracking-wide">Teaching Tenure Experience</label>
+            <input
+              type="text"
+              placeholder="e.g. 8 Years"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              {...facultyForm.register("experience")}
+            />
+          </div>
+        </div>
 
-        {editingFacultyId && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditingFacultyId(null);
-              facultyForm.reset({ name: "", subject: "", qualification: "", experience: "", imageUrl: "" });
-            }}
-            className="mt-4 px-6 py-3.5 border border-gray-300 bg-white hover:bg-neutral-light text-neutral-dark font-bold text-sm rounded-xl shadow-sm transition-all focus:outline-none cursor-pointer"
+        {/* Upload card */}
+        <div className="flex flex-col gap-2.5">
+          <label className="text-xs font-extrabold text-slate-700 tracking-wide">Teacher Photograph</label>
+
+          <div className="flex flex-col sm:flex-row gap-5 items-center p-5 bg-slate-50 border border-slate-200 rounded-2xl">
+            {/* Live image preview block */}
+            <div className="w-20 h-20 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-200 relative flex items-center justify-center shadow-inner">
+              {watchedFacultyImage ? (
+                <Image
+                  src={watchedFacultyImage}
+                  alt="Staff Preview"
+                  width={80}
+                  height={80}
+                  unoptimized
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Users className="w-8 h-8 text-slate-300" />
+              )}
+            </div>
+
+            <div className="flex-1 flex flex-col gap-2 items-start w-full">
+              <label className="relative grow cursor-pointer select-none group flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all text-xs font-extrabold text-slate-700 shadow-3xs">
+                <UploadCloud className="w-4 h-4 text-primary shrink-0" />
+                <span>Upload Photograph</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFacultyImageUpload}
+                  disabled={facultyImageUploading}
+                  className="hidden"
+                />
+              </label>
+
+              <p className="text-[10px] text-slate-400 font-medium leading-none mt-1">
+                {facultyImageUploading
+                  ? "Uploading photo to asset storage..."
+                  : "Upload PNG or JPG format (Max 5MB)."
+                }
+              </p>
+
+              {watchedFacultyImage && (
+                <button
+                  type="button"
+                  onClick={() => facultyForm.setValue("imageUrl", "")}
+                  className="text-[10px] font-bold text-red-650 hover:underline cursor-pointer focus:outline-none"
+                >
+                  Clear Selected Image
+                </button>
+              )}
+            </div>
+          </div>
+          <input type="hidden" {...facultyForm.register("imageUrl")} />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex gap-3">
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            type="submit"
+            disabled={status === "saving"}
+            className="flex-1 py-4 bg-primary hover:bg-primary-hover disabled:bg-primary/50 text-white font-black text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 focus:outline-none cursor-pointer"
           >
-            Cancel Edit
-          </button>
-        )}
-      </div>
+            {editingFacultyId ? (
+              <Save className="w-4 h-4" />
+            ) : (
+              <PlusCircle className="w-4 h-4" />
+            )}
+            <span>
+              {editingFacultyId
+                ? "Save Teacher Credentials"
+                : (status === "saving" ? "Registering Profile..." : "Register Educator Profile")}
+            </span>
+          </motion.button>
 
-      <div className="mt-10 border-t border-gray-100 pt-8 text-left">
-        <h4 className="text-sm font-extrabold text-neutral-dark mb-4">Active Staff Profiles ({facultyList.length})</h4>
+          {editingFacultyId && (
+            <button
+              type="button"
+              onClick={() => {
+                setEditingFacultyId(null);
+                facultyForm.reset({ name: "", subject: "", qualification: "", experience: "", imageUrl: "" });
+              }}
+              className="px-6 py-4 border border-slate-350 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl shadow-3xs transition-all focus:outline-none cursor-pointer"
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Grid details */}
+      <div className="mt-12 border-t border-slate-100 pt-10 text-left">
+        <h4 className="text-sm font-black text-slate-900 mb-6">Active Staff Members ({facultyList.length})</h4>
+        
         {facultyList.length === 0 ? (
-          <p className="text-xs text-neutral-body italic">No active staff profiles found.</p>
+          <div className="p-8 text-center bg-slate-50 border border-slate-150 rounded-2xl">
+            <p className="text-xs text-slate-500 font-semibold italic">No active staff bios loaded.</p>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {facultyList.map((member) => (
-              <div key={member.id || member._id} className="bg-neutral-light border border-gray-200 p-4 rounded-2xl flex items-center gap-3.5 shadow-sm relative">
-                <div className="w-12 h-12 rounded-xl bg-gray-200 border border-gray-300 overflow-hidden relative shrink-0">
-                  {member.imageUrl ? (
-                    <Image
-                      src={member.imageUrl}
-                      alt={member.name}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center font-bold text-neutral-dark bg-gray-300 text-xs">
-                      NJ
-                    </div>
-                  )}
+          <div className="flex flex-col gap-8">
+            {sortedSubjects.map((subject) => (
+              <div key={subject} className="flex flex-col gap-4">
+                {/* Subject Header Badge */}
+                <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
+                  <span className="text-[10px] uppercase font-black tracking-widest text-slate-655 bg-slate-100/80 px-2.5 py-1.5 rounded-xl border border-slate-200">
+                    {subject}
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400">
+                    ({groupedFaculty[subject].length} educators)
+                  </span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h5 className="text-xs font-black text-neutral-dark truncate leading-tight">{member.name}</h5>
-                  <p className="text-[10px] text-accent font-extrabold mt-0.5 truncate">{member.subject}</p>
-                  <p className="text-[9px] text-neutral-body mt-0.5 truncate">{member.qualification}</p>
-                </div>
-                <div className="flex gap-1.5 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleStartEditFaculty(member)}
-                    className="flex items-center justify-center p-2 border border-blue-200 hover:bg-blue-50 text-blue-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                    title="Edit Faculty Profile"
-                  >
-                    <Edit className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      triggerConfirm(
-                        "Delete Teacher Profile",
-                        `Are you sure you want to permanently delete the profile card of "${member.name}"? This action cannot be undone.`,
-                        () => handleDeleteFaculty(member.id || member._id || "")
-                      );
-                    }}
-                    className="flex items-center justify-center p-2 border border-red-200 hover:bg-red-50 text-red-600 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
-                    title="Delete Faculty Profile"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  <AnimatePresence>
+                    {groupedFaculty[subject].map((member, index) => (
+                      <motion.div
+                        key={member.id || member._id || `faculty-${index}`}
+                        layout
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-white border border-slate-200 p-4.5 rounded-2xl flex flex-col justify-between gap-4 shadow-3xs hover:shadow-xs hover:border-slate-300 transition-all group relative overflow-hidden"
+                      >
+                        <div className="flex items-start gap-3.5">
+                          {/* Visual avatar with hover zoom */}
+                          <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative shrink-0 shadow-inner">
+                            {member.imageUrl ? (
+                              <Image
+                                src={member.imageUrl}
+                                alt={member.name}
+                                fill
+                                unoptimized
+                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center font-black text-primary bg-primary-light text-xs">
+                                {member.name.substring(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex-1 min-w-0 flex flex-col gap-1">
+                            <h5 className="text-xs font-black text-slate-900 truncate leading-snug group-hover:text-primary transition-colors" title={member.name}>
+                              {member.name}
+                            </h5>
+                            <span className="text-[10px] text-accent font-extrabold uppercase tracking-wide truncate">
+                              {member.subject || "General Educator"}
+                            </span>
+                            
+                            {member.qualification && (
+                              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wide truncate flex items-center gap-1.5 mt-0.5">
+                                <GraduationCap className="w-3.5 h-3.5 text-slate-305" />
+                                {member.qualification}
+                              </span>
+                            )}
+
+                            {member.experience && (
+                              <span className="text-[9px] text-slate-450 font-bold uppercase tracking-wide truncate flex items-center gap-1.5">
+                                <Briefcase className="w-3.5 h-3.5 text-slate-305" />
+                                {member.experience}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Actions buttons */}
+                        <div className="flex gap-2 border-t border-slate-50 pt-3">
+                          <button
+                            type="button"
+                            onClick={() => handleStartEditFaculty(member)}
+                            className="flex-1 py-2 bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 text-slate-600 hover:text-blue-700 text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1 focus:outline-none cursor-pointer"
+                          >
+                            <Edit className="w-3 h-3" />
+                            <span>Edit Bio</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Teacher Profile",
+                                `Are you sure you want to permanently delete the profile card of "${member.name}"? This action cannot be undone.`,
+                                () => handleDeleteFaculty(member.id || member._id || "")
+                              );
+                            }}
+                            className="py-2 px-3 bg-slate-50 hover:bg-red-50 border border-slate-100 hover:border-red-200 text-slate-500 hover:text-red-650 rounded-xl transition-all focus:outline-none cursor-pointer"
+                            title="Delete profile"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-    </form>
+    </div>
   );
 }

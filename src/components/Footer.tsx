@@ -13,8 +13,12 @@ import {
 import { navLinks } from "@/lib/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   const currentYear = new Date().getFullYear();
 
   const { language } = useLanguage();

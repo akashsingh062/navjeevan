@@ -92,6 +92,8 @@ const quickLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  if (pathname?.startsWith("/admin")) return null;
+
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
