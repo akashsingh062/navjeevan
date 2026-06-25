@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import ImageModal from "@/components/ImageModal";
 import SectionHeading from "@/components/SectionHeading";
 import { Download, FileCheck, AlertTriangle, Calendar, Gift, Percent, Clock, Megaphone, Compass, ClipboardCheck, Receipt, Send } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -18,6 +20,7 @@ export default function Admissions() {
   const t = translations[language];
 
   const [activeTab, setActiveTab] = useState("process");
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [formData, setFormData] = useState({
     studentName: "",
     fatherName: "",
@@ -133,8 +136,8 @@ export default function Admissions() {
               },
               {
                 id: "apply",
-                labelEn: "Apply Online",
-                labelHi: "ऑनलाइन आवेदन",
+                labelEn: "Admission Enquiry",
+                labelHi: "प्रवेश पूछताछ",
                 icon: Send,
               },
             ].map((tab) => {
@@ -199,6 +202,62 @@ export default function Admissions() {
               </div>
             </section>
 
+            {/* View/Download Admission Form Card */}
+            <div className="bg-neutral-light border border-gray-250 p-6 sm:p-8 rounded-3xl flex flex-col lg:flex-row justify-between items-center gap-8 text-left mb-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start flex-1">
+                {/* Visual Image Preview */}
+                <div 
+                  onClick={() => setIsViewerOpen(true)}
+                  className="relative w-32 h-44 sm:w-28 sm:h-38 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl hover:border-primary/40 group transition-all shrink-0 select-none"
+                >
+                  <Image
+                    src="/admissionForm.png"
+                    alt="Admission Form Preview"
+                    fill
+                    className="object-cover group-hover:scale-[1.05] transition-transform duration-300"
+                    sizes="112px"
+                  />
+                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-black/60 px-2.5 py-1.5 rounded-md flex items-center gap-1">
+                      <Compass className="w-3.5 h-3.5 animate-spin-slow" />
+                      {language === "en" ? "Preview" : "पूर्वावलोकन"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] uppercase font-black text-primary bg-primary/10 px-2.5 py-1 rounded-full tracking-wider w-fit">
+                    {language === "en" ? "Offline Application" : "ऑफलाइन आवेदन"}
+                  </span>
+                  <h4 className="text-lg font-serif font-black text-neutral-dark leading-snug">
+                    {language === "en" ? "Official Print-Ready Admission Form" : "आधिकारिक प्रिंट-योग्य प्रवेश फॉर्म"}
+                  </h4>
+                  <p className="text-xs text-neutral-body font-medium leading-relaxed">
+                    {language === "en"
+                      ? "Download and print the offline admission form to fill out and submit directly at the school office counter in Khabharabhar."
+                      : "खबरभार स्थित विद्यालय कार्यालय काउंटर पर सीधे जमा करने के लिए ऑफलाइन प्रवेश फॉर्म डाउनलोड और प्रिंट करें।"}
+                  </p>
+                  <div className="flex flex-wrap gap-2.5 mt-2">
+                    <button
+                      onClick={() => setIsViewerOpen(true)}
+                      className="px-4 py-2 bg-neutral-dark hover:bg-neutral-dark/95 text-white text-xs font-black rounded-lg shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <ClipboardCheck className="w-3.5 h-3.5" />
+                      <span>{language === "en" ? "View Form" : "फॉर्म देखें"}</span>
+                    </button>
+                    <a
+                      href="/admissionForm.png"
+                      download="Nav_Jeevan_Public_School_Admission_Form.png"
+                      className="px-4 py-2 bg-white hover:bg-neutral-light border border-gray-300 text-neutral-dark text-xs font-bold rounded-lg shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>{language === "en" ? "Download PNG" : "डाउनलोड करें (PNG)"}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Quick Action CTA card */}
             <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-center gap-6 text-left">
               <div>
@@ -215,7 +274,7 @@ export default function Admissions() {
                 onClick={() => setActiveTab("apply")}
                 className="px-6 py-3.5 bg-primary hover:bg-primary-hover text-white text-xs font-black rounded-xl shadow-md transition-all whitespace-nowrap cursor-pointer select-none shrink-0"
               >
-                {language === "en" ? "Apply Online Now" : "अभी ऑनलाइन आवेदन करें"}
+                {language === "en" ? "Submit Online Enquiry" : "ऑनलाइन पूछताछ सबमिट करें"}
               </button>
             </div>
           </div>
@@ -937,6 +996,16 @@ export default function Admissions() {
           </div>
         </section>
       </div>
+
+      {isViewerOpen && (
+        <ImageModal
+          isOpen={isViewerOpen}
+          imageUrl="/admissionForm.png"
+          category={language === "en" ? "Official Admission Form" : "आधिकारिक प्रवेश फॉर्म"}
+          title={language === "en" ? "NJPS Official Admission Form" : "NJPS आधिकारिक प्रवेश फॉर्म"}
+          onClose={() => setIsViewerOpen(false)}
+        />
+      )}
     </div>
   );
 }
