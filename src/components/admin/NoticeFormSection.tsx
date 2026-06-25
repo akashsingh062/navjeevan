@@ -242,13 +242,20 @@ export default function NoticeFormSection({
     <div id="admin-notice-form-top" className="flex flex-col gap-8">
       {/* Form Content */}
       <form onSubmit={noticeForm.handleSubmit(onAddNotice)} className="flex flex-col gap-6 text-left">
-        <div className="flex flex-col gap-1.5 border-b border-slate-100 pb-4">
-          <h3 className="text-base font-black text-slate-900">
-            {editingNoticeId ? "Edit Bulletin Board Announcement" : "Create New Announcement Bulletin"}
-          </h3>
-          <p className="text-xs text-slate-500 font-medium">
-            Announcements are published in real-time to the public site feed, complete with categories and optional files.
-          </p>
+        <div className="flex flex-col gap-1.5 pb-5 border-b border-slate-100 relative">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+              <FileText className="w-4.5 h-4.5" />
+            </div>
+            <div>
+              <h3 className="text-base font-black text-slate-900">
+                {editingNoticeId ? "Edit Bulletin Board Announcement" : "Create New Announcement Bulletin"}
+              </h3>
+              <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                Announcements are published in real-time to the public site feed, complete with categories and optional files.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -256,7 +263,7 @@ export default function NoticeFormSection({
           <div className="flex flex-col gap-2">
             <label className="text-xs font-extrabold text-slate-700 tracking-wide">Notice Category</label>
             <select
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...noticeForm.register("category")}
             >
               <option value="General">General / Administrative</option>
@@ -276,7 +283,7 @@ export default function NoticeFormSection({
                 <input
                   type="text"
                   placeholder="e.g. Science Exhibition, Sports Meet"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
                   value={customCategory}
                   onChange={(e) => setCustomCategory(e.target.value)}
                 />
@@ -291,7 +298,7 @@ export default function NoticeFormSection({
               type="text"
               placeholder="e.g. Annual Summer Vacation Notification"
               required
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...noticeForm.register("title")}
             />
           </div>
@@ -304,7 +311,7 @@ export default function NoticeFormSection({
             rows={5}
             placeholder="Write clear detailed points explaining dates, times, and directives for parents..."
             required
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+            className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
             {...noticeForm.register("description")}
           />
         </div>
@@ -421,7 +428,7 @@ export default function NoticeFormSection({
       <div className="mt-12 border-t border-slate-100 pt-10 text-left flex flex-col gap-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h4 className="text-sm font-black text-slate-900">Active School Announcements ({noticesList.length})</h4>
+            <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">Active School Announcements <span className="text-[10px] font-extrabold text-primary bg-primary-light px-2 py-0.5 rounded-full">{noticesList.length}</span></h4>
             <p className="text-[11px] text-slate-400 mt-1 font-semibold">Search, filter, or delete active circular listings.</p>
           </div>
 

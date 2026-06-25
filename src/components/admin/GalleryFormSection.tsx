@@ -579,9 +579,18 @@ export default function GalleryFormSection({
 
   return (
     <div className="flex flex-col gap-6 text-left">
-      <div className="flex flex-col gap-1 border-b border-slate-100 pb-4">
-        <h3 className="text-base font-black text-slate-900">Add Photo Log (Multi-Upload)</h3>
-        <p className="text-xs text-slate-500 font-medium">Choose multiple files, folders, or paste external image links instantly to register them into the school gallery.</p>
+      <div className="flex flex-col gap-1.5 pb-5 border-b border-slate-100 relative">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100">
+            <Camera className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <h3 className="text-base font-black text-slate-900">Add Photo Log (Multi-Upload)</h3>
+            <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+              Choose multiple files, folders, or paste external image links instantly to register them into the school gallery.
+            </p>
+          </div>
+        </div>
       </div>
 
       <form onSubmit={handleFormSubmit} className="flex flex-col gap-6">
@@ -590,7 +599,7 @@ export default function GalleryFormSection({
           <div className="flex flex-col gap-2">
             <label className="text-xs font-extrabold text-slate-700 tracking-wide">Event Category</label>
             <select
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all cursor-pointer"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all cursor-pointer"
               {...galleryForm.register("category")}
             >
               <option value="Annual Function">Annual Function</option>
@@ -612,7 +621,7 @@ export default function GalleryFormSection({
                 <input
                   type="text"
                   placeholder="e.g. Science Exhibition, Field Trip"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                  className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
                   value={customCategory}
                   onChange={(e) => setCustomCategory(e.target.value)}
                 />
@@ -626,7 +635,7 @@ export default function GalleryFormSection({
             <input
               type="text"
               placeholder="e.g. Traditional Folk Dance (Optional)"
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...galleryForm.register("title")}
             />
             <p className="text-[10px] text-slate-400 font-medium leading-none">
@@ -737,7 +746,7 @@ export default function GalleryFormSection({
               <textarea
                 rows={4}
                 placeholder="Paste direct URLs here (one link per line)&#10;e.g.&#10;https://images.unsplash.com/photo-1522071820081-009f0129c71c"
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-xs rounded-xl font-medium font-mono text-slate-850 focus:outline-none focus:border-primary transition-all"
+                className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-xs rounded-xl font-medium font-mono text-slate-850 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
                 value={linksInput}
                 onChange={(e) => setLinksInput(e.target.value)}
               />

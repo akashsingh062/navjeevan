@@ -186,13 +186,20 @@ export default function FacultyFormSection({
     <div id="admin-faculty-form-top" className="flex flex-col gap-8">
       {/* Form Content */}
       <form onSubmit={facultyForm.handleSubmit(onAddFaculty)} className="flex flex-col gap-6 text-left">
-        <div className="flex flex-col gap-1.5 border-b border-slate-100 pb-4">
-          <h3 className="text-base font-black text-slate-900">
-            {editingFacultyId ? "Modify Staff Credentials" : "Register Educator Profile"}
-          </h3>
-          <p className="text-xs text-slate-500 font-medium">
-            Introduce newly joined mentors or modify active bios on the public faculty page.
-          </p>
+        <div className="flex flex-col gap-1.5 pb-5 border-b border-slate-100 relative">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <Users className="w-4.5 h-4.5" />
+            </div>
+            <div>
+              <h3 className="text-base font-black text-slate-900">
+                {editingFacultyId ? "Modify Staff Credentials" : "Register Educator Profile"}
+              </h3>
+              <p className="text-[11px] text-slate-400 font-medium mt-0.5">
+                Introduce newly joined mentors or modify active bios on the public faculty page.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -202,7 +209,7 @@ export default function FacultyFormSection({
               type="text"
               placeholder="e.g. Shri Vinod Kumar Yadav"
               required
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...facultyForm.register("name")}
             />
           </div>
@@ -212,7 +219,7 @@ export default function FacultyFormSection({
             <input
               type="text"
               placeholder="e.g. Mathematics & IT Literacy"
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...facultyForm.register("subject")}
             />
           </div>
@@ -224,7 +231,7 @@ export default function FacultyFormSection({
             <input
               type="text"
               placeholder="e.g. M.Sc. (Physics), B.Ed."
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...facultyForm.register("qualification")}
             />
           </div>
@@ -234,7 +241,7 @@ export default function FacultyFormSection({
             <input
               type="text"
               placeholder="e.g. 8 Years"
-              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 text-sm rounded-xl font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all"
               {...facultyForm.register("experience")}
             />
           </div>
