@@ -19,7 +19,7 @@ export default function Admissions() {
   const { language } = useLanguage();
   const t = translations[language];
 
-  const [activeTab, setActiveTab] = useState("process");
+  const [activeTab, setActiveTab] = useState("eligibility");
   const [feeStudentType, setFeeStudentType] = useState<"new" | "old">("new");
   const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -99,12 +99,6 @@ export default function Admissions() {
 
   const tabs = [
     {
-      id: "process",
-      labelEn: "Admission Process",
-      labelHi: "प्रवेश प्रक्रिया",
-      icon: Compass,
-    },
-    {
       id: "eligibility",
       labelEn: "Eligibility & Checklist",
       labelHi: "पात्रता एवं दस्तावेज़",
@@ -115,6 +109,12 @@ export default function Admissions() {
       labelEn: "Fees & Installments",
       labelHi: "शुल्क एवं किस्त विवरण",
       icon: Receipt,
+    },
+    {
+      id: "process",
+      labelEn: "Admission Process",
+      labelHi: "प्रवेश प्रक्रिया",
+      icon: Compass,
     },
     {
       id: "apply",
@@ -188,7 +188,7 @@ export default function Admissions() {
                     {tab.id === "process" ? (language === "en" ? "Process" : "प्रक्रिया") :
                      tab.id === "eligibility" ? (language === "en" ? "Eligibility" : "पात्रता") :
                      tab.id === "fees" ? (language === "en" ? "Fees" : "शुल्क") :
-                     (language === "en" ? "Apply" : "पूछताछ")}
+                     (language === "en" ? "Enquiry" : "पूछताछ")}
                   </span>
                 </button>
               );
