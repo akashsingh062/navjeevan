@@ -360,14 +360,14 @@ export default function FacultyFormSection({
                 >
                   <div className="flex items-start gap-3.5">
                     {/* Visual avatar with hover zoom */}
-                    <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative shrink-0 shadow-inner">
+                    <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden relative shrink-0 shadow-inner flex items-center justify-center">
                       {member.imageUrl ? (
                         <Image
                           src={member.imageUrl}
                           alt={member.name}
                           fill
                           unoptimized
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="object-contain p-0.5 group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center font-black text-primary bg-primary-light text-xs">

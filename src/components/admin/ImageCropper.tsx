@@ -394,9 +394,8 @@ export default function ImageCropper({ isOpen, onClose, imageSrc, onCrop }: Imag
                   <button
                     type="button"
                     onClick={() => setFrameType("circle")}
-                    disabled={aspectRatio !== "1:1"}
-                    className={`flex-1 py-1.5 rounded-lg text-[10px] font-black text-center transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
-                      frameType === "circle" && aspectRatio === "1:1"
+                    className={`flex-1 py-1.5 rounded-lg text-[10px] font-black text-center transition-all cursor-pointer ${
+                      frameType === "circle"
                         ? "bg-white text-primary border border-slate-200/50 shadow-3xs"
                         : "text-slate-500 hover:text-slate-700"
                     }`}
@@ -407,7 +406,7 @@ export default function ImageCropper({ isOpen, onClose, imageSrc, onCrop }: Imag
                     type="button"
                     onClick={() => setFrameType("square")}
                     className={`flex-1 py-1.5 rounded-lg text-[10px] font-black text-center transition-all cursor-pointer ${
-                      frameType === "square" || aspectRatio !== "1:1"
+                      frameType === "square"
                         ? "bg-white text-primary border border-slate-200/50 shadow-3xs"
                         : "text-slate-500 hover:text-slate-700"
                     }`}
@@ -415,32 +414,6 @@ export default function ImageCropper({ isOpen, onClose, imageSrc, onCrop }: Imag
                     Square
                   </button>
                 </div>
-              </div>
-            </div>
-
-            {/* Aspect Ratio Selector */}
-            <div className="flex flex-col gap-1.5 text-left">
-              <span className="text-[10px] font-black text-slate-555 uppercase tracking-wider">Aspect Ratio</span>
-              <div className="grid grid-cols-4 border border-slate-200 rounded-xl p-0.5 bg-slate-50 shadow-3xs">
-                {(["1:1", "4:3", "3:4", "16:9"] as const).map((ratio) => (
-                  <button
-                    key={ratio}
-                    type="button"
-                    onClick={() => {
-                      setAspectRatio(ratio);
-                      if (ratio !== "1:1") {
-                        setFrameType("square");
-                      }
-                    }}
-                    className={`py-1.5 rounded-lg text-[10px] font-black text-center transition-all cursor-pointer ${
-                      aspectRatio === ratio
-                        ? "bg-white text-primary border border-slate-200/50 shadow-3xs"
-                        : "text-slate-500 hover:text-slate-700"
-                    }`}
-                  >
-                    {ratio}
-                  </button>
-                ))}
               </div>
             </div>
 
