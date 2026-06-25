@@ -436,7 +436,7 @@ export default function NoticeFormSection({
                     handleBulkDeleteNotices
                   );
                 }}
-                className="px-3.5 py-2.5 bg-red-650 hover:bg-red-750 text-white text-[10px] font-black uppercase rounded-xl shadow-xs transition-all focus:outline-none cursor-pointer"
+                className="px-3.5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase rounded-xl shadow-xs transition-all focus:outline-none cursor-pointer"
               >
                 Delete Selected ({selectedNoticeIds.length})
               </button>
@@ -635,11 +635,11 @@ export default function NoticeFormSection({
                                   () => handleDeleteNotice(notice.id || notice._id || "")
                                 );
                               }}
-                              className="flex-1 sm:flex-none flex items-center justify-center p-2.5 border border-red-150 hover:bg-red-50 text-red-650 rounded-xl transition-all cursor-pointer focus:outline-none sm:w-10 sm:h-10 shrink-0"
+                              className="flex-1 sm:flex-none flex items-center justify-center p-2.5 border border-red-200 bg-red-50/30 hover:bg-red-50 text-red-600 hover:text-red-700 rounded-xl transition-all cursor-pointer focus:outline-none sm:w-10 sm:h-10 shrink-0"
                               title="Delete Notice"
                             >
                               <Trash2 className="w-4 h-4 shrink-0" />
-                              <span className="sm:hidden text-xs font-extrabold ml-1.5 text-red-650">Delete Notice</span>
+                              <span className="sm:hidden text-xs font-extrabold ml-1.5 text-red-600">Delete Notice</span>
                             </button>
                           </div>
                         </motion.div>
