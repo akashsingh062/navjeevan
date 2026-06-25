@@ -52,6 +52,12 @@ const aboutDropdown = [
     desc: "From the Principal",
   },
   {
+    label: "Director's Message",
+    href: "/about/message-director",
+    icon: MessageCircle,
+    desc: "From the Director's Desk",
+  },
+  {
     label: "Find Us",
     href: "/about/find-us",
     icon: MapPin,
@@ -162,6 +168,12 @@ export default function Navbar() {
     } else if (item.label === "Vision & Mission") {
       label = language === "en" ? "Vision & Mission" : "दृष्टिकोण और लक्ष्य";
       desc = language === "en" ? "What we stand for" : "हमारे आदर्श और मूल्य";
+    } else if (item.label === "Director's Message") {
+      label = language === "en" ? "Director's Message" : "निदेशक का संदेश";
+      desc =
+        language === "en"
+          ? "From the Director's Desk"
+          : "निदेशक डेस्क से संदेश";
     } else if (item.label === "Manager's Message") {
       label = language === "en" ? "Manager's Message" : "प्रबंधक का संदेश";
       desc =

@@ -277,8 +277,12 @@ export const managerNote = {
     hi: "प्रबंधन संदेश"
   },
   title: {
-    en: "Message from the Managing Director",
-    hi: "प्रबंध निदेशक का संदेश"
+    en: "Message from the Manager",
+    hi: "प्रबंधक का संदेश"
+  },
+  name: {
+    en: "Shri Dhirendra Pratap Singh",
+    hi: "श्री धीरेन्द्र प्रताप सिंह"
   },
   salutation: {
     en: "Dear Students, Parents, and Well-Wishers,",
@@ -296,13 +300,9 @@ export const managerNote = {
     en: "I am deeply grateful to our dedicated faculty, our supportive parent community, and each student who has placed their trust in this institution. Together, we are building a stronger, more educated Kushinagar.",
     hi: "मैं हमारे समर्पित शिक्षकों, हमारे सहायक अभिभावक समुदाय और प्रत्येक छात्र का हृदय से आभारी हूँ जिन्होंने इस संस्थान में अपना विश्वास जताया है। साथ मिलकर, हम एक मजबूत और अधिक शिक्षित कुशीनगर का निर्माण कर रहे हैं।"
   },
-  name: {
-    en: "Shri Sandeep Sharma",
-    hi: "श्री संदीप शर्मा"
-  },
   role: {
-    en: "Managing Director, Nav Jeevan Public School",
-    hi: "प्रबंध निदेशक, नव जीवन पब्लिक स्कूल"
+    en: "Manager, Nav Jeevan Public School",
+    hi: "प्रबंधक, नव जीवन पब्लिक स्कूल"
   }
 };
 
@@ -374,3 +374,39 @@ export const findUsDetails = {
     hi: "संपर्क करें"
   }
 };
+
+export const directorNote = {
+  tag: {
+    en: "Director's Desk",
+    hi: "निदेशक संदेश"
+  },
+  title: {
+    en: "Message from the Director's Desk",
+    hi: "निदेशक का संदेश"
+  },
+  name: {
+    en: "Shri Sandeep Sharma",
+    hi: "श्री संदीप शर्मा"
+  },
+  salutation: {
+    en: "Dear Members of the Nav Jeevan Family, Parents, and Students,",
+    hi: "नव जीवन परिवार के प्रिय सदस्यों, अभिभावकों और छात्रों,"
+  },
+  p1: {
+    en: "It gives me great pleasure to welcome you to our digital portal. Since our inception in 2011, Nav Jeevan Public School has stood for holistic growth, academic passion, and building strong ethical foundations. We aim to nurture future leaders who are ready to face global challenges while remaining firmly connected to their roots.",
+    hi: "हमारे डिजिटल पोर्टल पर आपका स्वागत करते हुए मुझे अत्यंत प्रसन्नता हो रही है। 2011 में अपनी स्थापना के बाद से, नव जीवन पब्लिक स्कूल समग्र विकास, शैक्षणिक जुनून और मजबूत नैतिक नींव के निर्माण के लिए प्रतिबद्ध रहा है। हमारा उद्देश्य ऐसे भावी नेताओं को तैयार करना है जो अपनी जड़ों से मजबूती से जुड़े रहकर वैश्विक चुनौतियों का सामना करने के लिए तैयार हों।"
+  },
+  p2: {
+    en: "In today's fast-changing world, quality education must combine traditional moral values with cutting-edge digital literacy. We have invested heavily in our IT infrastructure, smart classes, and language labs to ensure that children in Khabharabhar, Kaptanganj, receive instruction matching the finest urban standards.",
+    hi: "आज की तेजी से बदलती दुनिया में, गुणवत्तापूर्ण शिक्षा में अत्याधुनिक डिजिटल साक्षरता के साथ पारंपरिक नैतिक मूल्यों का समावेश होना चाहिए। हमने यह सुनिश्चित करने के लिए अपने आईटी बुनियादी ढांचे, स्मार्ट कक्षाओं और भाषा प्रयोगशालाओं में निवेश किया है कि खबरभार, कप्तानगंज के बच्चों को बेहतरीन शहरी मानकों के अनुरूप शिक्षा मिले।"
+  },
+  p3: {
+    en: "Our committed faculty and administrative teams work tireless hours to ensure a secure, encouraging, and vibrant campus experience. We thank you for choosing Nav Jeevan as the launchpad for your child's dreams.",
+    hi: "हमारी समर्पित शिक्षक और प्रशासनिक टीमें एक सुरक्षित, उत्साहजनक और जीवंत परिसर अनुभव सुनिश्चित करने के लिए अथक प्रयास करती हैं। आपके बच्चे के सपनों को साकार करने के लिए नव जीवन को चुनने के लिए हम आपको धन्यवाद देते हैं।"
+  },
+  role: {
+    en: "Managing Director, Nav Jeevan Public School",
+    hi: "प्रबंध निदेशक, नव जीवन पब्लिक स्कूल"
+  }
+};
+

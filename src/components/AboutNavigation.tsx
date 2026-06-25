@@ -21,13 +21,18 @@ export default function AboutNavigation() {
       icon: Target
     },
     {
+      href: "/about/message-manager",
+      label: { en: "Manager's Message", hi: "प्रबंधक का संदेश" },
+      icon: MessageSquare
+    },
+    {
       href: "/about/message-principal",
       label: { en: "Principal's Message", hi: "प्रधानाचार्य का संदेश" },
       icon: MessageSquare
     },
     {
-      href: "/about/message-manager",
-      label: { en: "Manager's Message", hi: "प्रबंधक का संदेश" },
+      href: "/about/message-director",
+      label: { en: "Director's Message", hi: "निदेशक का संदेश" },
       icon: MessageSquare
     },
     {
@@ -42,7 +47,7 @@ export default function AboutNavigation() {
       <h3 className="text-xs font-black text-neutral-dark uppercase tracking-widest mb-6">
         {language === "en" ? "Explore More About Us" : "हमारे बारे में और जानें"}
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {links.map((link) => {
           const isActive = pathname === link.href;
           const Icon = link.icon;

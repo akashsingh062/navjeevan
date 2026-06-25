@@ -1,13 +1,18 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import SectionHeading from "@/components/SectionHeading";
-import { Award, Compass, Heart, Sparkles, BookOpen, GraduationCap } from "lucide-react";
+import AboutNavigation from "@/components/AboutNavigation";
+import { Award, Compass, Heart, Sparkles, BookOpen, GraduationCap, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import {
   coreValues,
   milestones,
   achievements,
   historyDetails,
+  managerNote,
+  directorNote,
   principalNote
 } from "@/lib/data/about";
 
@@ -123,44 +128,106 @@ export default function About() {
           </div>
         </section>
 
-        <section className="py-16 bg-neutral-light border border-gray-200 rounded-3xl p-6 md:p-10 my-12 text-left">
-          <div className="max-w-3xl mx-auto flex flex-col gap-6">
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-xs font-black text-primary uppercase tracking-widest">
-                {principalNote.tag[language]}
-              </span>
-              <h3 className="text-2xl font-extrabold text-neutral-dark tracking-tight leading-tight">
-                {principalNote.title[language]}
-              </h3>
-              <div className="h-0.5 w-12 bg-primary mt-1.5 rounded-full" />
+        <section className="py-16 text-left border-b border-gray-100">
+          <SectionHeading
+            title={language === "en" ? "School Leadership" : "विद्यालय का नेतृत्व"}
+            subtitle={language === "en" ? "Meet the visionary leaders guiding Nav Jeevan Public School towards academic and holistic success." : "शैक्षणिक और समग्र सफलता की ओर नव जीवन पब्लिक स्कूल का मार्गदर्शन करने वाले दूरदर्शी नेताओं से मिलें।"}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+            {/* Manager Card */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-6 flex flex-col justify-between shadow-sm card-hover-lift group">
+              <div className="flex flex-col gap-4">
+                <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-accent/20 bg-neutral-light shrink-0">
+                  <Image
+                    src="/manager.jpg"
+                    alt="Shri Dhirendra Pratap Singh"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-neutral-dark">
+                    {language === "en" ? "Shri Dhirendra Pratap Singh" : "श्री धीरेन्द्र प्रताप सिंह"}
+                  </h4>
+                  <p className="text-xs text-accent font-bold mt-1 uppercase tracking-wider">
+                    {language === "en" ? "Manager" : "प्रबंधक"}
+                  </p>
+                </div>
+                <p className="text-xs text-neutral-body leading-relaxed line-clamp-3">
+                  {language === "en" ? "Welcoming you to NJPS. Education is not merely the transfer of knowledge. It is the awakening of a young mind..." : "एनजेपीएस में आपका स्वागत है। शिक्षा केवल ज्ञान का हस्तांतरण नहीं है। यह एक युवा दिमाग को जाग्रत करना है..."}
+                </p>
+              </div>
+              <Link
+                href="/about/message-manager"
+                className="mt-6 inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary-hover active:scale-[0.98] transition-all"
+              >
+                <span>{language === "en" ? "Read Manager's Message" : "प्रबंधक का संदेश पढ़ें"}</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
 
-            <div className="flex flex-col gap-4 text-sm md:text-base text-neutral-body font-normal leading-relaxed">
-              <p>{principalNote.salutation[language]}</p>
-              <p>
-                {principalNote.p1[language]}
-              </p>
-              <p>
-                {principalNote.p2[language]}
-              </p>
-              <p>
-                {principalNote.p3[language]}
-              </p>
-              <p>
-                {principalNote.p4[language]}
-              </p>
+            {/* Director Card */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-6 flex flex-col justify-between shadow-sm card-hover-lift group">
+              <div className="flex flex-col gap-4">
+                <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-accent/20 bg-neutral-light shrink-0">
+                  <Image
+                    src="/director.jpg"
+                    alt="Shri Sandeep Sharma"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-neutral-dark">
+                    {language === "en" ? "Shri Sandeep Sharma" : "श्री संदीप शर्मा"}
+                  </h4>
+                  <p className="text-xs text-accent font-bold mt-1 uppercase tracking-wider">
+                    {language === "en" ? "Managing Director" : "प्रबंध निदेशक"}
+                  </p>
+                </div>
+                <p className="text-xs text-neutral-body leading-relaxed line-clamp-3">
+                  {language === "en" ? "Welcome to our digital portal. Nav Jeevan stands for holistic growth, academic passion, and building moral foundations..." : "हमारे डिजिटल पोर्टल पर आपका स्वागत है। नव जीवन समग्र विकास, शैक्षणिक जुनून और नैतिक नींव के निर्माण के लिए प्रतिबद्ध है..."}
+                </p>
+              </div>
+              <Link
+                href="/about/message-director"
+                className="mt-6 inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary-hover active:scale-[0.98] transition-all"
+              >
+                <span>{language === "en" ? "Read Director's Message" : "निदेशक का संदेश पढ़ें"}</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
 
-            <div className="mt-6 pt-6 border-t border-gray-300 flex flex-col">
-              <span className="text-sm font-black text-neutral-dark">
-                {principalNote.name[language]}
-              </span>
-              <span className="text-xs text-accent font-bold mt-0.5">
-                {principalNote.role[language]}
-              </span>
-              <span className="text-xs text-gray-500 font-medium">
-                {principalNote.credentials[language]}
-              </span>
+            {/* Principal Card */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-6 flex flex-col justify-between shadow-sm card-hover-lift group">
+              <div className="flex flex-col gap-4">
+                <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-primary/20 bg-neutral-light shrink-0">
+                  <Image
+                    src="/principle.jpeg"
+                    alt="Shri Satyendra Pratap Singh"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div>
+                  <h4 className="text-base font-extrabold text-neutral-dark">
+                    {language === "en" ? "Shri Satyendra Pratap Singh" : "श्री सत्येंद्र प्रताप सिंह"}
+                  </h4>
+                  <p className="text-xs text-primary font-bold mt-1 uppercase tracking-wider">
+                    {language === "en" ? "Principal" : "प्रधानाचार्य"}
+                  </p>
+                </div>
+                <p className="text-xs text-neutral-body leading-relaxed line-clamp-3">
+                  {language === "en" ? "It is a distinct privilege to lead an educational community where our staff, students, and parents collaborate..." : "एक ऐसे शैक्षणिक समुदाय का नेतृत्व करना एक विशेषाधिकार है जहाँ हमारे स्टाफ, छात्र और अभिभावक सहयोग करते हैं..."}
+                </p>
+              </div>
+              <Link
+                href="/about/message-principal"
+                className="mt-6 inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary-hover active:scale-[0.98] transition-all"
+              >
+                <span>{language === "en" ? "Read Principal's Message" : "प्रधानाचार्य का संदेश पढ़ें"}</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         </section>
@@ -189,6 +256,8 @@ export default function About() {
             })}
           </div>
         </section>
+
+        <AboutNavigation />
       </div>
     </div>
   );

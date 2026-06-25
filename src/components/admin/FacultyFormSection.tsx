@@ -347,103 +347,87 @@ export default function FacultyFormSection({
             <p className="text-xs text-slate-500 font-semibold italic">No active staff bios loaded.</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-8">
-            {sortedSubjects.map((subject) => (
-              <div key={subject} className="flex flex-col gap-4">
-                {/* Subject Header Badge */}
-                <div className="flex items-center gap-2 border-b border-slate-100 pb-2.5">
-                  <span className="text-[10px] uppercase font-black tracking-widest text-slate-655 bg-slate-100/80 px-2.5 py-1.5 rounded-xl border border-slate-200">
-                    {subject}
-                  </span>
-                  <span className="text-[10px] font-black text-slate-400">
-                    ({groupedFaculty[subject].length} educators)
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  <AnimatePresence>
-                    {groupedFaculty[subject].map((member, index) => (
-                      <motion.div
-                        key={member.id || member._id || `faculty-${index}`}
-                        layout
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-white border border-slate-200 p-4.5 rounded-2xl flex flex-col justify-between gap-4 shadow-3xs hover:shadow-xs hover:border-slate-300 transition-all group relative overflow-hidden"
-                      >
-                        <div className="flex items-start gap-3.5">
-                          {/* Visual avatar with hover zoom */}
-                          <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative shrink-0 shadow-inner">
-                            {member.imageUrl ? (
-                              <Image
-                                src={member.imageUrl}
-                                alt={member.name}
-                                fill
-                                unoptimized
-                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center font-black text-primary bg-primary-light text-xs">
-                                {member.name.substring(0, 2).toUpperCase()}
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex-1 min-w-0 flex flex-col gap-1">
-                            <h5 className="text-xs font-black text-slate-900 break-words whitespace-normal leading-snug group-hover:text-primary transition-colors" title={member.name}>
-                              {member.name}
-                            </h5>
-                            <span className="text-[10px] text-accent font-extrabold uppercase tracking-wide break-words whitespace-normal">
-                              {member.subject || "General Educator"}
-                            </span>
-                            
-                            {member.qualification && (
-                              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wide break-words flex items-start gap-1.5 mt-0.5 whitespace-normal">
-                                <GraduationCap className="w-3.5 h-3.5 text-slate-305 shrink-0 mt-0.5" />
-                                <span className="break-words">{member.qualification}</span>
-                              </span>
-                            )}
-
-                            {member.experience && (
-                              <span className="text-[9px] text-slate-450 font-bold uppercase tracking-wide break-words flex items-start gap-1.5 whitespace-normal">
-                                <Briefcase className="w-3.5 h-3.5 text-slate-305 shrink-0 mt-0.5" />
-                                <span className="break-words">{member.experience}</span>
-                              </span>
-                            )}
-                          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AnimatePresence>
+              {facultyList.map((member, index) => (
+                <motion.div
+                  key={member.id || member._id || `faculty-${index}`}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-white border border-slate-200 p-4.5 rounded-2xl flex flex-col justify-between gap-4 shadow-3xs hover:shadow-xs hover:border-slate-300 transition-all group relative overflow-hidden"
+                >
+                  <div className="flex items-start gap-3.5">
+                    {/* Visual avatar with hover zoom */}
+                    <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden relative shrink-0 shadow-inner">
+                      {member.imageUrl ? (
+                        <Image
+                          src={member.imageUrl}
+                          alt={member.name}
+                          fill
+                          unoptimized
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center font-black text-primary bg-primary-light text-xs">
+                          {member.name.substring(0, 2).toUpperCase()}
                         </div>
+                      )}
+                    </div>
 
-                        {/* Actions buttons */}
-                        <div className="flex gap-2 border-t border-slate-50 pt-3">
-                          <button
-                            type="button"
-                            onClick={() => handleStartEditFaculty(member)}
-                            className="flex-1 py-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 text-slate-600 hover:text-blue-700 text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1 focus:outline-none cursor-pointer"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                            <span>Edit Bio</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              triggerConfirm(
-                                "Delete Teacher Profile",
-                                `Are you sure you want to permanently delete the profile card of "${member.name}"? This action cannot be undone.`,
-                                () => handleDeleteFaculty(member.id || member._id || "")
-                              );
-                            }}
-                            className="py-2.5 px-3.5 bg-red-50/50 hover:bg-red-50 border border-red-100 hover:border-red-200 text-red-600 hover:text-red-700 rounded-xl transition-all focus:outline-none cursor-pointer"
-                            title="Delete profile"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
-              </div>
-            ))}
+                    <div className="flex-1 min-w-0 flex flex-col gap-1">
+                      <h5 className="text-xs font-black text-slate-900 break-words whitespace-normal leading-snug group-hover:text-primary transition-colors" title={member.name}>
+                        {member.name}
+                      </h5>
+                      <span className="text-[10px] text-accent font-extrabold uppercase tracking-wide break-words whitespace-normal">
+                        {member.subject || "General Educator"}
+                      </span>
+                      
+                      {member.qualification && (
+                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wide break-words flex items-start gap-1.5 mt-0.5 whitespace-normal">
+                          <GraduationCap className="w-3.5 h-3.5 text-slate-305 shrink-0 mt-0.5" />
+                          <span className="break-words">{member.qualification}</span>
+                        </span>
+                      )}
+
+                      {member.experience && (
+                        <span className="text-[9px] text-slate-450 font-bold uppercase tracking-wide break-words flex items-start gap-1.5 whitespace-normal">
+                          <Briefcase className="w-3.5 h-3.5 text-slate-305 shrink-0 mt-0.5" />
+                          <span className="break-words">{member.experience}</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Actions buttons */}
+                  <div className="flex gap-2 border-t border-slate-50 pt-3">
+                    <button
+                      type="button"
+                      onClick={() => handleStartEditFaculty(member)}
+                      className="flex-1 py-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 text-slate-600 hover:text-blue-700 text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1 focus:outline-none cursor-pointer"
+                    >
+                      <Edit className="w-3.5 h-3.5" />
+                      <span>Edit Bio</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerConfirm(
+                          "Delete Teacher Profile",
+                          `Are you sure you want to permanently delete the profile card of "${member.name}"? This action cannot be undone.`,
+                          () => handleDeleteFaculty(member.id || member._id || "")
+                        );
+                      }}
+                      className="py-2.5 px-3.5 bg-red-50/50 hover:bg-red-50 border border-red-100 hover:border-red-200 text-red-600 hover:text-red-700 rounded-xl transition-all focus:outline-none cursor-pointer"
+                      title="Delete profile"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </div>
