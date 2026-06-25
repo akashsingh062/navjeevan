@@ -107,5 +107,28 @@ export const contactDirectory: ContactCard[] = [
     accentBg: "bg-neutral-light",
     accentText: "text-neutral-dark",
     borderColor: "border-border"
+  },
+  {
+    title: {
+      en: "WhatsApp Channel",
+      hi: "व्हाट्सएप चैनल"
+    },
+    detail: {
+      en: "Follow for Updates",
+      hi: "अपडेट्स के लिए फॉलो करें"
+    },
+    desc: {
+      en: "Get instant notifications for exam schedules, holidays, and event announcements directly on WhatsApp.",
+      hi: "व्हाट्सएप पर सीधे परीक्षा कार्यक्रम, छुट्टियों और कार्यक्रम की घोषणाओं के लिए त्वरित सूचनाएं प्राप्त करें।"
+    },
+    actionLabel: {
+      en: "Follow Channel",
+      hi: "चैनल फॉलो करें"
+    },
+    href: "https://whatsapp.com/channel/0029Vb6llG17j6g1HkdrW239",
+    iconName: "MessageSquare",
+    accentBg: "bg-emerald-50 text-emerald-600 border-emerald-100",
+    accentText: "text-emerald-700",
+    borderColor: "border-emerald-200/50"
   }
 ];
