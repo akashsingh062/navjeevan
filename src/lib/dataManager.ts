@@ -133,7 +133,10 @@ export async function getGallery(): Promise<GalleryItem[]> {
       console.error("Failed to fetch gallery from database, using static fallback:", err);
     }
   }
-  return [...defaultGallery].sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
+  return [...defaultGallery].map((item, index) => ({
+    id: `static-gallery-${index}`,
+    ...item
+  })).sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime());
 }
 
 export function getFacilities(): Facility[] {

@@ -362,24 +362,24 @@ export default function FacultyFormSection({
                           </div>
 
                           <div className="flex-1 min-w-0 flex flex-col gap-1">
-                            <h5 className="text-xs font-black text-slate-900 truncate leading-snug group-hover:text-primary transition-colors" title={member.name}>
+                            <h5 className="text-xs font-black text-slate-900 break-words whitespace-normal leading-snug group-hover:text-primary transition-colors" title={member.name}>
                               {member.name}
                             </h5>
-                            <span className="text-[10px] text-accent font-extrabold uppercase tracking-wide truncate">
+                            <span className="text-[10px] text-accent font-extrabold uppercase tracking-wide break-words whitespace-normal">
                               {member.subject || "General Educator"}
                             </span>
                             
                             {member.qualification && (
-                              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wide truncate flex items-center gap-1.5 mt-0.5">
-                                <GraduationCap className="w-3.5 h-3.5 text-slate-305" />
-                                {member.qualification}
+                              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wide break-words flex items-start gap-1.5 mt-0.5 whitespace-normal">
+                                <GraduationCap className="w-3.5 h-3.5 text-slate-305 shrink-0 mt-0.5" />
+                                <span className="break-words">{member.qualification}</span>
                               </span>
                             )}
 
                             {member.experience && (
-                              <span className="text-[9px] text-slate-450 font-bold uppercase tracking-wide truncate flex items-center gap-1.5">
-                                <Briefcase className="w-3.5 h-3.5 text-slate-305" />
-                                {member.experience}
+                              <span className="text-[9px] text-slate-450 font-bold uppercase tracking-wide break-words flex items-start gap-1.5 whitespace-normal">
+                                <Briefcase className="w-3.5 h-3.5 text-slate-305 shrink-0 mt-0.5" />
+                                <span className="break-words">{member.experience}</span>
                               </span>
                             )}
                           </div>
@@ -390,9 +390,9 @@ export default function FacultyFormSection({
                           <button
                             type="button"
                             onClick={() => handleStartEditFaculty(member)}
-                            className="flex-1 py-2 bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 text-slate-600 hover:text-blue-700 text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1 focus:outline-none cursor-pointer"
+                            className="flex-1 py-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-100 hover:border-blue-200 text-slate-600 hover:text-blue-700 text-[10px] font-extrabold rounded-xl transition-all flex items-center justify-center gap-1 focus:outline-none cursor-pointer"
                           >
-                            <Edit className="w-3 h-3" />
+                            <Edit className="w-3.5 h-3.5" />
                             <span>Edit Bio</span>
                           </button>
                           <button
@@ -404,7 +404,7 @@ export default function FacultyFormSection({
                                 () => handleDeleteFaculty(member.id || member._id || "")
                               );
                             }}
-                            className="py-2 px-3 bg-slate-50 hover:bg-red-50 border border-slate-100 hover:border-red-200 text-slate-500 hover:text-red-650 rounded-xl transition-all focus:outline-none cursor-pointer"
+                            className="py-2.5 px-3.5 bg-slate-50 hover:bg-red-50 border border-slate-100 hover:border-red-200 text-slate-500 hover:text-red-650 rounded-xl transition-all focus:outline-none cursor-pointer"
                             title="Delete profile"
                           >
                             <Trash2 className="w-3.5 h-3.5" />

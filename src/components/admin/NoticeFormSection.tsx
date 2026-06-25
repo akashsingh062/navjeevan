@@ -312,7 +312,7 @@ export default function NoticeFormSection({
         {/* Priority options */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-extrabold text-slate-700 tracking-wide">Importance & Priority Tag</label>
-          <div className="flex items-center gap-2.5 flex-wrap">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-3.5 px-3.5 scrollbar-none flex-nowrap md:flex-wrap md:overflow-x-visible md:pb-0 md:mx-0 md:px-0 scroll-smooth snap-x snap-mandatory">
             {[
               { color: "red", label: "Urgent Alert", isImportant: true, bg: "bg-red-50 text-red-700 border-red-200 hover:bg-red-100/50", dot: "bg-red-500" },
               { color: "amber", label: "Important", isImportant: true, bg: "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100/50", dot: "bg-amber-500" },
@@ -328,7 +328,7 @@ export default function NoticeFormSection({
                   noticeForm.setValue("importanceColor", opt.color);
                   noticeForm.setValue("isImportant", opt.isImportant);
                 }}
-                className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl transition-all text-[11px] font-black uppercase tracking-wider cursor-pointer focus:outline-none select-none ${
+                className={`flex items-center gap-2 px-3 py-2.5 border rounded-xl transition-all text-[11px] font-black uppercase tracking-wider cursor-pointer focus:outline-none select-none snap-start shrink-0 md:shrink ${
                   selectedColor === opt.color
                     ? `${opt.bg} border-current ring-1 ring-offset-1 ring-current`
                     : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
@@ -346,14 +346,14 @@ export default function NoticeFormSection({
         {/* Attachment upload */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-extrabold text-slate-700 tracking-wide">Attach Circular Document (Optional)</label>
-          <div className="flex items-center justify-between gap-4 p-4.5 bg-slate-50 border border-slate-200 rounded-xl">
-            <div className="flex-1 text-left">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4.5 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="w-full sm:flex-1 text-left">
               <input
                 type="file"
                 accept="image/*,application/pdf"
                 onChange={handleNoticeAttachmentUpload}
                 disabled={isNoticeAttachmentUploading}
-                className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
+                className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer disabled:opacity-50"
               />
               <p className="text-[10px] text-slate-400 mt-1.5 font-medium leading-none">
                 {isNoticeAttachmentUploading
@@ -363,9 +363,11 @@ export default function NoticeFormSection({
               </p>
             </div>
             {noticeAttachmentUrl && (
-              <div className="shrink-0 flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-[10px] font-bold">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>Attached</span>
+              <div className="w-full sm:w-auto shrink-0 flex items-center justify-between sm:justify-start gap-2 bg-emerald-50 text-emerald-800 border border-emerald-205 px-3 py-2 rounded-xl text-[10px] font-bold">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Attached</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -518,12 +520,12 @@ export default function NoticeFormSection({
                           initial={{ opacity: 0, y: 15 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className={`p-5 rounded-2xl border transition-all flex items-start gap-4 shadow-3xs relative bg-white ${
+                          className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col sm:flex-row items-stretch sm:items-start gap-3.5 sm:gap-4 shadow-3xs relative bg-white ${
                             isChecked ? "border-primary/40 bg-primary-light/10" : "border-slate-200 hover:border-slate-300"
                           }`}
                         >
-                          {/* Check selection */}
-                          <div className="pt-1.5 shrink-0">
+                          {/* Desktop Checkbox (Desktop only) */}
+                          <div className="hidden sm:block pt-1.5 shrink-0">
                             <input
                               type="checkbox"
                               checked={isChecked}
@@ -539,9 +541,45 @@ export default function NoticeFormSection({
                             />
                           </div>
 
+                          {/* Mobile Header Row (Mobile only) */}
+                          <div className="flex sm:hidden items-center justify-between gap-2 pb-2 border-b border-slate-100">
+                            <div className="flex items-center gap-2.5">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={(e) => {
+                                  const id = notice.id || notice._id || "";
+                                  if (e.target.checked) {
+                                    setSelectedNoticeIds(prev => [...prev, id]);
+                                  } else {
+                                    setSelectedNoticeIds(prev => prev.filter(x => x !== id));
+                                  }
+                                }}
+                                className="w-4 h-4 rounded-md border-slate-300 text-primary focus:ring-primary focus:ring-offset-0 cursor-pointer"
+                              />
+                              <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded-md tracking-wider border leading-none ${
+                                notice.importanceColor === "red"
+                                  ? "bg-red-50 text-red-700 border-red-150"
+                                  : notice.importanceColor === "amber"
+                                  ? "bg-amber-50 text-amber-700 border-amber-150"
+                                  : notice.importanceColor === "green"
+                                  ? "bg-emerald-50 text-emerald-700 border-emerald-150"
+                                  : notice.importanceColor === "purple"
+                                  ? "bg-purple-50 text-purple-700 border-purple-150"
+                                  : "bg-blue-50 text-blue-700 border-blue-150"
+                              }`}>
+                                {notice.category}
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wide">
+                              {new Date(notice.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            </span>
+                          </div>
+
                           {/* Meta info */}
                           <div className="flex-1 flex flex-col gap-2 min-w-0">
-                            <div className="flex items-center gap-2.5 flex-wrap">
+                            {/* Desktop Meta Header (Desktop only) */}
+                            <div className="hidden sm:flex items-center gap-2.5 flex-wrap">
                               <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded-md tracking-wider border leading-none ${
                                 notice.importanceColor === "red"
                                   ? "bg-red-50 text-red-700 border-red-150"
@@ -572,20 +610,21 @@ export default function NoticeFormSection({
                                 className="inline-flex items-center gap-1.5 text-[10px] text-primary hover:underline font-extrabold self-start mt-2"
                               >
                                 <Paperclip className="w-3.5 h-3.5" />
-                                <span>View Attachment Circular</span>
+                                <span className="truncate max-w-[200px] sm:max-w-xs" title="View Attachment Circular">View Attachment Circular</span>
                               </a>
                             )}
                           </div>
 
                           {/* Actions */}
-                          <div className="flex gap-2 shrink-0 self-center">
+                          <div className="flex sm:flex-col gap-2 shrink-0 justify-end sm:justify-center border-t border-slate-100 pt-2.5 sm:border-0 sm:pt-0">
                             <button
                               type="button"
                               onClick={() => handleStartEditNotice(notice)}
-                              className="flex items-center justify-center p-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl transition-all cursor-pointer focus:outline-none"
+                              className="flex-1 sm:flex-none flex items-center justify-center p-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl transition-all cursor-pointer focus:outline-none sm:w-10 sm:h-10 shrink-0"
                               title="Edit Notice"
                             >
-                              <Edit className="w-4 h-4" />
+                              <Edit className="w-4 h-4 shrink-0" />
+                              <span className="sm:hidden text-xs font-extrabold ml-1.5">Edit Notice</span>
                             </button>
                             <button
                               type="button"
@@ -596,10 +635,11 @@ export default function NoticeFormSection({
                                   () => handleDeleteNotice(notice.id || notice._id || "")
                                 );
                               }}
-                              className="flex items-center justify-center p-2.5 border border-red-150 hover:bg-red-50 text-red-650 rounded-xl transition-all cursor-pointer focus:outline-none shrink-0"
+                              className="flex-1 sm:flex-none flex items-center justify-center p-2.5 border border-red-150 hover:bg-red-50 text-red-650 rounded-xl transition-all cursor-pointer focus:outline-none sm:w-10 sm:h-10 shrink-0"
                               title="Delete Notice"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4 shrink-0" />
+                              <span className="sm:hidden text-xs font-extrabold ml-1.5 text-red-650">Delete Notice</span>
                             </button>
                           </div>
                         </motion.div>

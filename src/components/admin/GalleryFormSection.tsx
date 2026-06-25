@@ -322,13 +322,13 @@ export default function GalleryFormSection({
     }
   };
 
-  const handleBulkDeleteGallery = async () => {
-    if (selectedGalleryIds.length === 0) return;
-    const loadingToast = toast.loading(`Deleting ${selectedGalleryIds.length} photos...`);
+  const handleBulkDeleteGallery = async (idsToDelete: string[] = selectedGalleryIds) => {
+    if (idsToDelete.length === 0) return;
+    const loadingToast = toast.loading(`Deleting ${idsToDelete.length} photos...`);
     try {
       let successCount = 0;
       let failCount = 0;
-      for (const id of selectedGalleryIds) {
+      for (const id of idsToDelete) {
         const res = await fetch(`/api/gallery?id=${id}`, { method: "DELETE" });
         const result = await res.json();
         if (res.ok && result.success) {
@@ -338,7 +338,7 @@ export default function GalleryFormSection({
         }
       }
       toast.success(`Successfully deleted ${successCount} photos.${failCount > 0 ? ` Failed to delete ${failCount} photos.` : ""}`, { id: loadingToast });
-      setSelectedGalleryIds([]);
+      setSelectedGalleryIds(prev => prev.filter(id => !idsToDelete.includes(id)));
       refreshData();
     } catch {
       toast.error("Failed to execute bulk deletion.", { id: loadingToast });
@@ -570,6 +570,12 @@ export default function GalleryFormSection({
     if (indexB !== -1) return 1;
     return a.localeCompare(b);
   });
+
+  // Selection helper variables for current active folder view
+  const currentFolderPhotos = selectedCategoryFolder ? (groupedGallery[selectedCategoryFolder] || []) : [];
+  const currentFolderPhotoIds = currentFolderPhotos.map(p => p.id || p._id || "").filter(Boolean);
+  const selectedFolderIdsInSelection = currentFolderPhotoIds.filter(id => selectedGalleryIds.includes(id));
+  const areAllInFolderSelected = currentFolderPhotoIds.length > 0 && currentFolderPhotoIds.every(id => selectedGalleryIds.includes(id));
 
   return (
     <div className="flex flex-col gap-6 text-left">
@@ -829,7 +835,7 @@ export default function GalleryFormSection({
                     const needsResolve = needsResolution(link);
                     return (
                       <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between py-2 text-xs font-medium gap-3">
-                        <span className="text-slate-800 truncate max-w-sm font-mono text-[11px]" title={link}>
+                        <span className="text-slate-800 truncate max-w-[160px] sm:max-w-sm font-mono text-[10px] sm:text-[11px]" title={link}>
                           {link}
                         </span>
 
@@ -885,7 +891,7 @@ export default function GalleryFormSection({
             <div className="max-h-48 overflow-y-auto flex flex-col gap-2 divide-y divide-slate-50 pr-1 text-xs">
               {galleryQueue.map((item) => (
                 <div key={item.id} className="flex items-center justify-between py-2 text-xs font-medium gap-3">
-                  <span className="text-slate-800 truncate max-w-xs" title={item.file.name}>
+                  <span className="text-slate-800 truncate max-w-[140px] sm:max-w-xs" title={item.file.name}>
                     {item.file.name}
                   </span>
 
@@ -969,40 +975,6 @@ export default function GalleryFormSection({
             <h4 className="text-sm font-black text-slate-900">Uploaded Gallery Photos ({galleryList.length})</h4>
             <p className="text-[11px] text-slate-400 mt-1 font-semibold">Select and manage active photo gallery grids.</p>
           </div>
-
-          {galleryList.length > 0 && (
-            <div className="flex items-center gap-2.5 self-stretch sm:self-auto flex-wrap">
-              {selectedGalleryIds.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerConfirm(
-                      "Delete Selected Photos",
-                      `Are you sure you want to permanently delete all ${selectedGalleryIds.length} selected event photos? This action cannot be undone.`,
-                      handleBulkDeleteGallery
-                    );
-                  }}
-                  className="px-3.5 py-2.5 bg-red-650 hover:bg-red-750 text-white text-[10px] font-black uppercase rounded-xl shadow-xs transition-all focus:outline-none cursor-pointer"
-                >
-                  Delete Selected ({selectedGalleryIds.length})
-                </button>
-              )}
-              
-              <button
-                type="button"
-                onClick={() => {
-                  if (selectedGalleryIds.length === galleryList.length) {
-                    setSelectedGalleryIds([]);
-                  } else {
-                    setSelectedGalleryIds(galleryList.map(p => p.id || p._id || "").filter(Boolean));
-                  }
-                }}
-                className="px-3.5 py-2.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-[10px] font-black uppercase rounded-xl shadow-3xs transition-all focus:outline-none cursor-pointer select-none"
-              >
-                {selectedGalleryIds.length === galleryList.length ? "Deselect All" : "Select All"}
-              </button>
-            </div>
-          )}
         </div>
 
         {galleryList.length === 0 ? (
@@ -1039,22 +1011,67 @@ export default function GalleryFormSection({
         ) : (
           <div className="flex flex-col gap-6">
             {/* Header / Back bar */}
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedCategoryFolder(null)}
-                className="inline-flex items-center justify-center p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 rounded-xl transition-all cursor-pointer focus:outline-none"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <div>
-                <h5 className="text-xs font-black text-slate-900 uppercase tracking-wider">
-                  {selectedCategoryFolder}
-                </h5>
-                <span className="text-[10px] text-slate-400 font-bold">
-                  {(groupedGallery[selectedCategoryFolder] || []).length} photos in folder
-                </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategoryFolder(null);
+                    // Clear selected gallery IDs of current folder when navigating back
+                    setSelectedGalleryIds(prev => prev.filter(id => !currentFolderPhotoIds.includes(id)));
+                  }}
+                  className="inline-flex items-center justify-center p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 rounded-xl transition-all cursor-pointer focus:outline-none"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <div>
+                  <h5 className="text-xs font-black text-slate-900 uppercase tracking-wider">
+                    {selectedCategoryFolder}
+                  </h5>
+                  <span className="text-[10px] text-slate-400 font-bold">
+                    {currentFolderPhotos.length} {currentFolderPhotos.length === 1 ? "photo" : "photos"} in folder
+                  </span>
+                </div>
               </div>
+
+              {currentFolderPhotos.length > 0 && (
+                <div className="flex items-center gap-2.5 self-stretch sm:self-auto flex-wrap justify-end">
+                  {selectedFolderIdsInSelection.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        triggerConfirm(
+                          "Delete Selected Photos",
+                          `Are you sure you want to permanently delete all ${selectedFolderIdsInSelection.length} selected photos from this folder? This action cannot be undone.`,
+                          () => handleBulkDeleteGallery(selectedFolderIdsInSelection)
+                        );
+                      }}
+                      className="px-3.5 py-2.5 bg-red-650 hover:bg-red-750 text-white text-[10px] font-black uppercase rounded-xl shadow-xs transition-all focus:outline-none cursor-pointer"
+                    >
+                      Delete Selected ({selectedFolderIdsInSelection.length})
+                    </button>
+                  )}
+                  
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (areAllInFolderSelected) {
+                        // Deselect all in this folder
+                        setSelectedGalleryIds(prev => prev.filter(id => !currentFolderPhotoIds.includes(id)));
+                      } else {
+                        // Select all in this folder
+                        setSelectedGalleryIds(prev => {
+                          const union = new Set([...prev, ...currentFolderPhotoIds]);
+                          return Array.from(union);
+                        });
+                      }
+                    }}
+                    className="px-3.5 py-2.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-[10px] font-black uppercase rounded-xl shadow-3xs transition-all focus:outline-none cursor-pointer select-none"
+                  >
+                    {areAllInFolderSelected ? "Deselect All" : "Select All"}
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Folder Grid */}
@@ -1102,6 +1119,24 @@ export default function GalleryFormSection({
                           />
                         </div>
 
+                        {/* Compact Delete button (Mobile only) */}
+                        <div className="absolute top-2.5 right-2.5 z-10 sm:hidden">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              triggerConfirm(
+                                "Delete Photo",
+                                "Are you sure you want to permanently delete this photo from the school gallery? This action cannot be undone.",
+                                () => handleDeleteGallery(photo.id || photo._id || "")
+                              );
+                            }}
+                            className="bg-white/95 p-1.5 rounded-lg backdrop-blur-xs shadow-xs border border-red-100 hover:border-red-200 text-red-655 hover:bg-red-50 transition-all flex items-center justify-center cursor-pointer focus:outline-none"
+                            title="Delete Asset"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
                         {/* Image visual wrapper with aspect ratio */}
                         <div className="relative aspect-video w-full bg-slate-100 shrink-0 overflow-hidden shadow-inner">
                           <Image
@@ -1121,7 +1156,7 @@ export default function GalleryFormSection({
                         </div>
 
                         {/* Text captions */}
-                        <div className="p-3.5 flex-1 flex flex-col justify-between gap-3">
+                        <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between gap-2.5">
                           <div>
                             <span className="text-[8px] font-black uppercase text-accent tracking-wider block">
                               {photo.category}
@@ -1139,7 +1174,7 @@ export default function GalleryFormSection({
                                 () => handleDeleteGallery(photo.id || photo._id || "")
                               );
                             }}
-                            className="w-full py-2 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 text-slate-600 hover:text-red-650 font-extrabold text-[10px] rounded-xl transition-all flex items-center justify-center gap-1 cursor-pointer focus:outline-none shadow-3xs"
+                            className="hidden sm:flex w-full py-2 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 text-slate-655 hover:text-red-650 font-extrabold text-[10px] rounded-xl transition-all items-center justify-center gap-1 cursor-pointer focus:outline-none shadow-3xs"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                             <span>Delete Asset</span>
