@@ -50,7 +50,7 @@ export default function ManagerMessagePage() {
           <div className="flex flex-col items-center gap-3">
             <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden border-4 border-accent/20 shadow-md bg-neutral-light">
               <Image
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face&auto=format"
+                src="/director.jpg"
                 alt={`Photo of ${managerNote.name[language]}`}
                 fill
                 className="object-cover"

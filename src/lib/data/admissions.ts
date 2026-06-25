@@ -17,9 +17,12 @@ export interface AgeEligibility {
 
 export interface FeeItem {
   range: string;
-  admission: string;
+  admissionNew: string;
+  admissionOld: string;
   tuition: string;
   exam: string;
+  totalNew: string;
+  totalOld: string;
 }
 
 export const admissionSteps: AdmissionStep[] = [
@@ -137,21 +140,21 @@ export const requiredDocuments: BilingualText[] = [
 
 export const subsidizedFees: FeeItem[] = [
   {
-    range: "Nursery to UKG",
-    admission: "₹1,000 (Once)",
-    tuition: "₹650 / Month",
-    exam: "₹300 / Term"
-  },
-  {
-    range: "Class I to V",
-    admission: "₹1,500 (Once)",
-    tuition: "₹800 / Month",
-    exam: "₹400 / Term"
+    range: "Nursery to Class V",
+    admissionNew: "₹1,000",
+    admissionOld: "₹550",
+    tuition: "₹350 / Month",
+    exam: "₹350 (2nd & 3rd Installment)",
+    totalNew: "₹5,900 / Year",
+    totalOld: "₹5,450 / Year"
   },
   {
     range: "Class VI to VIII",
-    admission: "₹1,800 (Once)",
-    tuition: "₹1,000 / Month",
-    exam: "₹450 / Term"
+    admissionNew: "₹1,000",
+    admissionOld: "₹550",
+    tuition: "₹400 / Month",
+    exam: "₹350 (2nd & 3rd Installment)",
+    totalNew: "₹6,500 / Year",
+    totalOld: "₹6,050 / Year"
   }
 ];

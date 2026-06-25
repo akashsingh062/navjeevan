@@ -30,6 +30,18 @@ import { Notice, GalleryItem } from "@/types";
 const managementMembers = [
   {
     name: {
+      en: "Shri Dhirendra Pratap Singh",
+      hi: "श्री धीरेन्द्र प्रताप सिंह",
+    },
+    role: {
+      en: "Manager",
+      hi: "प्रबंधक",
+    },
+    photo:
+      "/manager.jpg",
+  },
+  {
+    name: {
       en: "Shri Satyendra Pratap Singh",
       hi: "श्री सत्येंद्र प्रताप सिंह",
     },
@@ -41,40 +53,16 @@ const managementMembers = [
   },
   {
     name: {
-      en: "Smt. Sushila Devi",
-      hi: "श्रीमती सुशीला देवी",
-    },
-    role: {
-      en: "Vice Principal",
-      hi: "उप-प्रधानाचार्या",
-    },
-    photo:
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: {
-      en: "Shri Anil Kumar Singh",
-      hi: "श्री अनिल कुमार सिंह",
+      en: "Shri Sandeep Sharma",
+      hi: "श्री संदीप शर्मा",
     },
     role: {
       en: "Managing Director",
       hi: "प्रबंध निदेशक",
     },
     photo:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
-  {
-    name: {
-      en: "Smt. Priya Mishra",
-      hi: "श्रीमती प्रिया मिश्रा",
-    },
-    role: {
-      en: "Administrative Head",
-      hi: "प्रशासनिक प्रमुख",
-    },
-    photo:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face&auto=format",
-  },
+      "/director.jpg",
+  }
 ];
 
 export default function Home() {

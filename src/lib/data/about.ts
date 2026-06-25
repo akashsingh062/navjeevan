@@ -297,8 +297,8 @@ export const managerNote = {
     hi: "मैं हमारे समर्पित शिक्षकों, हमारे सहायक अभिभावक समुदाय और प्रत्येक छात्र का हृदय से आभारी हूँ जिन्होंने इस संस्थान में अपना विश्वास जताया है। साथ मिलकर, हम एक मजबूत और अधिक शिक्षित कुशीनगर का निर्माण कर रहे हैं।"
   },
   name: {
-    en: "Shri Anil Kumar Singh",
-    hi: "श्री अनिल कुमार सिंह"
+    en: "Shri Sandeep Sharma",
+    hi: "श्री संदीप शर्मा"
   },
   role: {
     en: "Managing Director, Nav Jeevan Public School",
