@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import ImageModal from "@/components/ImageModal";
@@ -22,6 +22,16 @@ export default function Admissions() {
   const [activeTab, setActiveTab] = useState("eligibility");
   const [feeStudentType, setFeeStudentType] = useState<"new" | "old">("new");
   const [isViewerOpen, setIsViewerOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (tabParam && ["eligibility", "fees", "process", "apply"].includes(tabParam)) {
+        setActiveTab(tabParam);
+      }
+    }
+  }, []);
   const [formData, setFormData] = useState({
     studentName: "",
     fatherName: "",

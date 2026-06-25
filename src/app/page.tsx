@@ -18,12 +18,14 @@ import {
   HeartHandshake,
   ShieldCheck,
   Paperclip,
+  Download,
 } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import NoticeCard from "@/components/NoticeCard";
 import NoticeDetailModal from "@/components/NoticeDetailModal";
 import GalleryGrid from "@/components/GalleryGrid";
 import CTASection from "@/components/CTASection";
+import ImageModal from "@/components/ImageModal";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
 import { Notice, GalleryItem } from "@/types";
@@ -73,6 +75,7 @@ export default function Home() {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -314,7 +317,7 @@ export default function Home() {
                     : "सत्र 2026-27 के लिए पंजीकरण खुला है। नर्सरी से कक्षा VIII। अभी आवेदन करें!"}
                 </p>
                 <Link
-                  href="/admissions"
+                  href="/admissions?tab=apply"
                   className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white text-accent rounded-xl font-bold text-xs transition-all hover:bg-neutral-light"
                 >
                   <span>
@@ -324,6 +327,25 @@ export default function Home() {
                   </span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
+                <button
+                  onClick={() => setIsFormOpen(true)}
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>
+                    {language === "en" ? "View Admission Form" : "प्रवेश फॉर्म देखें"}
+                  </span>
+                </button>
+                <a
+                  href="/admissionForm.png"
+                  download="Nav_Jeevan_Public_School_Admission_Form.png"
+                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white/20 hover:bg-white/30 border border-white/30 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>
+                    {language === "en" ? "Download Offline Form" : "ऑफलाइन फॉर्म डाउनलोड करें"}
+                  </span>
+                </a>
               </div>
             </div>
           </div>
@@ -669,6 +691,13 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <ImageModal
+        isOpen={isFormOpen}
+        imageUrl="/admissionForm.png"
+        category={language === "en" ? "Admission Form" : "प्रवेश फॉर्म"}
+        title={language === "en" ? "Nav Jeevan Public School Admission Form" : "नव जीवन पब्लिक स्कूल प्रवेश फॉर्म"}
+        onClose={() => setIsFormOpen(false)}
+      />
     </div>
   );
 }

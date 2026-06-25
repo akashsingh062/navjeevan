@@ -11,7 +11,7 @@ const slides = [
     subtitle:
       "NJPS Kushinagar: Empowering rural minds through top-tier UP-pattern education since 2011.",
     tag: "Session 2026–27 Admissions Open",
-    cta: { label: "Apply for Admission", href: "/admissions" },
+    cta: { label: "Apply for Admission", href: "/admissions?tab=apply" },
   },
   {
     id: 2,

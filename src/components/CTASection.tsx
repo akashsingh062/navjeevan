@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, ArrowRight, FileText } from "lucide-react";
+import { Phone, ArrowRight, Download } from "lucide-react";
 
 export default function CTASection() {
   return (
@@ -30,19 +30,20 @@ export default function CTASection() {
         {}
         <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-sm sm:max-w-none mx-auto">
           <Link
-            href="/admissions"
+            href="/admissions?tab=apply"
             className="flex items-center justify-center gap-2 px-6 py-4 bg-white text-primary hover:bg-neutral-light rounded-2xl font-black text-sm shadow-lg transition-all active:scale-95"
           >
             <span>Apply for Admission</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link
-            href="/admissions"
-            className="flex items-center justify-center gap-2 px-6 py-4 bg-white/12 border border-white/25 text-white hover:bg-white/18 rounded-2xl font-bold text-sm transition-all active:scale-95"
+          <a
+            href="/admissionForm.png"
+            download="Nav_Jeevan_Public_School_Admission_Form.png"
+            className="flex items-center justify-center gap-2 px-6 py-4 bg-white/12 border border-white/25 text-white hover:bg-white/18 rounded-2xl font-bold text-sm transition-all active:scale-95 cursor-pointer"
           >
-            <FileText className="w-4 h-4" />
+            <Download className="w-4 h-4" />
             <span>Download Form</span>
-          </Link>
+          </a>
         </div>
 
         {}
