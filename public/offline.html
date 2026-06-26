@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline | Nav Jeevan Public School</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #FAFAF7;
+      color: #333333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .container {
+      max-width: 450px;
+      padding: 30px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid #eaeaea;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #D4621A;
+      font-size: 24px;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #666666;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #D4621A;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #b74f11;
+    }
+    .retry-btn {
+      cursor: pointer;
+      border: none;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/navjeevanLogo.jpeg" alt="Nav Jeevan Logo" class="logo">
+    <h1>You are offline</h1>
+    <p>It looks like you don't have an active internet connection right now. Don't worry! Any school notices or content you previously viewed are still accessible offline.</p>
+    <button onclick="window.location.reload()" class="btn retry-btn">Try Reconnecting</button>
+  </div>
+</body>
+</html>

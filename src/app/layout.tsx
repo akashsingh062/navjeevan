@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import { LanguageProvider } from "@/context/LanguageContext";
 import ScrollRevealObserver from "@/components/ScrollRevealObserver";
+import PWARegister from "@/components/PWARegister";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -19,6 +20,7 @@ const SITE_URL = "https://njpskhabharabhar.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  manifest: "/manifest.json",
   title: {
     default:
       "Nav Jeevan Public School Khabharabhar – NJPS Khabharabhar, Kushinagar",
@@ -107,6 +109,7 @@ export default function RootLayout({
         style={{ overflowX: "clip" }}
       >
         <LanguageProvider>
+          <PWARegister />
           <ScrollRevealObserver />
           <Toaster
             position="top-center"
