@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Paperclip,
   Download,
+  Sparkles,
 } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
 import NoticeCard from "@/components/NoticeCard";
@@ -30,6 +31,13 @@ import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
 import { Notice, GalleryItem } from "@/types";
 
+const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
+
+function isRecent(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  return diff >= 0 && diff <= TWO_DAYS_MS;
+}
+
 const managementMembers = [
   {
     name: {
@@ -40,8 +48,9 @@ const managementMembers = [
       en: "Manager",
       hi: "प्रबंधक",
     },
-    photo:
-      "/manager.jpg",
+    photo: "/manager.jpg",
+    // 1396×1864 — tall portrait headshot, centered face, solid bg
+    imgPosition: "center 20%",
   },
   {
     name: {
@@ -52,7 +61,9 @@ const managementMembers = [
       en: "Principal",
       hi: "प्रधानाचार्य",
     },
-    photo: '/principle.jpeg',
+    photo: "/principle.jpeg",
+    // 552×619 — near-square, sitting at desk, face in upper portion
+    imgPosition: "center 25%",
   },
   {
     name: {
@@ -63,8 +74,9 @@ const managementMembers = [
       en: "Managing Director",
       hi: "प्रबंध निदेशक",
     },
-    photo:
-      "/director.jpg",
+    photo: "/director.jpg",
+    // 1000×1224 — portrait headshot, slightly tilted, teal bg
+    imgPosition: "center 15%",
   }
 ];
 
@@ -111,51 +123,89 @@ export default function Home() {
     <div className="flex flex-col flex-1">
       <HeroSection />
 
-      <section className="py-8 sm:py-10 bg-neutral-light border-b border-border">
+      {/* ─── Gradient divider ─────────────────────────────────── */}
+      <div className="section-gradient-divider" />
+
+      {/* ─── Notices + Sidebar ─────────────────────────────────── */}
+      <section className="py-10 sm:py-12 bg-neutral-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* Notices column */}
             <div className="lg:col-span-2 bg-white rounded-2xl border border-border shadow-sm overflow-hidden text-left reveal-on-scroll reveal-fade-right">
-              <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 bg-primary text-white">
-                <div className="flex items-center gap-2">
-                  <Bell className="w-4 h-4" />
-                  <h2 className="text-sm font-extrabold uppercase tracking-wide">
-                    {language === "en" ? "Latest Notices" : "नवीनतम सूचनाएँ"}
-                  </h2>
+              {/* Header with gradient accent */}
+              <div className="relative px-4 sm:px-5 py-4 bg-primary text-white overflow-hidden">
+                <div className="absolute inset-0 bg-linear-to-r from-primary via-primary to-[#B8521A] opacity-100" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10" />
+                <div className="relative flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
+                      <Bell className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h2 className="text-sm font-extrabold uppercase tracking-wide">
+                        {language === "en" ? "Latest Notices" : "नवीनतम सूचनाएँ"}
+                      </h2>
+                      <p className="text-[10px] text-white/60 font-medium">
+                        {language === "en" ? "Important updates & announcements" : "महत्वपूर्ण अपडेट और घोषणाएं"}
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/notices"
+                    className="flex items-center gap-1 text-[11px] font-bold text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg"
+                  >
+                    <span>{language === "en" ? "View All" : "सभी देखें"}</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
-                <Link
-                  href="/notices"
-                  className="flex items-center gap-1 text-[11px] font-bold text-white/80 hover:text-white transition-colors"
-                >
-                  <span>{language === "en" ? "View All" : "सभी देखें"}</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
               </div>
 
               <div className="p-4">
                 {loading ? (
-                  <p className="text-xs text-neutral-body italic py-4 text-center">
-                    {language === "en"
-                      ? "Loading notices..."
-                      : "सूचनाएँ लोड हो रही हैं..."}
-                  </p>
+                  <div className="flex flex-col gap-3 py-6">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="animate-pulse flex gap-3 p-3">
+                        <div className="w-12 h-12 bg-gray-200 rounded-xl shrink-0" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3 bg-gray-200 rounded w-1/3" />
+                          <div className="h-4 bg-gray-200 rounded w-2/3" />
+                          <div className="h-3 bg-gray-200 rounded w-full" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : previewNotices.length === 0 ? (
-                  <p className="text-xs text-neutral-body italic py-4 text-center">
-                    {language === "en"
-                      ? "No notices posted yet."
-                      : "अभी तक कोई सूचना पोस्ट नहीं की गई है।"}
-                  </p>
+                  <div className="text-center py-10">
+                    <div className="w-14 h-14 bg-neutral-light rounded-2xl flex items-center justify-center mx-auto mb-3">
+                      <Bell className="w-7 h-7 text-neutral-body/40" />
+                    </div>
+                    <p className="text-xs text-neutral-body italic">
+                      {language === "en"
+                        ? "No notices posted yet."
+                        : "अभी तक कोई सूचना पोस्ट नहीं की गई है।"}
+                    </p>
+                  </div>
                 ) : (
                   <>
+                    {/* Desktop notices */}
                     <div className="hidden md:flex flex-col gap-4">
                       {previewNotices.map((notice) => (
-                        <NoticeCard
-                          key={notice.id || notice._id}
-                          notice={notice}
-                          onClick={() => setSelectedNotice(notice)}
-                        />
+                        <div key={notice.id || notice._id} className="relative">
+                          {isRecent(notice.date) && (
+                            <span className="new-badge absolute -top-2 -right-2 z-10">
+                              NEW
+                            </span>
+                          )}
+                          <NoticeCard
+                            notice={notice}
+                            onClick={() => setSelectedNotice(notice)}
+                          />
+                        </div>
                       ))}
                     </div>
 
+                    {/* Mobile notices */}
                     <div className="md:hidden flex flex-col gap-3">
                       {previewNotices.map((notice) => {
                         const isImportant = notice.isImportant;
@@ -199,8 +249,13 @@ export default function Home() {
                           <div
                             key={notice.id || notice._id}
                             onClick={() => setSelectedNotice(notice)}
-                            className={`p-3 bg-neutral-light border border-gray-200 border-l-4 ${activeBorderColor} rounded-xl shadow-3xs flex flex-col gap-2 text-left cursor-pointer hover:shadow-xs hover:border-primary/30 transition-all`}
+                            className={`relative p-3 bg-neutral-light border border-gray-200 border-l-4 ${activeBorderColor} rounded-xl shadow-3xs flex flex-col gap-2 text-left cursor-pointer hover:shadow-xs hover:border-primary/30 transition-all`}
                           >
+                            {isRecent(notice.date) && (
+                              <span className="new-badge absolute -top-1.5 -right-1.5 z-10">
+                                NEW
+                              </span>
+                            )}
                             <div className="flex items-center justify-between gap-2">
                               <span
                                 className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider ${activeBadgeStyle}`}
@@ -255,16 +310,21 @@ export default function Home() {
               />
             )}
 
-            <div className="hidden md:flex flex-col gap-4 text-left reveal-on-scroll reveal-fade-left">
-              <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden">
-                <div className="px-5 py-3.5 bg-neutral-dark text-white flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  <h2 className="text-sm font-extrabold uppercase tracking-wide">
-                    {t.nav.staffPortal}
-                  </h2>
+            {/* Sidebar */}
+            <div className="hidden md:flex flex-col gap-5 text-left reveal-on-scroll reveal-fade-left">
+              {/* Staff Portal Card */}
+              <div className="bg-white rounded-2xl border border-border shadow-sm overflow-hidden card-accent-bottom">
+                <div className="relative px-5 py-3.5 bg-neutral-dark text-white overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-8 -mt-8" />
+                  <div className="relative flex items-center gap-2">
+                    <Lock className="w-4 h-4" />
+                    <h2 className="text-sm font-extrabold uppercase tracking-wide">
+                      {t.nav.staffPortal}
+                    </h2>
+                  </div>
                 </div>
                 <div className="p-5 flex flex-col gap-4">
-                  <div className="w-16 h-16 bg-primary-light rounded-2xl flex items-center justify-center mx-auto">
+                  <div className="w-16 h-16 bg-primary-light rounded-2xl flex items-center justify-center mx-auto animate-glow-pulse">
                     <Lock className="w-8 h-8 text-primary" />
                   </div>
                   <div className="text-center">
@@ -281,7 +341,7 @@ export default function Home() {
                   </div>
                   <Link
                     href="/admin"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm transition-all"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm transition-all hover:shadow-lg"
                   >
                     <Lock className="w-4 h-4" />
                     <span>
@@ -304,21 +364,33 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="bg-accent rounded-2xl p-5 text-white flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" />
-                  <span className="text-sm font-extrabold uppercase tracking-wide">
-                    {language === "en" ? "Admissions Open" : "प्रवेश खुले हैं"}
-                  </span>
+              {/* Admissions card */}
+              <div className="relative bg-accent rounded-2xl p-5 text-white flex flex-col gap-3 overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full -ml-6 -mb-6 pointer-events-none" />
+
+                <div className="relative flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-extrabold uppercase tracking-wide">
+                      {language === "en" ? "Admissions Open" : "प्रवेश खुले हैं"}
+                    </span>
+                    <span className="block text-[10px] text-white/50 font-medium">
+                      {language === "en" ? "Session 2026–27" : "सत्र 2026-27"}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-xs text-white/85 leading-relaxed">
+                <p className="relative text-xs text-white/85 leading-relaxed">
                   {language === "en"
                     ? "Session 2026–27 enrollment open. Nursery to Class VIII. Apply now!"
                     : "सत्र 2026-27 के लिए पंजीकरण खुला है। नर्सरी से कक्षा VIII। अभी आवेदन करें!"}
                 </p>
                 <Link
                   href="/admissions?tab=apply"
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white text-accent rounded-xl font-bold text-xs transition-all hover:bg-neutral-light"
+                  className="relative flex items-center justify-center gap-1.5 w-full py-2.5 bg-white text-accent rounded-xl font-bold text-xs transition-all hover:bg-neutral-light hover:shadow-lg"
                 >
                   <span>
                     {language === "en"
@@ -329,7 +401,7 @@ export default function Home() {
                 </Link>
                 <button
                   onClick={() => setIsFormOpen(true)}
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
+                  className="relative flex items-center justify-center gap-1.5 w-full py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
                   <span>
@@ -339,7 +411,7 @@ export default function Home() {
                 <a
                   href="/admissionForm.png"
                   download="Nav_Jeevan_Public_School_Admission_Form.png"
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-white/20 hover:bg-white/30 border border-white/30 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
+                  className="relative flex items-center justify-center gap-1.5 w-full py-2.5 bg-white/20 hover:bg-white/30 border border-white/30 text-white rounded-xl font-bold text-xs transition-all cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>
@@ -352,32 +424,44 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── About Section ────────────────────────────────────── */}
       <section
-        className="py-10 sm:py-14 bg-white border-b border-border"
+        className="py-12 sm:py-16 bg-white relative overflow-hidden"
         id="about"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-8 text-left reveal-on-scroll reveal-fade-up">
-            <div className="h-1 w-10 bg-primary rounded-full" />
-            <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
-              {language === "en"
-                ? "About Nav Jeevan Public School"
-                : "नव जीवन पब्लिक स्कूल के बारे में"}
-            </h2>
-            <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
+        {/* Decorative background */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/3 rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-accent/3 rounded-full blur-3xl -ml-36 -mb-36 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section header */}
+          <div className="flex items-center gap-3 mb-10 text-left reveal-on-scroll reveal-fade-up">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase font-black text-primary bg-primary-light px-3 py-1 rounded-full tracking-widest w-fit flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3" />
+                {language === "en" ? "About Us" : "हमारे बारे में"}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
+                {language === "en"
+                  ? "About Nav Jeevan Public School"
+                  : "नव जीवन पब्लिक स्कूल के बारे में"}
+              </h2>
+            </div>
+            <div className="h-[2px] flex-1 bg-linear-to-r from-border to-transparent rounded-full hidden sm:block" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start text-left overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-start text-left overflow-hidden">
+            {/* Image side */}
             <div className="relative reveal-on-scroll reveal-fade-right">
-              <div className="relative rounded-2xl overflow-hidden shadow-lg aspect-4/3">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-4/3 group">
                 <Image
                   src="/img-2.jpg"
                   alt="Students learning at Nav Jeevan Public School"
                   fill
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-neutral-dark/80 to-transparent px-4 py-4">
+                <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-neutral-dark/80 to-transparent px-5 py-5">
                   <p className="text-white text-xs font-bold">
                     {language === "en"
                       ? "Nav Jeevan Public School — Smart Classroom"
@@ -391,7 +475,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="absolute -top-3 -right-3 bg-primary text-white rounded-2xl px-4 py-3 shadow-lg text-center">
+              {/* Years badge */}
+              <div className="absolute -top-3 -right-3 bg-linear-to-br from-primary to-[#B8521A] text-white rounded-2xl px-4 py-3 shadow-xl text-center animate-float-slow">
                 <span className="block text-2xl font-black leading-none">
                   15+
                 </span>
@@ -401,8 +486,12 @@ export default function Home() {
                     : "उत्कृष्टता के\nवर्ष"}
                 </span>
               </div>
+
+              {/* Decorative dots */}
+              <div className="absolute -bottom-4 -left-4 w-24 h-24 dot-pattern opacity-30 pointer-events-none hidden lg:block" />
             </div>
 
+            {/* Text side */}
             <div className="flex flex-col gap-6 reveal-on-scroll reveal-fade-left">
               <p className="text-sm sm:text-base text-neutral-body leading-relaxed">
                 {language === "en"
@@ -411,9 +500,10 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col gap-3">
-                <div className="flex gap-3.5 items-start p-4 bg-primary-light border border-primary/20 rounded-2xl reveal-on-scroll reveal-fade-up delay-100">
-                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                    <Target className="w-5 h-5 text-white" />
+                {/* Vision */}
+                <div className="flex gap-3.5 items-start p-4 bg-primary-light border border-primary/15 rounded-2xl reveal-on-scroll reveal-fade-up delay-100 icon-hover-bounce hover:border-primary/30 hover:shadow-sm transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-[#B8521A] flex items-center justify-center shrink-0 shadow-sm">
+                    <Target className="w-5 h-5 text-white icon-target" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark mb-1">
@@ -427,9 +517,10 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex gap-3.5 items-start p-4 bg-accent-light border border-accent/20 rounded-2xl reveal-on-scroll reveal-fade-up delay-200">
-                  <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center shrink-0">
-                    <Compass className="w-5 h-5 text-white" />
+                {/* Mission */}
+                <div className="flex gap-3.5 items-start p-4 bg-accent-light border border-accent/15 rounded-2xl reveal-on-scroll reveal-fade-up delay-200 icon-hover-bounce hover:border-accent/30 hover:shadow-sm transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-accent to-[#155838] flex items-center justify-center shrink-0 shadow-sm">
+                    <Compass className="w-5 h-5 text-white icon-target" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark mb-1">
@@ -443,9 +534,10 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="flex gap-3.5 items-start p-4 bg-amber-50 border border-amber-200 rounded-2xl reveal-on-scroll reveal-fade-up delay-300">
-                  <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center shrink-0">
-                    <Lightbulb className="w-5 h-5 text-white" />
+                {/* Strategy */}
+                <div className="flex gap-3.5 items-start p-4 bg-amber-50 border border-amber-200/50 rounded-2xl reveal-on-scroll reveal-fade-up delay-300 icon-hover-bounce hover:border-amber-300 hover:shadow-sm transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-amber-500 to-amber-600 flex items-center justify-center shrink-0 shadow-sm">
+                    <Lightbulb className="w-5 h-5 text-white icon-target" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark mb-1">
@@ -462,28 +554,39 @@ export default function Home() {
 
               <Link
                 href="/about"
-                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary-light hover:bg-primary/20 text-primary font-bold text-sm rounded-xl transition-all self-start"
+                className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-primary-light hover:bg-primary/20 text-primary font-bold text-sm rounded-xl transition-all self-start hover:shadow-sm group"
               >
                 <span>
                   {language === "en"
                     ? "Read Our Full Story"
                     : "हमारी पूरी कहानी पढ़ें"}
                 </span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-10 sm:py-12 bg-neutral-light border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-7 text-left reveal-on-scroll reveal-fade-up">
-            <div className="h-1 w-10 bg-accent rounded-full" />
-            <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
-              {language === "en" ? "Our Management" : "हमारा प्रबंधन"}
-            </h2>
-            <div className="h-1 flex-1 bg-border rounded-full hidden sm:block" />
+      {/* ─── Gradient divider ─────────────────────────────────── */}
+      <div className="section-gradient-divider" />
+
+      {/* ─── Management Section ───────────────────────────────── */}
+      <section className="py-12 sm:py-14 bg-neutral-light relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-64 h-64 bg-accent/3 rounded-full blur-3xl -ml-32 -mt-32 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-8 text-left reveal-on-scroll reveal-fade-up">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase font-black text-accent bg-accent-light px-3 py-1 rounded-full tracking-widest w-fit">
+                {language === "en" ? "Leadership" : "नेतृत्व"}
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black text-neutral-dark tracking-tight">
+                {language === "en" ? "Our Management" : "हमारा प्रबंधन"}
+              </h2>
+            </div>
+            <div className="h-[2px] flex-1 bg-linear-to-r from-border to-transparent rounded-full hidden sm:block" />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
@@ -500,9 +603,9 @@ export default function Home() {
                       ? "/about/message-principal"
                       : "/about/message-director"
                   }
-                  className={`flex flex-col w-full sm:h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} ${isMd
-                      ? "bg-white border-2 border-primary/25 shadow-md hover:border-primary/55 hover:-translate-y-1.5"
-                      : "bg-white border border-border shadow-xs hover:border-primary/20 hover:shadow-md hover:-translate-y-1.5"
+                  className={`flex flex-col w-full sm:h-[380px] rounded-3xl border transition-all duration-500 ease-out group reveal-on-scroll reveal-fade-up ${delays[i]} card-accent-bottom ${isMd
+                      ? "bg-white border-2 border-primary/25 shadow-md hover:border-primary/55 hover:-translate-y-2"
+                      : "bg-white border border-border shadow-xs hover:border-primary/20 hover:shadow-md hover:-translate-y-2"
                     }`}
                 >
                   <div className="relative w-full aspect-4/3 sm:aspect-auto sm:h-[240px] overflow-hidden shrink-0 bg-neutral-light/5 rounded-t-3xl">
@@ -510,11 +613,14 @@ export default function Home() {
                       src={member.photo}
                       alt={`Photo of ${member.name[language]}`}
                       fill
-                      className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                      style={{ objectPosition: member.imgPosition }}
                       sizes="(max-width: 640px) 100vw, 25vw"
                       priority={i === 0}
                       loading={i === 0 ? "eager" : "lazy"}
                     />
+                    {/* Gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-linear-to-t from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
 
                   <div className="flex-1 p-5 flex flex-col justify-center items-center text-center gap-2 w-full bg-white rounded-b-3xl">
@@ -538,9 +644,9 @@ export default function Home() {
           <div className="mt-8 flex justify-center">
             <Link
               href="/faculty"
-              className="flex items-center gap-2 px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white rounded-xl font-extrabold text-sm shadow-2xs hover:shadow-lg hover:scale-103 transition-all duration-300 ease-out cursor-pointer"
+              className="flex items-center gap-2 px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-white rounded-xl font-extrabold text-sm shadow-2xs hover:shadow-lg hover:scale-103 transition-all duration-300 ease-out cursor-pointer group"
             >
-              <Users className="w-4 h-4" />
+              <Users className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span>
                 {language === "en"
                   ? "Meet Our Faculty"
@@ -551,21 +657,30 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-10 bg-white border-b border-border text-left">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-6 reveal-on-scroll reveal-fade-up">
-            <div className="h-1 w-10 bg-primary rounded-full" />
-            <h2 className="text-xl font-black text-neutral-dark">
-              {language === "en"
-                ? "Why Choose Nav Jeevan?"
-                : "नव जीवन को क्यों चुनें?"}
-            </h2>
+      {/* ─── Why Choose Section ───────────────────────────────── */}
+      <section className="py-12 bg-white relative overflow-hidden text-left">
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-primary/3 rounded-full blur-3xl -mr-40 -mb-40 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-8 reveal-on-scroll reveal-fade-up">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase font-black text-primary bg-primary-light px-3 py-1 rounded-full tracking-widest w-fit">
+                {language === "en" ? "Why Us" : "हमें क्यों चुनें"}
+              </span>
+              <h2 className="text-xl font-black text-neutral-dark">
+                {language === "en"
+                  ? "Why Choose Nav Jeevan?"
+                  : "नव जीवन को क्यों चुनें?"}
+              </h2>
+            </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {[
               {
                 icon: Award,
-                color: "text-primary bg-primary-light",
+                gradient: "from-primary to-[#B8521A]",
+                bgLight: "bg-primary-light",
+                borderColor: "border-primary/10 hover:border-primary/25",
                 title:
                   language === "en" ? "Affordable Quality" : "किफायती गुणवत्ता",
                 desc:
@@ -575,7 +690,9 @@ export default function Home() {
               },
               {
                 icon: HeartHandshake,
-                color: "text-accent bg-accent-light",
+                gradient: "from-accent to-[#155838]",
+                bgLight: "bg-accent-light",
+                borderColor: "border-accent/10 hover:border-accent/25",
                 title:
                   language === "en" ? "Bilingual Learning" : "द्विभाषी शिक्षा",
                 desc:
@@ -585,7 +702,9 @@ export default function Home() {
               },
               {
                 icon: ShieldCheck,
-                color: "text-amber-600 bg-amber-50",
+                gradient: "from-amber-500 to-amber-600",
+                bgLight: "bg-amber-50",
+                borderColor: "border-amber-200/50 hover:border-amber-300",
                 title:
                   language === "en" ? "Smart & Modern" : "स्मार्ट और आधुनिक",
                 desc:
@@ -599,12 +718,12 @@ export default function Home() {
               return (
                 <div
                   key={i}
-                  className={`flex gap-4 items-start p-4 bg-neutral-light border border-border rounded-2xl reveal-on-scroll reveal-fade-up ${delays[i]}`}
+                  className={`flex gap-4 items-start p-5 ${p.bgLight} border ${p.borderColor} rounded-2xl reveal-on-scroll reveal-fade-up ${delays[i]} icon-hover-bounce hover:shadow-md transition-all card-accent-bottom`}
                 >
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${p.color}`}
+                    className={`w-11 h-11 rounded-xl bg-linear-to-br ${p.gradient} flex items-center justify-center shrink-0 shadow-sm`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-5 h-5 text-white icon-target" />
                   </div>
                   <div>
                     <h3 className="text-sm font-extrabold text-neutral-dark">
@@ -621,6 +740,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── Gallery Preview ──────────────────────────────────── */}
       {loading ? (
         <div className="py-10 text-center text-xs text-neutral-body italic">
           {language === "en"
@@ -628,20 +748,25 @@ export default function Home() {
             : "गैलरी लोड हो रही है..."}
         </div>
       ) : previewGallery.length > 0 ? (
-        <section className="py-10 bg-white border-b border-border text-left">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-5 reveal-on-scroll reveal-fade-up">
+        <section className="py-12 bg-neutral-light text-left relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-64 h-64 bg-accent/3 rounded-full blur-3xl -ml-32 -mt-32 pointer-events-none" />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-6 reveal-on-scroll reveal-fade-up">
               <div className="flex items-center gap-3">
-                <div className="h-1 w-10 bg-accent rounded-full" />
-                <h2 className="text-xl font-black text-neutral-dark">
-                  {language === "en"
-                    ? "Life at Nav Jeevan"
-                    : "नव जीवन में जीवन के रंग"}
-                </h2>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] uppercase font-black text-accent bg-accent-light px-3 py-1 rounded-full tracking-widest w-fit">
+                    {language === "en" ? "Campus Life" : "कैंपस जीवन"}
+                  </span>
+                  <h2 className="text-xl font-black text-neutral-dark">
+                    {language === "en"
+                      ? "Life at Nav Jeevan"
+                      : "नव जीवन में जीवन के रंग"}
+                  </h2>
+                </div>
               </div>
               <Link
                 href="/gallery"
-                className="flex items-center gap-1 text-xs font-bold text-primary hover:underline shrink-0"
+                className="flex items-center gap-1 text-xs font-bold text-primary hover:underline shrink-0 bg-primary-light px-3 py-1.5 rounded-lg"
               >
                 <span>{language === "en" ? "View All" : "सभी देखें"}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -654,20 +779,27 @@ export default function Home() {
 
       <CTASection />
 
-      <section className="py-10 bg-white text-left">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 mb-5 reveal-on-scroll reveal-fade-up">
-            <div className="h-1 w-10 bg-primary rounded-full" />
-            <h2 className="text-xl font-black text-neutral-dark">
-              {language === "en" ? "Get in Touch" : "संपर्क में रहें"}
-            </h2>
+      {/* ─── Contact Section ──────────────────────────────────── */}
+      <section className="py-12 bg-white text-left relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/3 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-6 reveal-on-scroll reveal-fade-up">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase font-black text-primary bg-primary-light px-3 py-1 rounded-full tracking-widest w-fit">
+                {language === "en" ? "Contact" : "संपर्क"}
+              </span>
+              <h2 className="text-xl font-black text-neutral-dark">
+                {language === "en" ? "Get in Touch" : "संपर्क में रहें"}
+              </h2>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-lg">
+          <div className="flex flex-col sm:flex-row gap-4 max-w-lg">
             <a
               href="tel:+919889897057"
-              className="flex items-center gap-3 flex-1 p-4 border border-border rounded-2xl hover:border-primary/30 hover:bg-neutral-light transition-all reveal-on-scroll reveal-fade-right delay-100"
+              className="flex items-center gap-3 flex-1 p-4 border border-border rounded-2xl hover:border-primary/30 hover:bg-primary-light/50 transition-all reveal-on-scroll reveal-fade-right delay-100 card-accent-bottom group"
             >
-              <div className="p-2.5 bg-primary-light rounded-xl text-primary shrink-0">
+              <div className="p-2.5 bg-linear-to-br from-primary-light to-primary/15 rounded-xl text-primary shrink-0 group-hover:shadow-sm transition-shadow">
                 <Phone className="w-5 h-5" />
               </div>
               <div>
@@ -681,10 +813,10 @@ export default function Home() {
             </a>
             <Link
               href="/contact"
-              className="flex items-center gap-3 flex-1 p-4 border border-primary/20 bg-primary-light rounded-2xl hover:bg-primary/15 transition-all reveal-on-scroll reveal-fade-left delay-200"
+              className="flex items-center gap-3 flex-1 p-4 border border-primary/20 bg-primary-light rounded-2xl hover:bg-primary/15 transition-all reveal-on-scroll reveal-fade-left delay-200 card-accent-bottom group"
             >
-              <div className="p-2.5 bg-primary/15 rounded-xl text-primary shrink-0">
-                <ArrowRight className="w-5 h-5" />
+              <div className="p-2.5 bg-primary/15 rounded-xl text-primary shrink-0 group-hover:shadow-sm transition-shadow">
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </div>
               <div>
                 <span className="block text-[10px] font-bold text-neutral-body uppercase tracking-wider">

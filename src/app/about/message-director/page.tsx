@@ -54,6 +54,7 @@ export default function DirectorMessagePage() {
                 alt={`Photo of ${directorNote.name[language as "en" | "hi"]}`}
                 fill
                 className="object-cover"
+                style={{ objectPosition: "center 15%" }}
                 sizes="200px"
                 priority
                 loading="eager"

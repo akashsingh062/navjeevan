@@ -54,6 +54,7 @@ export default function ManagerMessagePage() {
                 alt={`Photo of ${managerNote.name[language]}`}
                 fill
                 className="object-cover"
+                style={{ objectPosition: "center 20%" }}
                 sizes="200px"
                 priority
                 loading="eager"

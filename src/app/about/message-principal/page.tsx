@@ -54,6 +54,7 @@ export default function PrincipalMessagePage() {
                 alt={`Photo of ${principalNote.name[language]}`}
                 fill
                 className="object-cover"
+                style={{ objectPosition: "center 25%" }}
                 sizes="200px"
                 priority
                 loading="eager"

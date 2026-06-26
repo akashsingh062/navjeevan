@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Home, Bell, Image, Users, Phone } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
+import { useHasNewNotices } from "@/lib/useHasNewNotices";
 
 const bottomNavItems = [
   { href: "/", labelKey: "home", icon: Home },
@@ -18,6 +19,7 @@ export default function BottomNav() {
   const pathname = usePathname();
   const { language } = useLanguage();
   const t = translations[language];
+  const { hasNew: hasNewNotice } = useHasNewNotices();
 
   if (pathname.startsWith("/admin")) return null;
 
@@ -52,11 +54,14 @@ export default function BottomNav() {
               {isActive && (
                 <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
               )}
-              <span className={`transition-transform ${isActive ? "scale-110" : "scale-100"}`}>
+              <span className={`relative transition-transform ${isActive ? "scale-110" : "scale-100"}`}>
                 <Icon
                   className={`w-5 h-5 transition-all ${isActive ? "stroke-[2.5px]" : "stroke-[1.75px]"}`}
                   aria-hidden="true"
                 />
+                {labelKey === "notices" && hasNewNotice && (
+                  <span className="notif-dot" />
+                )}
               </span>
               <span
                 className={`text-[10px] font-bold leading-none truncate w-full text-center transition-all ${

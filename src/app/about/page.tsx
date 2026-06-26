@@ -143,6 +143,7 @@ export default function About() {
                     alt="Shri Dhirendra Pratap Singh"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    style={{ objectPosition: "center 20%" }}
                   />
                 </div>
                 <div>
@@ -175,6 +176,7 @@ export default function About() {
                     alt="Shri Sandeep Sharma"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    style={{ objectPosition: "center 15%" }}
                   />
                 </div>
                 <div>
@@ -207,6 +209,7 @@ export default function About() {
                     alt="Shri Satyendra Pratap Singh"
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    style={{ objectPosition: "center 25%" }}
                   />
                 </div>
                 <div>

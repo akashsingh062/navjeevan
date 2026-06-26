@@ -25,6 +25,7 @@ import MobileMenu from "./MobileMenu";
 import { navLinks } from "@/lib/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { translations } from "@/lib/translations";
+import { useHasNewNotices } from "@/lib/useHasNewNotices";
 
 const aboutDropdown = [
   {
@@ -112,6 +113,7 @@ export default function Navbar() {
 
   const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
+  const { hasNew: hasNewNotice } = useHasNewNotices();
 
   const [prevPathname, setPrevPathname] = useState(pathname);
   if (pathname !== prevPathname) {
@@ -286,25 +288,33 @@ export default function Navbar() {
                 </button>
 
                 {translatedQuickLinks.map(
-                  ({ label, href, icon: Icon, badge, badgeColor }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all group min-w-[72px] text-center"
-                    >
-                      {badge && (
-                        <span
-                          className={`absolute -top-1.5 -right-1.5 ${badgeColor} text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none z-10`}
-                        >
-                          {badge}
+                  ({ label, href, icon: Icon, badge, badgeColor }) => {
+                    const isNotices = href === "/notices";
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        className="relative flex flex-col items-center justify-center gap-1 px-4 py-2.5 rounded-xl border border-border hover:border-primary/30 hover:bg-primary-light transition-all group min-w-[72px] text-center"
+                      >
+                        {badge && (
+                          <span
+                            className={`absolute -top-1.5 -right-1.5 ${badgeColor} text-white text-[9px] font-black px-1.5 py-0.5 rounded-full leading-none z-10`}
+                          >
+                            {badge}
+                          </span>
+                        )}
+                        <span className="relative">
+                          <Icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                          {isNotices && hasNewNotice && (
+                            <span className="notif-dot notif-dot-sm" />
+                          )}
                         </span>
-                      )}
-                      <Icon className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                      <span className="text-[10px] font-bold text-neutral-dark group-hover:text-primary transition-colors">
-                        {label}
-                      </span>
-                    </Link>
-                  ),
+                        <span className="text-[10px] font-bold text-neutral-dark group-hover:text-primary transition-colors">
+                          {label}
+                        </span>
+                      </Link>
+                    );
+                  },
                 )}
 
                 <Link
