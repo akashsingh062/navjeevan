@@ -46,7 +46,9 @@ export default function NoticeFormSection({
   const [noticeAttachmentUrl, setNoticeAttachmentUrl] = useState("");
   const [isNoticeAttachmentUploading, setIsNoticeAttachmentUploading] = useState(false);
   const [editingNoticeId, setEditingNoticeId] = useState<string | null>(null);
+  const [originalAttachmentUrl, setOriginalAttachmentUrl] = useState<string>("");
   const [selectedNoticeIds, setSelectedNoticeIds] = useState<string[]>([]);
+
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -118,6 +120,7 @@ export default function NoticeFormSection({
         setCustomCategory("");
         setNoticeAttachmentUrl("");
         setEditingNoticeId(null);
+        setOriginalAttachmentUrl("");
         setStatus("success");
         refreshData();
       } else {
@@ -130,11 +133,21 @@ export default function NoticeFormSection({
     }
   };
 
-  const handleStartEditNotice = (notice: Notice) => {
+  const handleStartEditNotice = async (notice: Notice) => {
+    // If there is an unsaved uploaded file from a previous selection, clean it up!
+    if (noticeAttachmentUrl && noticeAttachmentUrl !== originalAttachmentUrl) {
+      try {
+        await fetch(`/api/upload?url=${encodeURIComponent(noticeAttachmentUrl)}`, { method: "DELETE" });
+      } catch (err) {
+        console.error("Failed to clean up unsaved attachment:", err);
+      }
+    }
+
     const noticeId = notice.id || notice._id || null;
     if (!noticeId) return;
 
     setEditingNoticeId(noticeId);
+    setOriginalAttachmentUrl(notice.attachmentUrl || "");
 
     const standardCategories = ["General", "Admission", "Exam", "Holiday"];
     if (standardCategories.includes(notice.category)) {
@@ -377,7 +390,14 @@ export default function NoticeFormSection({
                 </div>
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={async () => {
+                    if (noticeAttachmentUrl && noticeAttachmentUrl !== originalAttachmentUrl) {
+                      try {
+                        await fetch(`/api/upload?url=${encodeURIComponent(noticeAttachmentUrl)}`, { method: "DELETE" });
+                      } catch (err) {
+                        console.error("Failed to delete removed attachment:", err);
+                      }
+                    }
                     setNoticeAttachmentUrl("");
                     noticeForm.setValue("attachmentUrl", "");
                   }}
@@ -410,8 +430,16 @@ export default function NoticeFormSection({
           {editingNoticeId && (
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
+                if (noticeAttachmentUrl && noticeAttachmentUrl !== originalAttachmentUrl) {
+                  try {
+                    await fetch(`/api/upload?url=${encodeURIComponent(noticeAttachmentUrl)}`, { method: "DELETE" });
+                  } catch (err) {
+                    console.error("Failed to delete discarded attachment:", err);
+                  }
+                }
                 setEditingNoticeId(null);
+                setOriginalAttachmentUrl("");
                 noticeForm.reset({ title: "", description: "", category: "General", isImportant: false, importanceColor: "blue", attachmentUrl: "" });
                 setSelectedColor("blue");
                 setNoticeAttachmentUrl("");

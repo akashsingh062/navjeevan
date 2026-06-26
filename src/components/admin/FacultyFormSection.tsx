@@ -45,10 +45,12 @@ export default function FacultyFormSection({
   });
 
   const [editingFacultyId, setEditingFacultyId] = useState<string | null>(null);
+  const [originalImageUrl, setOriginalImageUrl] = useState<string>("");
   const [facultyImageUploading, setFacultyImageUploading] = useState(false);
   const [cropperOpen, setCropperOpen] = useState(false);
   const [cropperSrc, setCropperSrc] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+
 
   const handleFacultyImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -123,6 +125,7 @@ export default function FacultyFormSection({
         );
         facultyForm.reset({ name: "", subject: "", qualification: "", experience: "", imageUrl: "" });
         setEditingFacultyId(null);
+        setOriginalImageUrl("");
         setStatus("success");
         refreshData();
       } else {
@@ -135,11 +138,22 @@ export default function FacultyFormSection({
     }
   };
 
-  const handleStartEditFaculty = (member: Faculty) => {
+  const handleStartEditFaculty = async (member: Faculty) => {
+    // Clean up any unsaved uploaded image from previous selection
+    const currentImg = facultyForm.getValues("imageUrl");
+    if (currentImg && currentImg !== originalImageUrl) {
+      try {
+        await fetch(`/api/upload?url=${encodeURIComponent(currentImg)}`, { method: "DELETE" });
+      } catch (err) {
+        console.error("Failed to clean up unsaved image:", err);
+      }
+    }
+
     const memberId = member.id || member._id || null;
     if (!memberId) return;
 
     setEditingFacultyId(memberId);
+    setOriginalImageUrl(member.imageUrl || "");
     facultyForm.reset({
       name: member.name,
       subject: member.subject,
@@ -293,7 +307,17 @@ export default function FacultyFormSection({
               {watchedFacultyImage && (
                 <button
                   type="button"
-                  onClick={() => facultyForm.setValue("imageUrl", "")}
+                  onClick={async () => {
+                    const currentImg = facultyForm.getValues("imageUrl");
+                    if (currentImg && currentImg !== originalImageUrl) {
+                      try {
+                        await fetch(`/api/upload?url=${encodeURIComponent(currentImg)}`, { method: "DELETE" });
+                      } catch (err) {
+                        console.error("Failed to delete cleared image:", err);
+                      }
+                    }
+                    facultyForm.setValue("imageUrl", "");
+                  }}
                   className="text-[10px] font-bold text-red-650 hover:underline cursor-pointer focus:outline-none"
                 >
                   Clear Selected Image
@@ -328,8 +352,17 @@ export default function FacultyFormSection({
           {editingFacultyId && (
             <button
               type="button"
-              onClick={() => {
+              onClick={async () => {
+                const currentImg = facultyForm.getValues("imageUrl");
+                if (currentImg && currentImg !== originalImageUrl) {
+                  try {
+                    await fetch(`/api/upload?url=${encodeURIComponent(currentImg)}`, { method: "DELETE" });
+                  } catch (err) {
+                    console.error("Failed to delete discarded photo:", err);
+                  }
+                }
                 setEditingFacultyId(null);
+                setOriginalImageUrl("");
                 facultyForm.reset({ name: "", subject: "", qualification: "", experience: "", imageUrl: "" });
               }}
               className="px-6 py-4 border border-slate-350 bg-white hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl shadow-3xs transition-all focus:outline-none cursor-pointer"

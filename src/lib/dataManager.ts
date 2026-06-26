@@ -211,6 +211,10 @@ export async function saveContactInquiry(inquiry: Omit<ContactInquiry, "_id">): 
 export async function updateNotice(id: string, notice: Omit<Notice, "id" | "_id">): Promise<Notice | null> {
   if (await isDbConnected()) {
     try {
+      const oldDoc = await NoticeModel.findById(id);
+      if (oldDoc && oldDoc.attachmentUrl && oldDoc.attachmentUrl !== notice.attachmentUrl) {
+        await deleteCloudinaryAsset(oldDoc.attachmentUrl);
+      }
       const doc = await NoticeModel.findByIdAndUpdate(id, notice, { new: true });
       if (doc) {
         return {
@@ -245,6 +249,10 @@ export async function updateNotice(id: string, notice: Omit<Notice, "id" | "_id"
 export async function updateFacultyMember(id: string, member: Omit<Faculty, "id" | "_id">): Promise<Faculty | null> {
   if (await isDbConnected()) {
     try {
+      const oldDoc = await FacultyModel.findById(id);
+      if (oldDoc && oldDoc.imageUrl && oldDoc.imageUrl !== member.imageUrl) {
+        await deleteCloudinaryAsset(oldDoc.imageUrl);
+      }
       const doc = await FacultyModel.findByIdAndUpdate(id, member, { new: true });
       if (doc) {
         return {

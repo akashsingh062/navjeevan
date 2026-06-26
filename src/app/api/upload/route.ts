@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import path from "path";
+import { deleteCloudinaryAsset } from "@/lib/cloudinary";
+
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -97,6 +99,34 @@ export async function POST(request: Request) {
     console.error("Cloudinary/Local Upload API Error:", err);
     return NextResponse.json(
       { success: false, message: err.message || "Failed to process and upload image." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const url = searchParams.get("url");
+
+    if (!url) {
+      return NextResponse.json({ success: false, message: "Missing asset URL parameter." }, { status: 400 });
+    }
+
+    const success = await deleteCloudinaryAsset(url);
+    if (success) {
+      return NextResponse.json({ success: true, message: "Asset deleted successfully from Cloudinary." });
+    }
+
+    // If it's a local mock URL or keys aren't set, return mock success response
+    if (!url.includes("cloudinary.com")) {
+      return NextResponse.json({ success: true, message: "Local mock asset bypassed deletion." });
+    }
+
+    return NextResponse.json({ success: false, message: "Failed to delete Cloudinary asset." }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { success: false, message: error instanceof Error ? error.message : "Failed to delete asset." },
       { status: 500 }
     );
   }
