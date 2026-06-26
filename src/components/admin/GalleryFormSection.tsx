@@ -7,6 +7,8 @@ import Image from "next/image";
 import { PlusCircle, Camera, Trash2, Link as LinkIcon, Sparkles, CheckCircle2, AlertCircle, Play, UploadCloud, Globe, HelpCircle, Folder, ArrowLeft } from "lucide-react";
 import { GalleryItem } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
+import { getOptimizedImageUrl } from "@/lib/imageOptimizer";
+
 
 interface GalleryFormInput {
   title: string;
@@ -1149,7 +1151,7 @@ export default function GalleryFormSection({
                         {/* Image visual wrapper with aspect ratio */}
                         <div className="relative aspect-video w-full bg-slate-100 shrink-0 overflow-hidden shadow-inner">
                           <Image
-                            src={getVideoPoster(photo.imageUrl)}
+                            src={getOptimizedImageUrl(getVideoPoster(photo.imageUrl), 300)}
                             alt={photo.title}
                             fill
                             unoptimized

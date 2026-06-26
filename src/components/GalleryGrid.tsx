@@ -15,6 +15,8 @@ import {
   Play
 } from "lucide-react";
 import ImageModal from "./ImageModal";
+import { getOptimizedImageUrl } from "@/lib/imageOptimizer";
+
 
 const isVideoUrl = (url: string): boolean => {
   if (!url) return false;
@@ -254,7 +256,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                     ) : (
 
                       <img
-                        src={getVideoPoster(item.imageUrl)}
+                        src={getOptimizedImageUrl(getVideoPoster(item.imageUrl), 500)}
                         alt={item.title}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                         onError={() => handleImageError(item.id || "")}
@@ -351,7 +353,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                       ) : (
 
                         <img
-                          src={getVideoPoster(currentHighlight.imageUrl)}
+                          src={getOptimizedImageUrl(getVideoPoster(currentHighlight.imageUrl), 800)}
                           alt={currentHighlight.title}
                           className="w-full h-auto block object-cover transition-transform duration-500 ease-out group-hover:scale-103 rounded-2xl"
                           onError={() => handleImageError(`rand-single-${currentHighlight.id}`)}
@@ -516,7 +518,7 @@ function GalleryGridContent({ items, limit }: GalleryGridProps) {
                             ) : (
 
                               <img
-                                src={getVideoPoster(item.imageUrl)}
+                                src={getOptimizedImageUrl(getVideoPoster(item.imageUrl), 500)}
                                 alt={item.title}
                                 className="w-full h-auto block object-cover transition-transform duration-500 group-hover:scale-103"
                                 onError={() => handleImageError(item.id || "")}

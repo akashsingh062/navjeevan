@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Faculty } from "@/types";
 import { GraduationCap, Briefcase } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { getOptimizedImageUrl } from "@/lib/imageOptimizer";
+
 
 interface TeacherCardProps {
   member: Faculty;
@@ -35,9 +37,10 @@ export default function TeacherCard({ member }: TeacherCardProps) {
       >
         {member.imageUrl && !imageError ? (
           <Image
-            src={member.imageUrl}
+            src={getOptimizedImageUrl(member.imageUrl, 400)}
             alt={`Photo of ${member.name}`}
             fill
+            unoptimized
             sizes="(max-width: 640px) 100vw, 25vw"
             className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
             onError={() => setImageError(true)}

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Calendar, Download, ChevronLeft, ChevronRight } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/imageOptimizer";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ImageModalProps {
@@ -204,7 +206,7 @@ export default function ImageModal({
               ) : (
 
                 <Image
-                  src={getVideoPoster(imageUrl)}
+                  src={getOptimizedImageUrl(getVideoPoster(imageUrl), 1200)}
                   alt={title}
                   fill
                   unoptimized

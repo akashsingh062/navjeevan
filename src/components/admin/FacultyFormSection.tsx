@@ -8,6 +8,8 @@ import { Save, PlusCircle, Users, Edit, Trash2, Camera, UploadCloud, GraduationC
 import { Faculty } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import ImageCropper from "./ImageCropper";
+import { getOptimizedImageUrl } from "@/lib/imageOptimizer";
+
 
 interface FacultyFormInput {
   name: string;
@@ -256,7 +258,7 @@ export default function FacultyFormSection({
             <div className="w-20 h-20 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-200 relative flex items-center justify-center shadow-inner">
               {watchedFacultyImage ? (
                 <Image
-                  src={watchedFacultyImage}
+                  src={getOptimizedImageUrl(watchedFacultyImage, 120)}
                   alt="Staff Preview"
                   width={80}
                   height={80}
@@ -363,7 +365,7 @@ export default function FacultyFormSection({
                     <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden relative shrink-0 shadow-inner flex items-center justify-center">
                       {member.imageUrl ? (
                         <Image
-                          src={member.imageUrl}
+                          src={getOptimizedImageUrl(member.imageUrl, 120)}
                           alt={member.name}
                           fill
                           unoptimized
