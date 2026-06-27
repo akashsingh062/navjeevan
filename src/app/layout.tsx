@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
@@ -8,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { LanguageProvider } from "@/context/LanguageContext";
 import ScrollRevealObserver from "@/components/ScrollRevealObserver";
 import PWARegister from "@/components/PWARegister";
+import { Analytics } from "@vercel/analytics/next";
 
 const outfit = Outfit({
   variable: "--font-sans",
@@ -128,6 +131,7 @@ export default function RootLayout({
           <Footer />
 
           <BottomNav />
+          <Analytics />
         </LanguageProvider>
       </body>
     </html>
