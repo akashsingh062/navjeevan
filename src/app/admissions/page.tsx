@@ -28,7 +28,11 @@ export default function Admissions() {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get("tab");
       if (tabParam && ["eligibility", "fees", "process", "apply"].includes(tabParam)) {
-        setActiveTab(tabParam);
+        if (tabParam === "process") {
+          setActiveTab("eligibility");
+        } else {
+          setActiveTab(tabParam);
+        }
       }
     }
   }, []);
@@ -110,8 +114,8 @@ export default function Admissions() {
   const tabs = [
     {
       id: "eligibility",
-      labelEn: "Eligibility & Checklist",
-      labelHi: "पात्रता एवं दस्तावेज़",
+      labelEn: "Process & Eligibility",
+      labelHi: "प्रक्रिया एवं पात्रता",
       icon: ClipboardCheck,
     },
     {
@@ -119,12 +123,6 @@ export default function Admissions() {
       labelEn: "Fees & Installments",
       labelHi: "शुल्क एवं किस्त विवरण",
       icon: Receipt,
-    },
-    {
-      id: "process",
-      labelEn: "Admission Process",
-      labelHi: "प्रवेश प्रक्रिया",
-      icon: Compass,
     },
     {
       id: "apply",
@@ -178,8 +176,8 @@ export default function Admissions() {
 
         {/* ──────────── TAB NAVIGATION ──────────── */}
         <div className="mb-6 sm:mb-12 relative">
-          {/* Mobile: compact grid of 4 tabs */}
-          <div className="grid grid-cols-4 gap-1.5 sm:hidden">
+          {/* Mobile: compact grid of 3 tabs */}
+          <div className="grid grid-cols-3 gap-1.5 sm:hidden">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -195,8 +193,7 @@ export default function Admissions() {
                 >
                   <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-neutral-body"}`} />
                   <span className="leading-tight text-center">
-                    {tab.id === "process" ? (language === "en" ? "Process" : "प्रक्रिया") :
-                     tab.id === "eligibility" ? (language === "en" ? "Eligibility" : "पात्रता") :
+                    {tab.id === "eligibility" ? (language === "en" ? "Process & Eligibility" : "प्रक्रिया एवं पात्रता") :
                      tab.id === "fees" ? (language === "en" ? "Fees" : "शुल्क") :
                      (language === "en" ? "Enquiry" : "पूछताछ")}
                   </span>
@@ -233,12 +230,11 @@ export default function Admissions() {
           </div>
         </div>
 
-        {/* ──────────── TAB 1: ADMISSION PROCESS ──────────── */}
-        {activeTab === "process" && (
-          <div className="animate-fade-in-up flex flex-col gap-6 sm:gap-12">
-
-            {/* Steps Section */}
-            <section className="text-left">
+        {/* ──────────── TAB 1: PROCESS & ELIGIBILITY ──────────── */}
+        {activeTab === "eligibility" && (
+          <div className="animate-fade-in-up flex flex-col gap-10 sm:gap-16 text-left">
+            {/* Part A: Admission Process */}
+            <section className="flex flex-col gap-6">
               <SectionHeading
                 title={
                   language === "en"
@@ -253,7 +249,7 @@ export default function Admissions() {
               />
 
               {/* Timeline Steps — compact list on mobile, grid on desktop */}
-              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+              <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
                 {admissionSteps.map((step, idx) => (
                   <div
                     key={step.num}
@@ -280,86 +276,187 @@ export default function Admissions() {
                 ))}
               </div>
 
-              {/* Mobile: compact numbered list */}
-              <div className="flex flex-col gap-2.5 mt-5 sm:hidden">
+              {/* Mobile: compact numbered list with description */}
+              <div className="flex flex-col gap-2.5 mt-2 sm:hidden">
                 {admissionSteps.map((step) => (
                   <div
                     key={step.num}
-                    className="flex items-center gap-3 bg-surface border border-border px-4 py-3 rounded-xl"
+                    className="flex flex-col gap-1.5 bg-surface border border-border p-4 rounded-xl"
                   >
-                    <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-xs border border-primary/15">
-                      {step.num}
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 font-black text-xs border border-primary/15">
+                        {step.num}
+                      </div>
+                      <h3 className="text-xs font-extrabold text-neutral-dark leading-tight">
+                        {step.title[language]}
+                      </h3>
                     </div>
-                    <h3 className="text-xs font-extrabold text-neutral-dark leading-tight">
-                      {step.title[language]}
-                    </h3>
+                    <p className="text-[11px] text-neutral-body leading-relaxed font-normal pl-[38px]">
+                      {step.desc[language]}
+                    </p>
                   </div>
                 ))}
               </div>
-            </section>
 
-            {/* View/Download Admission Form Card */}
-            {/* Offline Application Card — compact on mobile */}
-            <div className="relative bg-gradient-to-r from-neutral-light to-white border border-border p-4 sm:p-8 rounded-2xl sm:rounded-3xl flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 text-left shadow-xs overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary/20" />
+              {/* Offline Application Card — compact on mobile */}
+              <div className="relative bg-gradient-to-r from-neutral-light to-white border border-border p-4 sm:p-8 rounded-2xl sm:rounded-3xl flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 text-left shadow-xs overflow-hidden mt-4">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary/20" />
 
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-start flex-1 w-full">
-                {/* Visual Image Preview — hidden on mobile */}
-                <div 
-                  onClick={() => setIsViewerOpen(true)}
-                  className="hidden sm:block relative w-28 h-38 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl hover:border-primary/40 group transition-all shrink-0 select-none"
-                >
-                  <Image
-                    src="/admissionForm.png"
-                    alt="Admission Form Preview"
-                    fill
-                    className="object-cover group-hover:scale-[1.05] transition-transform duration-300"
-                    sizes="112px"
-                  />
-                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                    <span className="text-[10px] font-black uppercase tracking-wider bg-black/60 px-2.5 py-1.5 rounded-md flex items-center gap-1">
-                      <Compass className="w-3.5 h-3.5 animate-spin-slow" />
-                      {language === "en" ? "Preview" : "पूर्वावलोकन"}
-                    </span>
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-start flex-1 w-full">
+                  {/* Visual Image Preview — hidden on mobile */}
+                  <div 
+                    onClick={() => setIsViewerOpen(true)}
+                    className="hidden sm:block relative w-28 h-38 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md cursor-pointer hover:shadow-xl hover:border-primary/40 group transition-all shrink-0 select-none"
+                  >
+                    <Image
+                      src="/admissionForm.png"
+                      alt="Admission Form Preview"
+                      fill
+                      className="object-cover group-hover:scale-[1.05] transition-transform duration-300"
+                      sizes="112px"
+                    />
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                      <span className="text-[10px] font-black uppercase tracking-wider bg-black/60 px-2.5 py-1.5 rounded-md flex items-center gap-1">
+                        <Compass className="w-3.5 h-3.5 animate-spin-slow" />
+                        {language === "en" ? "Preview" : "पूर्वावलोकन"}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex flex-col gap-2 sm:gap-2.5">
-                  <span className="text-[9px] uppercase font-black text-primary bg-primary/10 px-2.5 py-1 rounded-full tracking-wider w-fit">
-                    {language === "en" ? "Offline Application" : "ऑफलाइन आवेदन"}
-                  </span>
-                  <h4 className="text-sm sm:text-lg font-serif font-black text-neutral-dark leading-snug">
-                    {language === "en" ? "Official Print-Ready Admission Form" : "आधिकारिक प्रिंट-योग्य प्रवेश फॉर्म"}
-                  </h4>
-                  <p className="hidden sm:block text-xs text-neutral-body font-medium leading-relaxed">
-                    {language === "en"
-                      ? "Download and print the offline admission form to fill out and submit directly at the school office counter in Khabharabhar."
-                      : "खबरभार स्थित विद्यालय कार्यालय काउंटर पर सीधे जमा करने के लिए ऑफलाइन प्रवेश फॉर्म डाउनलोड और प्रिंट करें।"}
-                  </p>
-                  <div className="flex flex-wrap gap-2 sm:gap-3 mt-1">
-                    <button
-                      onClick={() => setIsViewerOpen(true)}
-                      className="px-4 sm:px-5 py-2.5 bg-neutral-dark hover:bg-neutral-dark/95 text-white text-xs font-black rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
-                    >
-                      <ClipboardCheck className="w-3.5 h-3.5" />
-                      <span>{language === "en" ? "View Form" : "फॉर्म देखें"}</span>
-                    </button>
-                    <a
-                      href="/admissionForm.png"
-                      download="Nav_Jeevan_Public_School_Admission_Form.png"
-                      className="px-4 sm:px-5 py-2.5 bg-white hover:bg-neutral-light border border-gray-300 text-neutral-dark text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>{language === "en" ? "Download PNG" : "डाउनलोड करें (PNG)"}</span>
-                    </a>
+                  <div className="flex flex-col gap-2 sm:gap-2.5">
+                    <span className="text-[9px] uppercase font-black text-primary bg-primary/10 px-2.5 py-1 rounded-full tracking-wider w-fit">
+                      {language === "en" ? "Offline Application" : "ऑफलाइन आवेदन"}
+                    </span>
+                    <h4 className="text-sm sm:text-lg font-serif font-black text-neutral-dark leading-snug">
+                      {language === "en" ? "Official Print-Ready Admission Form" : "आधिकारिक प्रिंट-योग्य प्रवेश फॉर्म"}
+                    </h4>
+                    <p className="hidden sm:block text-xs text-neutral-body font-medium leading-relaxed">
+                      {language === "en"
+                        ? "Download and print the offline admission form to fill out and submit directly at the school office counter in Khabharabhar."
+                        : "खबरभार स्थित विद्यालय कार्यालय काउंटर पर सीधे जमा करने के लिए ऑफलाइन प्रवेश फॉर्म डाउनलोड और प्रिंट करें।"}
+                    </p>
+                    <div className="flex flex-wrap gap-2 sm:gap-3 mt-1">
+                      <button
+                        onClick={() => setIsViewerOpen(true)}
+                        className="px-4 sm:px-5 py-2.5 bg-neutral-dark hover:bg-neutral-dark/95 text-white text-xs font-black rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <ClipboardCheck className="w-3.5 h-3.5" />
+                        <span>{language === "en" ? "View Form" : "फॉर्म देखें"}</span>
+                      </button>
+                      <a
+                        href="/admissionForm.png"
+                        download="Nav_Jeevan_Public_School_Admission_Form.png"
+                        className="px-4 sm:px-5 py-2.5 bg-white hover:bg-neutral-light border border-gray-300 text-neutral-dark text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>{language === "en" ? "Download PNG" : "डाउनलोड करें (PNG)"}</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Quick Action CTA card */}
+            {/* Part B: Age Eligibility & Document Checklist */}
+            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start">
+              {/* Age Eligibility */}
+              <div className="lg:col-span-7 flex flex-col gap-5">
+                <SectionHeading
+                  title={t.admissions.criteriaTitle}
+                  subtitle={t.admissions.criteriaSubtitle}
+                />
+
+                {/* Desktop: full table */}
+                <div className="hidden sm:block overflow-x-auto border border-border rounded-2xl shadow-xs bg-white mt-2">
+                  <table className="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead>
+                      <tr className="bg-gradient-to-r from-neutral-light to-white border-b border-border text-neutral-dark font-extrabold text-xs uppercase">
+                        <th className="p-4 font-bold">
+                          {language === "en" ? "Class Offered" : "कक्षा"}
+                        </th>
+                        <th className="p-4 font-bold">
+                          {t.admissions.ageRequirement}
+                        </th>
+                        <th className="p-4 font-bold">
+                          {language === "en" ? "Key Criteria" : "मुख्य पात्रता"}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 text-neutral-body font-normal">
+                      {ageEligibility.map((el, idx) => (
+                        <tr
+                          key={idx}
+                          className="hover:bg-primary/[0.02] transition-colors"
+                        >
+                          <td className="p-4 font-extrabold text-neutral-dark whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                              {el.class}
+                            </div>
+                          </td>
+                          <td className="p-4 font-semibold text-primary whitespace-nowrap">
+                            {el.age}
+                          </td>
+                          <td className="p-4 leading-relaxed">
+                            {el.criteria[language]}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile: simple stacked cards */}
+                <div className="flex flex-col gap-2.5 mt-2 sm:hidden">
+                  {ageEligibility.map((el, idx) => (
+                    <div key={idx} className="bg-surface border border-border rounded-xl p-3.5">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-extrabold text-neutral-dark flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                          {el.class}
+                        </span>
+                        <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                          {el.age}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-neutral-body leading-relaxed font-normal">
+                        {el.criteria[language]}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Document Checklist Card */}
+              <div className="lg:col-span-5 bg-surface border border-border rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs flex flex-col">
+                <div className="bg-gradient-to-r from-accent/5 to-primary/5 p-4 sm:p-6 border-b border-border">
+                  <h3 className="text-base sm:text-lg font-extrabold text-neutral-dark flex items-center gap-2.5">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-accent-light text-accent flex items-center justify-center shrink-0">
+                      <FileCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                    </div>
+                    {t.admissions.checkTitle}
+                  </h3>
+                  <p className="hidden sm:block text-xs text-neutral-body leading-relaxed font-normal mt-2">
+                    {t.admissions.checkSubtitle}
+                  </p>
+                </div>
+                <div className="p-4 sm:p-6">
+                  <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs text-neutral-body leading-relaxed">
+                    {requiredDocuments.map((doc, idx) => (
+                      <li key={idx} className="flex gap-2.5 sm:gap-3 items-start font-medium group/doc">
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0 text-[10px] font-black mt-0.5 select-none group-hover/doc:bg-accent group-hover/doc:text-white transition-colors">
+                          <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                        </div>
+                        <span className="text-[11px] sm:text-xs">{doc[language]}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </section>
+
             {/* Quick Action CTA — compact on mobile */}
-            <div className="relative bg-gradient-to-r from-primary/8 via-accent/8 to-primary/5 border border-primary/15 rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-6 text-left overflow-hidden">
+            <div className="relative bg-gradient-to-r from-primary/8 via-accent/8 to-primary/5 border border-primary/15 rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-6 text-left overflow-hidden mt-4">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-accent" />
               <div>
                 <h4 className="text-sm sm:text-base font-extrabold text-neutral-dark leading-snug">
@@ -378,106 +475,6 @@ export default function Admissions() {
                 <span>{language === "en" ? "Submit Online Enquiry" : "ऑनलाइन पूछताछ सबमिट करें"}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-            </div>
-          </div>
-        )}
-
-        {/* ──────────── TAB 2: ELIGIBILITY & CHECKLIST ──────────── */}
-        {activeTab === "eligibility" && (
-          <div className="animate-fade-in-up grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10 items-start text-left">
-            {/* Age Eligibility */}
-            <div className="lg:col-span-7 flex flex-col gap-5">
-              <SectionHeading
-                title={t.admissions.criteriaTitle}
-                subtitle={t.admissions.criteriaSubtitle}
-              />
-
-              {/* Desktop: full table */}
-              <div className="hidden sm:block overflow-x-auto border border-border rounded-2xl shadow-xs bg-white mt-2">
-                <table className="w-full text-left border-collapse text-xs md:text-sm">
-                  <thead>
-                    <tr className="bg-gradient-to-r from-neutral-light to-white border-b border-border text-neutral-dark font-extrabold text-xs uppercase">
-                      <th className="p-4 font-bold">
-                        {language === "en" ? "Class Offered" : "कक्षा"}
-                      </th>
-                      <th className="p-4 font-bold">
-                        {t.admissions.ageRequirement}
-                      </th>
-                      <th className="p-4 font-bold">
-                        {language === "en" ? "Key Criteria" : "मुख्य पात्रता"}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-neutral-body font-normal">
-                    {ageEligibility.map((el, idx) => (
-                      <tr
-                        key={idx}
-                        className="hover:bg-primary/[0.02] transition-colors"
-                      >
-                        <td className="p-4 font-extrabold text-neutral-dark whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                            {el.class}
-                          </div>
-                        </td>
-                        <td className="p-4 font-semibold text-primary whitespace-nowrap">
-                          {el.age}
-                        </td>
-                        <td className="p-4 leading-relaxed">
-                          {el.criteria[language]}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile: simple stacked cards */}
-              <div className="flex flex-col gap-2.5 mt-2 sm:hidden">
-                {ageEligibility.map((el, idx) => (
-                  <div key={idx} className="bg-surface border border-border rounded-xl p-3.5">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-xs font-extrabold text-neutral-dark flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                        {el.class}
-                      </span>
-                      <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                        {el.age}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-neutral-body leading-relaxed font-normal">
-                      {el.criteria[language]}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Document Checklist Card */}
-            <div className="lg:col-span-5 bg-surface border border-border rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs">
-              <div className="bg-gradient-to-r from-accent/5 to-primary/5 p-4 sm:p-6 border-b border-border">
-                <h3 className="text-base sm:text-lg font-extrabold text-neutral-dark flex items-center gap-2.5">
-                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-accent-light text-accent flex items-center justify-center shrink-0">
-                    <FileCheck className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-                  </div>
-                  {t.admissions.checkTitle}
-                </h3>
-                <p className="hidden sm:block text-xs text-neutral-body leading-relaxed font-normal mt-2">
-                  {t.admissions.checkSubtitle}
-                </p>
-              </div>
-              <div className="p-4 sm:p-6">
-                <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs text-neutral-body leading-relaxed">
-                  {requiredDocuments.map((doc, idx) => (
-                    <li key={idx} className="flex gap-2.5 sm:gap-3 items-start font-medium group/doc">
-                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0 text-[10px] font-black mt-0.5 select-none group-hover/doc:bg-accent group-hover/doc:text-white transition-colors">
-                        <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                      </div>
-                      <span className="text-[11px] sm:text-xs">{doc[language]}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           </div>
         )}
