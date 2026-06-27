@@ -47,7 +47,13 @@ async function isDbConnected(): Promise<boolean> {
   }
 }
 
+let cachedNotices: Notice[] | null = null;
+let cachedFaculty: Faculty[] | null = null;
+let cachedGallery: GalleryItem[] | null = null;
+let isSeeded = false;
+
 async function ensureDbSeeded() {
+  if (isSeeded) return;
   try {
     const noticesCount = await NoticeModel.countDocuments();
     if (noticesCount === 0 && defaultNotices.length > 0) {
@@ -66,17 +72,21 @@ async function ensureDbSeeded() {
       await GalleryModel.insertMany(defaultGallery);
       console.log("Seeded database with default school gallery items.");
     }
+    isSeeded = true;
   } catch (err) {
     console.error("Error seeding database:", err);
   }
 }
 
 export async function getNotices(): Promise<Notice[]> {
+  if (cachedNotices) {
+    return cachedNotices;
+  }
   if (await isDbConnected()) {
     try {
       await ensureDbSeeded();
       const rawNotices = await NoticeModel.find({}).sort({ isImportant: -1, date: -1 }).lean() as unknown as DBNotice[];
-      return rawNotices.map((n: DBNotice) => ({
+      cachedNotices = rawNotices.map((n: DBNotice) => ({
         id: n._id.toString(),
         title: n.title,
         description: n.description,
@@ -86,6 +96,7 @@ export async function getNotices(): Promise<Notice[]> {
         importanceColor: n.importanceColor || "blue",
         attachmentUrl: n.attachmentUrl || ""
       }));
+      return cachedNotices;
     } catch (err) {
       console.error("Failed to fetch notices from database, using static fallback:", err);
     }
@@ -98,11 +109,14 @@ export async function getNotices(): Promise<Notice[]> {
 }
 
 export async function getFaculty(): Promise<Faculty[]> {
+  if (cachedFaculty) {
+    return cachedFaculty;
+  }
   if (await isDbConnected()) {
     try {
       await ensureDbSeeded();
       const rawFaculty = await FacultyModel.find({}).sort({ order: 1, name: 1 }).lean() as unknown as DBFaculty[];
-      return rawFaculty.map((f: DBFaculty) => ({
+      cachedFaculty = rawFaculty.map((f: DBFaculty) => ({
         id: f._id.toString(),
         name: f.name,
         subject: f.subject,
@@ -111,6 +125,7 @@ export async function getFaculty(): Promise<Faculty[]> {
         imageUrl: f.imageUrl || "",
         order: f.order || 99
       }));
+      return cachedFaculty;
     } catch (err) {
       console.error("Failed to fetch faculty from database, using static fallback:", err);
     }
@@ -119,17 +134,21 @@ export async function getFaculty(): Promise<Faculty[]> {
 }
 
 export async function getGallery(): Promise<GalleryItem[]> {
+  if (cachedGallery) {
+    return cachedGallery;
+  }
   if (await isDbConnected()) {
     try {
       await ensureDbSeeded();
       const rawGallery = await GalleryModel.find({}).sort({ uploadedAt: -1 }).lean() as unknown as DBGalleryItem[];
-      return rawGallery.map((g: DBGalleryItem) => ({
+      cachedGallery = rawGallery.map((g: DBGalleryItem) => ({
         id: g._id.toString(),
         imageUrl: g.imageUrl,
         category: g.category,
         title: g.title,
         uploadedAt: g.uploadedAt
       }));
+      return cachedGallery;
     } catch (err) {
       console.error("Failed to fetch gallery from database, using static fallback:", err);
     }
@@ -146,6 +165,7 @@ export function getFacilities(): Facility[] {
 }
 
 export async function createNotice(notice: Omit<Notice, "id" | "_id">): Promise<Notice> {
+  cachedNotices = null;
   if (await isDbConnected()) {
     const doc = await NoticeModel.create(notice);
     return {
@@ -163,6 +183,7 @@ export async function createNotice(notice: Omit<Notice, "id" | "_id">): Promise<
 }
 
 export async function createGalleryItem(item: Omit<GalleryItem, "id" | "_id">): Promise<GalleryItem> {
+  cachedGallery = null;
   if (await isDbConnected()) {
     const doc = await GalleryModel.create(item);
     return {
@@ -179,6 +200,7 @@ export async function createGalleryItem(item: Omit<GalleryItem, "id" | "_id">): 
 }
 
 export async function createFacultyMember(member: Omit<Faculty, "id" | "_id">): Promise<Faculty> {
+  cachedFaculty = null;
   if (await isDbConnected()) {
     const doc = await FacultyModel.create(member);
     return {
@@ -209,6 +231,7 @@ export async function saveContactInquiry(inquiry: Omit<ContactInquiry, "_id">): 
 }
 
 export async function updateNotice(id: string, notice: Omit<Notice, "id" | "_id">): Promise<Notice | null> {
+  cachedNotices = null;
   if (await isDbConnected()) {
     try {
       const oldDoc = await NoticeModel.findById(id);
@@ -247,6 +270,7 @@ export async function updateNotice(id: string, notice: Omit<Notice, "id" | "_id"
 }
 
 export async function updateFacultyMember(id: string, member: Omit<Faculty, "id" | "_id">): Promise<Faculty | null> {
+  cachedFaculty = null;
   if (await isDbConnected()) {
     try {
       const oldDoc = await FacultyModel.findById(id);
@@ -284,6 +308,7 @@ export async function updateFacultyMember(id: string, member: Omit<Faculty, "id"
 }
 
 export async function deleteNotice(id: string): Promise<boolean> {
+  cachedNotices = null;
   if (await isDbConnected()) {
     try {
       const doc = await NoticeModel.findById(id);
@@ -309,6 +334,7 @@ export async function deleteNotice(id: string): Promise<boolean> {
 }
 
 export async function deleteGalleryItem(id: string): Promise<boolean> {
+  cachedGallery = null;
   if (await isDbConnected()) {
     try {
       const doc = await GalleryModel.findById(id);
@@ -334,6 +360,7 @@ export async function deleteGalleryItem(id: string): Promise<boolean> {
 }
 
 export async function deleteFacultyMember(id: string): Promise<boolean> {
+  cachedFaculty = null;
   if (await isDbConnected()) {
     try {
       const doc = await FacultyModel.findById(id);
